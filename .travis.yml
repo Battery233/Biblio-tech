@@ -12,7 +12,8 @@ install:
   - pip install -r vision/requirements.txt
 # run tests
 script:
-  - py.test # or py.test for Python versions 3.5 and below
+  - python vision/test.py
+  - python db/test.py
 
 android:
   components:
