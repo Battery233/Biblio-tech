@@ -1,48 +1,44 @@
-matrix:
-  include:
-    - language: python
-      python:
-        - "2.6"
-        - "2.7"
-        - "3.3"
-        - "3.4"
-        - "3.5"
-        - "3.5-dev"  # 3.5 development branch
-        - "3.6"
-        - "3.6-dev"  # 3.6 development branch
-        - "3.7-dev"  # 3.7 development branch
-        - "nightly"
-      # install dependencies
-      before-install:
-        - sudo apt-get install libzbar-dev
-      install:
-        - pip install -r vision/requirements.txt
-      # run tests
-      script:
-        - py.test # or py.test for Python versions 3.5 and below
+sudo: required
+language: python
+python:
+  - "2.7"
+# install dependencies
+install:
+  - sudo apt-get install libzbar-dev
+  - sudo apt-get install python2.7-dev
+  - sudo apt-get install python-zbar
+  - sudo apt-get install python-qrtools
+  - LDFLAGS=-L/usr/local/lib/ CPATH=/usr/local/include/ pip install zbar
+  - pip install -r vision/requirements.txt
+# run tests
+script:
+  - python vision/test.py
+  - python db/test.py
+
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - tools
+    # - platform-tools
+
+    # The BuildTools version used by your project
+    - build-tools-26.0.2
+
+    # The SDK version used to compile your project
+    - android-26
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-26
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-26
+    # - sys-img-armeabi-v7a-android-17
 
 
-    - language: android
-      android:
-        components:
-          # Uncomment the lines below if you want to
-          # use the latest revision of Android SDK Tools
-          # - tools
-          # - platform-tools
-
-          # The BuildTools version used by your project
-          - build-tools-26.0.2
-
-          # The SDK version used to compile your project
-          - android-26
-
-          # Additional components
-          - extra-google-google_play_services
-          - extra-google-m2repository
-          - extra-android-m2repository
-          - addon-google_apis-google-26
-
-          # Specify at least one system image,
-          # if you need to run emulator(s) during your tests
-          - sys-img-armeabi-v7a-android-26
-          # - sys-img-armeabi-v7a-android-17
+notifications:
+  slack: sdp-group13:1bnpUZZYWksC4USOF4RuL1Nw
