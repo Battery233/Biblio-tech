@@ -5,6 +5,7 @@ python:
 # install dependencies
 before-install:
   - sudo apt-get install libzbar-dev
+  - sudo apt-get install python2.7-dev
 install:
   - pip install -r vision/requirements.txt
 # run tests
