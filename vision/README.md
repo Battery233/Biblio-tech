@@ -18,4 +18,4 @@ Running `main.py` will take a snapshot of the current camera view and print to
 the screen 'NULL' if it can't read a QR code or the text corresponding to the QR
 code in the view.
 
-Running `test.py` will run the tests
+Running `vision/test.py` from the root folder of the project will run the tests
