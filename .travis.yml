@@ -44,5 +44,5 @@ language: python
   #     # - sys-img-armeabi-v7a-android-17
 
 
-notifications:
-  slack: sdp-group13:1bnpUZZYWksC4USOF4RuL1Nw
+# notifications:
+#   slack: sdp-group13:1bnpUZZYWksC4USOF4RuL1Nw
