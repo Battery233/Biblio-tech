@@ -14,12 +14,10 @@ import com.luckythirteen.bibliotech.demo.FetchActivity;
  * AND for performing any setup needed before communicating with the robot
  */
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -27,8 +25,7 @@ public class MainActivity extends AppCompatActivity
         Button demoButton = (Button) findViewById(R.id.btnDemoMode);
         demoButton.findViewById(R.id.btnDemoMode).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.super.getApplicationContext(), FetchActivity.class);
                 startActivity(intent);
             }

@@ -9,7 +9,7 @@
     android:background="@color/colorPrimaryDark">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/fetch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -18,7 +18,7 @@
         android:fontFamily="casual"
         android:text="@string/fetchScreenTitle"
         android:textAllCaps="false"
-        android:textColor="@color/colorButtonBlue"
+        android:textColor="#ffffff"
         android:textSize="50sp"
         android:typeface="monospace"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,24 +82,33 @@
         app:layout_constraintStart_toEndOf="@+id/txtTitle"
         app:layout_constraintTop_toBottomOf="@+id/autoTxtTitle" />
 
-    <Button
-        android:id="@+id/btnGet"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="36dp"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="74dp"
+        android:layout_height="151dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:backgroundTint="@color/colorButtonBlue"
-        android:elevation="12dp"
-        android:fontFamily="casual"
-        android:text="@string/fetchButtonLabel"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/autoTxtTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fetch"
+        app:srcCompat="@drawable/lego" />
+
+    <Button
+        android:id="@+id/btnGet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#5c6bc0"
+        android:text="Get!"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/autoTxtAuthor" />
 
 </android.support.constraint.ConstraintLayout>
