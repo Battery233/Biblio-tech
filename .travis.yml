@@ -42,3 +42,7 @@ language: generic
       # if you need to run emulator(s) during your tests
       - sys-img-armeabi-v7a-android-26
       # - sys-img-armeabi-v7a-android-17
+
+
+notifications:
+  slack: sdp-group13:1bnpUZZYWksC4USOF4RuL1Nw
