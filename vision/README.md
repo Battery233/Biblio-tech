@@ -6,6 +6,7 @@ Some dependencies need to be installed
 
 ```
 sudo apt-get install libzbar-dev
+
 sudo pip install pygame
 sudo pip install qrtools
 sudo pip install zbar
