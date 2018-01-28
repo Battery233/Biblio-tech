@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.luckythirteen.bibliotech.demo.FetchActivity;
+import com.luckythirteen.bibliotech.dev.DevActivity;
 
 /**
  * Activity essentially for selecting demo mode (retrieve book)
@@ -27,6 +28,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.super.getApplicationContext(), FetchActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Attach listener to demo button to load the "dev mode" activity
+        Button devButton = (Button) findViewById(R.id.btnDevMode);
+        devButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
                 startActivity(intent);
             }
         });

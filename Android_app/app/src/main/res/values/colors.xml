@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#84ffff</color>
     <color name="colorButtonBlue">#9c27b0</color>
+
+    <color name="colorBluetoothConnected">#00ff55</color>
+    <color name="colorBluetoothDisconnected">#b20000</color>
+    <color name="colorBluetoothConnecting">#fffb2b</color>
 </resources>

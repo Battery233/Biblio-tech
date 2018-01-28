@@ -1,9 +1,11 @@
 package com.luckythirteen.bibliotech.demo;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -39,7 +41,6 @@ public class FetchActivity extends AppCompatActivity {
      * Button for sending fetch message to robot
      */
     private Button getButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
