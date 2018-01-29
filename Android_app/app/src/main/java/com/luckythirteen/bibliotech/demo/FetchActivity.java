@@ -1,16 +1,16 @@
 package com.luckythirteen.bibliotech.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-
+import android.widget.Toast;
+import android.content.DialogInterface;
 import com.luckythirteen.bibliotech.R;
 
 import java.util.HashMap;
@@ -42,12 +42,41 @@ public class FetchActivity extends AppCompatActivity {
      */
     private Button getButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_demo_fetch);
 
-        getButton = (Button) findViewById(R.id.btnGet);
+        setContentView(R.layout.activity_demo_fetch);
+        getButton = findViewById(R.id.btnGet);
+
+        findViewById(R.id.databaseButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(FetchActivity.this);
+                builder.setTitle("BookList:");
+                builder.setMessage("void list");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        Toast.makeText(FetchActivity.this, "positive: " + which, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        Toast.makeText(FetchActivity.this, "negative: " + which, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                builder.show();
+            }
+        });
 
         initialiseTestBooks();
         setTextViewAutocompletes();
@@ -60,7 +89,7 @@ public class FetchActivity extends AppCompatActivity {
     private void setTextViewAutocompletes() {
         // Populate suggestions for title text view
         ArrayAdapter<String> titleAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, testBooks.keySet().toArray(new String[]{}));
-        AutoCompleteTextView titleView = (AutoCompleteTextView) findViewById(R.id.autoTxtTitle);
+        AutoCompleteTextView titleView = findViewById(R.id.autoTxtTitle);
         titleView.setAdapter(titleAdapter);
 
         titleView.addTextChangedListener(new TextWatcher() {
@@ -82,8 +111,8 @@ public class FetchActivity extends AppCompatActivity {
         });
 
         // Populate suggestions for author text view
-        ArrayAdapter<String> authorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, testBooks.values().toArray(new String[]{}));
-        AutoCompleteTextView authorView = (AutoCompleteTextView) findViewById(R.id.autoTxtAuthor);
+        ArrayAdapter<String> authorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, testBooks.values().toArray(new String[]{}));
+        AutoCompleteTextView authorView = findViewById(R.id.autoTxtAuthor);
         authorView.setAdapter(authorAdapter);
 
         authorView.addTextChangedListener(new TextWatcher() {

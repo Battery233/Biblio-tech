@@ -1,5 +1,8 @@
 package com.luckythirteen.bibliotech.dev;
 
+/* The bluetooth java class
+ */
+
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,37 +25,32 @@ import co.lujun.lmbluetoothsdk.base.BluetoothListener;
 import static android.bluetooth.BluetoothAdapter.STATE_CONNECTING;
 
 
-public class DevActivity extends AppCompatActivity
-{
+public class DevActivity extends AppCompatActivity {
 
     private static final String TAG = "DevActivity";
-    private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";
+    private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   //Colin's laptop
+    //private static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   //Chenghao's laptop
 
     private TextView bluetoothStatus, messageReceived;
     private EditText messageText;
-    private Button buttonSendMsg;
 
     private BluetoothController bluetoothController;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dev);
 
-        bluetoothStatus = (TextView) findViewById(R.id.txtBluetoothStatus);
-        messageReceived = (TextView) findViewById(R.id.txtMsgReceived);
-        messageText = (EditText) findViewById(R.id.editMessage);
-        buttonSendMsg = (Button) findViewById(R.id.btnSendMessage);
+        bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
+        messageReceived = findViewById(R.id.txtMsgReceived);
+        messageText = findViewById(R.id.editMessage);
+        Button buttonSendMsg = findViewById(R.id.btnSendMessage);
 
-        buttonSendMsg.setOnClickListener(new View.OnClickListener()
-        {
+        buttonSendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Log.d(TAG, "write: " + messageText.getText().toString());
                 bluetoothController.write(messageText.getText().toString().getBytes());
             }
@@ -63,103 +61,81 @@ public class DevActivity extends AppCompatActivity
         bluetoothController.setAppUuid(MY_UUID);
         bluetoothController.connect(TARGET_MAC);
 
-        bluetoothController.setBluetoothListener(new BluetoothListener()
-        {
+        bluetoothController.setBluetoothListener(new BluetoothListener() {
             @Override
-            public void onReadData(BluetoothDevice device, byte[] data)
-            {
+            public void onReadData(BluetoothDevice device, byte[] data) {
                 final String msg = new String(data);
                 Log.d(TAG, "Received: " + msg);
 
-                runOnUiThread(new Runnable()
-                {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         messageReceived.setText(msg);
 
                     }
                 });
 
-                if (Build.VERSION.SDK_INT >= 26)
-                {
+                if (Build.VERSION.SDK_INT >= 26) {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-                }
-                else
-                {
+                } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(150);
                 }
 
             }
 
             @Override
-            public void onActionStateChanged(int preState, int state)
-            {
+            public void onActionStateChanged(int preState, int state) {
 
             }
 
             @Override
-            public void onActionDiscoveryStateChanged(String discoveryState)
-            {
+            public void onActionDiscoveryStateChanged(String discoveryState) {
 
             }
 
             @Override
-            public void onActionScanModeChanged(int preScanMode, int scanMode)
-            {
+            public void onActionScanModeChanged(int preScanMode, int scanMode) {
 
             }
 
             @Override
-            public void onBluetoothServiceStateChanged(int state)
-            {
+            public void onBluetoothServiceStateChanged(int state) {
                 Log.d(TAG, "BT STATE: " + state);
                 updateStatusText(state);
             }
 
             @Override
-            public void onActionDeviceFound(BluetoothDevice device, short rssi)
-            {
+            public void onActionDeviceFound(BluetoothDevice device, short rssi) {
 
             }
         });
-
     }
 
     /**
      * Updates connection status text
+     *
      * @param state State of bluetooth connection
      */
-    private void updateStatusText(int state)
-    {
+    private void updateStatusText(int state) {
         // CONNECTED CODE = 3
-        if (state == 3)
-        {
+        if (state == 3) {
             bluetoothStatus.setText(getString(R.string.txtBluetoothConnected));
             bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothConnected));
-        }
-        else if (state == STATE_CONNECTING)
-        {
+        } else if (state == STATE_CONNECTING) {
             bluetoothStatus.setText(getString(R.string.txtBluetoothConnecting));
             bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothConnecting));
-        }
-        else
-        {
+        } else {
             bluetoothStatus.setText(getString(R.string.txtBluetoothDisconnected));
             bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothDisconnected));
         }
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
-        if (bluetoothController.isAvailable())
-        {
+        if (bluetoothController.isAvailable()) {
             bluetoothController.release();
         }
     }
 
-
 }
-
