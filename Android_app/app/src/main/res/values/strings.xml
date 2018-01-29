@@ -10,5 +10,17 @@
     <string name="fetchAuthorLabel">Author:</string>
     <string name="fetchAuthorPlaceholder">Enter author</string>
     <string name="fetchTitlePlaceholder">Enter title</string>
-    <string name="fetchButtonLabel">GET</string>
+    <string name="fetchButtonLabel">GET!</string>
+
+    <string name="txtMessage">Message:</string>
+    <string name="editTextPlaceholder">&lt;message&gt;</string>
+    <string name="btnSendMessage">Send Message</string>
+    <string name="txtMessageReceived">Received:</string>
+    <string name="txtMessageReceivedPlaceholder">&lt;none&gt;</string>
+
+    <string name="txtBluetoothConnecting">Connecting</string>
+    <string name="txtBluetoothConnected">Connected</string>
+    <string name="txtBluetoothDisconnected">Disconnected</string>
+
+    <string name="UUID">d885b8f1-6b49-4b64-b164-565e387d1e8f</string>
 </resources>
