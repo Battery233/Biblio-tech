@@ -73,7 +73,24 @@ def get_books(db):
     c.execute("SELECT * FROM books")
     books = c.fetchall();
 
-    conn.commit()
     conn.close()
 
     return books
+
+def update_book_position(db, ISBN, position):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    c.execute("UPDATE books SET position='" + position + "' WHERE ISBN=" + ISBN)
+
+    conn.commit()
+    conn.close()
+
+def update_book_status(db, ISBN, status):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    c.execute("UPDATE books SET status='" + status + "' WHERE ISBN=" + ISBN)
+
+    conn.commit()
+    conn.close()

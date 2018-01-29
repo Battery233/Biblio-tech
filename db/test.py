@@ -25,5 +25,23 @@ class TestDB(unittest.TestCase):
             (9780241197806, u'The Castle', u'Franz Kafka', u'1:3', int(main.STATUS_AVAILABLE)),
             books[0])
 
+    def testUpdatePosition(self):
+        main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
+        main.update_book_position(db, '9780241197806', '1:5')
+
+        books = main.get_books(db)
+
+        self.assertEqual((9780241197806, u'The Castle', u'Franz Kafka', u'1:5', int(main.STATUS_AVAILABLE)),
+            books[0])
+
+    def testUpdateStatus(self):
+        main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
+        main.update_book_status(db, '9780241197806', main.STATUS_UNAVAILABLE)
+
+        books = main.get_books(db)
+
+        self.assertEqual((9780241197806, u'The Castle', u'Franz Kafka', u'1:3', int(main.STATUS_UNAVAILABLE)),
+            books[0])
+
 if __name__ == '__main__':
     unittest.main()
