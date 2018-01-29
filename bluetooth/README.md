@@ -31,28 +31,34 @@ sudo systemctl restart bluetooth
 `sudo chgrp bluetooth /var/run/sdp`
 
 6. Make the changes stay after reboot:
-Create `/etc/systemd/system/var-run-sdp.path` and insert this:
->[Unit]
+
+  Create `/etc/systemd/system/var-run-sdp.path` and insert this:
+
+```
+[Unit]
 Descrption=Monitor /var/run/sdp
+
 [Install]
->
->WantedBy=bluetooth.service
+WantedBy=bluetooth.service
+
 [Path]
->
->PathExists=/var/run/sdp
+PathExists=/var/run/sdp
 Unit=var-run-sdp.service
+```
 
 And another file `/etc/systemd/system/var-run-sdp.service`:
->[Unit]
+
+```
+[Unit]
 Description=Set permission of /var/run/sdp
->
->[Install]
+
+[Install]
 RequiredBy=var-run-sdp.path
->
->[Service]
+
+[Service]
 Type=simple
 ExecStart=/bin/chgrp bluetooth /var/run/sdp
-
+```
 **Finally**:
 ```
 sudo systemctl daemon-reload
