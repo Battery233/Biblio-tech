@@ -23,7 +23,7 @@ def on_received(data):
         else:
             m.run_timed(speed_sp=1000, time_sp=2880)
 
-    # Move motor backwards at speed 300 for 1 sec (1000 = 1s)
+    # Move motor backwards at speed 300 for 1 sec (1000ms = 1s)
     elif data == 'reverse':
         if not m.connected:
             print('ERROR: No motor is plugged in output A')
@@ -38,12 +38,7 @@ def on_received(data):
 # been set to the above function "on_received"
 server = BluetoothServer("ev3 33", on_received)
 
-# IMPORTANT: Must start the bluetooth server on a new thread
-# otherwise it will block the current one
+# IMPORTANT: Must start the bluetooth server on a new thread otherwise it will block the current one
+# target should the function you want to process the data the EV3 brick receives
 thread = Thread(target=server.start_server)
 thread.start()
-
-# server2 = BluetoothServer("second server", on_received)
-# thread2 = Thread(target=server2.start_server)
-# thread2.start()
-

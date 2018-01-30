@@ -12,6 +12,7 @@ class BluetoothServer:
 
     # UUID for connection (must be same on client, in our case the android app)
     uuid = "00001101-0000-1000-8000-00805F9B34FB"
+
     # Constructor for bluetooth server
     #
     # @param string name    Name of the server (doesn't really matter)
@@ -26,6 +27,8 @@ class BluetoothServer:
         self.server_sock.bind(("", PORT_ANY))
         self.server_sock.listen(1)
         self.port = self.server_sock.getsockname()[1]
+
+        # Boolean used for while loops that check for connections/messages
         self.should_run = True
 
     def __connection_loop__(self):
@@ -42,7 +45,7 @@ class BluetoothServer:
 
             # Continually loop checking for incoming messages
             try:
-                while True:
+                while self.should_run:
 
                     # Get bytes from client socket
                     data = self.client_sock.recv(1024)
@@ -61,26 +64,27 @@ class BluetoothServer:
                     self.callback(data)
 
             except IOError as e:
-                # Occurs when client disconnects
+                # Occurs when client disconnects (usually)
                 print(e)
                 self.client_sock.close()
 
     # Send data to client (Android app)
+    # @param string data     Message to send
     def send(self, data):
         try:
             self.client_sock.send(data)
         except Exception as e:
-            # To handle better hopefully
+            # To handle better hopefully - just here so it doesn't crash whole system
             print(e)
 
-    # Start the server (this must be called for communication)
+    # Start the server (this must be called for communication) and run event loop
     def start_server(self):
         advertise_service(self.server_sock, self.name, self.uuid)
         self.__connection_loop__()
 
     # Close the server and
     def close_server(self):
-        print('CLOSE SERVER')
+        print('BLUETOOTH SERVER CLOSING')
         self.should_run = False
         self.client_sock.close()
-        # self.server_sock.close()
+        self.server_sock.close()
