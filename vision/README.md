@@ -14,8 +14,26 @@ sudo pip install Pillow
 ```
 
 ## How it works
-Running `main.py` will take a snapshot of the current camera view and print to
-the screen 'NULL' if it can't read a QR code or the text corresponding to the QR
-code in the view.
+Example usage:
+```python
+import vision.main as vision
+import time
+
+camera = vision.activate_camera()
+ISBN = read_QR(camera)
+
+time.sleep(5)
+
+next_ISBN = read_QR(camera)
+
+camera.stop()
+```
+
+If no QR code is detected, `read_QR(camera)` will return `NULL`.
+*Note:* the EV3 brick will need some time to activate the camera, so that needs
+to be done in the initial setup stage.
+
+Running `main.py` will take an image from the camera and print the decoded QR
+code text. This will happen 5 times at intervals of 5 seconds.
 
 Running `vision/test.py` from the root folder of the project will run the tests
