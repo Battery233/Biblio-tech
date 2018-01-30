@@ -14,8 +14,9 @@ You'll want to run the bluetooth server on a new thread otherwise it'll **block*
 
 In the example below we're using Python's built-in [`threading`](https://docs.python.org/3/library/threading.html) library.
 
-First import the `Thread` class using:
+First import the BluetoothServer class and the `Thread` class using:
 ```py
+from bluetooth.ev3_bluetooth import BluetoothServer
 from threading import Thread
 ```
 
