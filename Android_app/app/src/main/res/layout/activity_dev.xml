@@ -11,61 +11,39 @@
         android:id="@+id/editMessage"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="40dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/editTextPlaceholder"
         android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toEndOf="@+id/txtMessageSendLabel"
-        app:layout_constraintTop_toBottomOf="@+id/txtBluetoothStatus" />
+        app:layout_constraintBottom_toTopOf="@+id/btnSendMessage"
+        app:layout_constraintStart_toEndOf="@+id/txtMessageSendLabel" />
 
     <TextView
         android:id="@+id/txtMessageSendLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="104dp"
         android:text="@string/txtMessage"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtBluetoothStatus" />
-
-    <TextView
-        android:id="@+id/txtMsgReceivedLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
-        android:text="@string/txtMessageReceived"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/txtMessageSendLabel"
-        app:layout_constraintTop_toBottomOf="@+id/btnSendMessage" />
+        app:layout_constraintBottom_toTopOf="@+id/btnSendMessage"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnSendMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/colorAccent"
+        android:elevation="12dp"
         android:text="@string/btnSendMessage"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
-
-    <TextView
-        android:id="@+id/txtMsgReceived"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="116dp"
-        android:text="@string/txtMessageReceivedPlaceholder"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/txtMsgReceivedLabel"
-        app:layout_constraintTop_toBottomOf="@+id/btnSendMessage" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txtBluetoothStatus"
@@ -86,5 +64,140 @@
         app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBarSpeed"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSetSpeed" />
+
+    <TextView
+        android:id="@+id/txtSetSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/txtSetSpeed"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtBluetoothStatus" />
+
+    <TextView
+        android:id="@+id/txtSetDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/txtSetDuration"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+
+    <SeekBar
+        android:id="@+id/seekBarDuration"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSetDuration" />
+
+    <Button
+        android:id="@+id/btnForward"
+        android:layout_width="140dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorAccent"
+        android:elevation="6dp"
+        android:text="@string/btnForward"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
+
+    <Button
+        android:id="@+id/btnBackward"
+        android:layout_width="140dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorAccent"
+        android:elevation="6dp"
+        android:text="@string/btnBackward"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorBluetoothDisconnected"
+        android:elevation="12dp"
+        android:text="@string/btnStop"
+        android:textColor="@color/colorAccent"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnForward" />
+
+    <EditText
+        android:id="@+id/txtSpeedValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:maxLength="4"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:singleLine="true"
+        android:text="@string/txtDefaultSpeedValue"
+        android:textColor="@color/colorBluetoothConnected"
+        app:layout_constraintStart_toEndOf="@+id/txtSetSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/txtBluetoothStatus" />
+
+    <EditText
+        android:id="@+id/txtDurationValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLength="5"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:singleLine="true"
+        android:text="@string/txtDefaultDurationValue"
+        android:textColor="@color/colorBluetoothConnected"
+        app:layout_constraintStart_toEndOf="@+id/txtSetSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+
+    <ImageButton
+        android:id="@+id/btnReconnect"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/colorBluetoothConnected"
+        android:elevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_popup_sync" />
 
 </android.support.constraint.ConstraintLayout>

@@ -22,5 +22,13 @@
     <string name="txtBluetoothConnected">Connected</string>
     <string name="txtBluetoothDisconnected">Disconnected</string>
 
-    <string name="UUID">d885b8f1-6b49-4b64-b164-565e387d1e8f</string>
+    <string name="txtSetSpeed">Motor speed (deg / sec):</string>
+    <string name="txtDefaultSpeedValue">0</string>
+    <string name="txtSetDuration">Spin duration (ms):</string>
+    <string name="txtDefaultDurationValue">0</string>
+
+    <string name="btnForward">Forward</string>
+    <string name="btnBackward">Backward</string>
+    <string name="btnStop">STOP</string>
+
 </resources>
