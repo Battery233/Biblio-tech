@@ -19,8 +19,6 @@ def read_QR(camera):
 
     return decode_QR(CAMERA_VIEW_FILE)
 
-
-
 def decode_QR(filename):
     qr = qrtools.QR()
     qr.decode(filename)

@@ -20,11 +20,11 @@ import vision.main as vision
 import time
 
 camera = vision.activate_camera()
-ISBN = read_QR(camera)
+ISBN = vision.read_QR(camera)
 
 time.sleep(5)
 
-next_ISBN = read_QR(camera)
+next_ISBN = vision.read_QR(camera)
 
 camera.stop()
 ```
