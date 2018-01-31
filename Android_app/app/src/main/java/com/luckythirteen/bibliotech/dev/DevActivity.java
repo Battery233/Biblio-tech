@@ -27,8 +27,6 @@ import java.util.UUID;
 import co.lujun.lmbluetoothsdk.BluetoothController;
 import co.lujun.lmbluetoothsdk.base.BluetoothListener;
 
-import static android.bluetooth.BluetoothAdapter.STATE_CONNECTING;
-
 
 public class DevActivity extends AppCompatActivity {
 
@@ -69,20 +67,17 @@ public class DevActivity extends AppCompatActivity {
         bluetoothController.setAppUuid(MY_UUID);
         bluetoothController.connect(TARGET_MAC);
 
-        bluetoothController.setBluetoothListener(new BluetoothListener()
-        {
+        bluetoothController.setBluetoothListener(new BluetoothListener() {
             @Override
-            public void onReadData(BluetoothDevice device, byte[] data)
-            {
+            public void onReadData(BluetoothDevice device, byte[] data) {
                 final String msg = new String(data);
                 Log.d(TAG, "Received: " + msg);
 
                 // Make a toast appear with the message received from the EV3 brick (have to run on UI thread otherwise an error is thrown)
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
-                       Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    public void run() {
+                        Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -126,68 +121,58 @@ public class DevActivity extends AppCompatActivity {
     /**
      * Method for finding UI components and setting their event handlers
      */
-    private void setupUI()
-    {
+    private void setupUI() {
         // Set up all UI element variables **********************
-        bluetoothStatus = (TextView) findViewById(R.id.txtBluetoothStatus);
-        speedText = (EditText) findViewById(R.id.txtSpeedValue);
-        durationText = (EditText) findViewById(R.id.txtDurationValue);
+        bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
+        speedText = findViewById(R.id.txtSpeedValue);
+        durationText = findViewById(R.id.txtDurationValue);
+        messageText = findViewById(R.id.editMessage);
+        sendButton = findViewById(R.id.btnSendMessage);
+        forwardButton = findViewById(R.id.btnForward);
+        backwardButton = findViewById(R.id.btnBackward);
+        stopButton = findViewById(R.id.btnStop);
 
-        messageText = (EditText) findViewById(R.id.editMessage);
-        sendButton = (Button) findViewById(R.id.btnSendMessage);
-        forwardButton = (Button) findViewById(R.id.btnForward);
-        backwardButton = (Button) findViewById(R.id.btnBackward);
-        stopButton = (Button) findViewById(R.id.btnStop);
+        reconnectButton = findViewById(R.id.btnReconnect);
 
-        reconnectButton = (ImageButton) findViewById(R.id.btnReconnect);
-
-        speedBar = (SeekBar) findViewById(R.id.seekBarSpeed);
+        speedBar = findViewById(R.id.seekBarSpeed);
         speedBar.setMax(MAX_SPEED);
-        durationBar = (SeekBar) findViewById(R.id.seekBarDuration);
+        durationBar = findViewById(R.id.seekBarDuration);
         durationBar.setMax(MAX_DURATION);
         // *********************************************************
         // *********************************************************
 
 
         // Listeners for seek bars that update their respective speed and duration EditTexts
-        speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
-        {
+        speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speedText.setText(String.valueOf(progress));
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
 
-        durationBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
-        {
+        durationBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 durationText.setText(String.valueOf(progress));
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
@@ -195,49 +180,39 @@ public class DevActivity extends AppCompatActivity {
         // ***********************************************************
 
         // Set listeners for all buttons
-        sendButton.setOnClickListener(new View.OnClickListener()
-        {
+        sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 bluetoothController.write(messageText.getText().toString().getBytes());
             }
         });
 
-        forwardButton.setOnClickListener(new View.OnClickListener()
-        {
+        forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 sendMoveCommand(true);
             }
         });
 
-        backwardButton.setOnClickListener(new View.OnClickListener()
-        {
+        backwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 sendMoveCommand(false);
             }
         });
 
-        stopButton.setOnClickListener(new View.OnClickListener()
-        {
+        stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 bluetoothController.write("stop".getBytes());
             }
         });
 
-        reconnectButton.setOnClickListener(new View.OnClickListener()
-        {
+        reconnectButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // Only retry if we're not already connected
-                if(bluetoothController.getConnectionState() != 3)
+                if (bluetoothController.getConnectionState() != 3)
                     bluetoothController.connect(TARGET_MAC);
             }
         });
@@ -246,60 +221,46 @@ public class DevActivity extends AppCompatActivity {
 
         // For both speed & duration edit texts, if they're set higher than their max values
         // set them both back to their max
-        speedText.addTextChangedListener(new TextWatcher()
-        {
+        speedText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
-                try
-                {
+            public void afterTextChanged(Editable s) {
+                try {
                     int value = Integer.valueOf(s.toString());
 
-                    if(value > MAX_SPEED)
+                    if (value > MAX_SPEED)
                         speedText.setText(String.valueOf(MAX_SPEED));
-                }
-                catch (NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
                     // it's fine, just means string is empty "" or user somehow pasted non
                     // numeric characters in
                 }
             }
         });
 
-        durationText.addTextChangedListener(new TextWatcher()
-        {
+        durationText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
-                try
-                {
+            public void afterTextChanged(Editable s) {
+                try {
                     int value = Integer.valueOf(s.toString());
 
-                    if(value > MAX_DURATION)
+                    if (value > MAX_DURATION)
                         speedText.setText(String.valueOf(MAX_DURATION));
-                }
-                catch (NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
                     // it's fine, just means string is empty "" or user somehow pasted non
                     // numeric characters in
                 }
@@ -313,10 +274,10 @@ public class DevActivity extends AppCompatActivity {
 
     /**
      * Send move command (message) to EV3 brick
+     *
      * @param forward True if motor to move forwards, false for backwards
      */
-    private void sendMoveCommand(boolean forward)
-    {
+    private void sendMoveCommand(boolean forward) {
         // Set direction multiplier to 1 if forward = true, -1 otherwise (we're going backwards)
         int directionMultiplier = forward ? 1 : -1;
 
@@ -326,21 +287,15 @@ public class DevActivity extends AppCompatActivity {
 
 
         // Only send message to EV3 if speed and duration values are valid ("safe")
-        if(speedValue > 0 && speedValue <= MAX_SPEED)
-        {
-            if(durationValue > 0 && durationValue <= MAX_DURATION)
-            {
+        if (speedValue > 0 && speedValue <= MAX_SPEED) {
+            if (durationValue > 0 && durationValue <= MAX_DURATION) {
                 // Dev script takes message in form of move:<speed>:<duration>
                 String commandMessage = "move:" + (speedValue * directionMultiplier) + ":" + durationValue;
                 bluetoothController.write(commandMessage.getBytes());
-            }
-            else
-            {
+            } else {
                 Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
         }
     }
@@ -350,19 +305,16 @@ public class DevActivity extends AppCompatActivity {
      *
      * @param state State of bluetooth connection
      */
-    private void updateStatusText(int state)
-    {
+    private void updateStatusText(int state) {
         // CONNECTED CODE = 3
-        if (state == 3)
-        {
+        if (state == 3) {
             bluetoothStatus.setText(getString(R.string.txtBluetoothConnected));
             bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothConnected));
 
             // Needed to stop error: "Only the original thread that created a view hierarchy can touch its views"
             runOnUiThread(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     reconnectButton.setVisibility(View.INVISIBLE);
                 }
             });
@@ -374,8 +326,7 @@ public class DevActivity extends AppCompatActivity {
             bluetoothStatus.setText(getString(R.string.txtBluetoothConnecting));
             bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothConnecting));
         } */
-        else
-        {
+        else {
             bluetoothStatus.setText(getString(R.string.txtBluetoothDisconnected));
             bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothDisconnected));
 
@@ -393,13 +344,10 @@ public class DevActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
-        if (bluetoothController.isAvailable())
-        {
+        if (bluetoothController.isAvailable()) {
             bluetoothController.release();
         }
     }
-
 }
