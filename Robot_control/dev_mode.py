@@ -1,28 +1,37 @@
+#!/usr/bin/env python3
 # dev_mode.py
 # This is the script to be used in conjunction with the "dev mode" section of the app
 
-from ev3bt.ev3_bluetooth import BluetoothServer
+import sys
+import os
+
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+from ev3bt import ev3_bluetooth
 import ev3dev.ev3 as ev3
 from threading import Thread
 
 # Get motor connected to output A
 output_socket = 'outA'
-motor = ev3.Motor(output_socket)
 
 
 # Move motor
 # @param int speed  Speed to move motor at (degrees/sec)
 # @param int time   Time to move motor for (milliseconds)
 def move_motor(speed, time):
+    motor = ev3.Motor(output_socket)
     if motor.connected:
         # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
-        if -1000 < speed <= 1000 and 0 < time <= 10000:
+        if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
             motor.run_timed(speed_sp=speed, time_sp=time)
     else:
         print('[ERROR] No motor connected to ' + output_socket)
 
 
 def stop_motor():
+    motor = ev3.Motor(output_socket)
     if motor.connected:
         motor.stop(stop_action='brake')
     else:
@@ -48,6 +57,6 @@ def parse_message(data):
 
 
 # Create bluetooth server and start it listening on a new thread
-server = BluetoothServer("ev3 dev", parse_message)
+server = ev3_bluetooth.BluetoothServer("ev3 dev", parse_message)
 server_thread = Thread(target=server.start_server)
 server_thread.start()
