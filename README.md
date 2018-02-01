@@ -46,5 +46,5 @@ All arguments are optional.
 
 //  To be implement： 
 //  Send database to App
-// ['databaseRequest']
+['databaseRequest']
 ```
