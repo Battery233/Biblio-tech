@@ -52,17 +52,13 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
 
-
         // Attach listener to demo button to load the "dev mode" activity
         devButton = findViewById(R.id.btnDevMode);
-        devButton.setOnClickListener(new View.OnClickListener()
-        {
+        devButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // Only start dev activity if bluetooth is on
-                if(bluetoothOn(DEV_REQUEST_ENABLE_BT))
-                {
+                if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
                     Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
                     startActivity(intent);
                 }
@@ -72,66 +68,52 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Returns true if bluetooth is on, false otherwise (but can also just start the activity if it's off and user successfully enables it after prompt)
+     *
      * @param requestCode Request code (DEMO OR DEV)
      * @return True if bluetooth is already on, false otherwise
      */
-    private boolean bluetoothOn(int requestCode)
-    {
+    private boolean bluetoothOn(int requestCode) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if(bluetoothAdapter != null)
-        {
+        if (bluetoothAdapter != null) {
             // If bluetooth is not enabled ask for it, otherwise return true
-            if(!bluetoothAdapter.isEnabled())
-            {
+            if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, requestCode);
                 return false;
-            }
-            else
-            {
+            } else {
                 return true;
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(getApplicationContext(), "Your device does not support bluetooth!", Toast.LENGTH_LONG).show();
             return false;
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "Request code: " + requestCode);
 
-       switch (requestCode)
-       {
-           // Case when request came from pressing DEV mode button
-           case DEV_REQUEST_ENABLE_BT:
-               if(resultCode == Activity.RESULT_OK)
-               {
-                   // User enabled bluetooth so simulate them pressing the dev mode button
-                   devButton.performClick();
-               }
-               else
-               {
-                   Toast.makeText(getApplicationContext(), "Bluetooth is required to continue!", Toast.LENGTH_LONG).show();
-               }
-               break;
+        switch (requestCode) {
+            // Case when request came from pressing DEV mode button
+            case DEV_REQUEST_ENABLE_BT:
+                if (resultCode == Activity.RESULT_OK) {
+                    // User enabled bluetooth so simulate them pressing the dev mode button
+                    devButton.performClick();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Bluetooth is required to continue!", Toast.LENGTH_LONG).show();
+                }
+                break;
 
-           // Case when request came from pressing DEMO mode button
-           case DEMO_REQUEST_ENABLE_BT:
-               if(resultCode == Activity.RESULT_OK)
-               {
-                   // User enabled bluetooth so simulate them pressing the demo mode button
-                   demoButton.performClick();
-               }
-               else
-               {
-                   Toast.makeText(getApplicationContext(), "Bluetooth is required to continue!", Toast.LENGTH_LONG).show();
-               }
-               break;
-       }
+            // Case when request came from pressing DEMO mode button
+            case DEMO_REQUEST_ENABLE_BT:
+                if (resultCode == Activity.RESULT_OK) {
+                    // User enabled bluetooth so simulate them pressing the demo mode button
+                    demoButton.performClick();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Bluetooth is required to continue!", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
     }
 }
