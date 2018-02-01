@@ -6,8 +6,8 @@ android {
         applicationId "com.luckythirteen.bibliotech"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 0
+        versionName " 0.1 (Beta)"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

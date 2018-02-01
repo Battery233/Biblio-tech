@@ -52,8 +52,8 @@ public class DevActivity extends AppCompatActivity {
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // Max speed and max duration to allow app to send to robot (for motors)
-    private static final int MAX_SPEED = 1000; // degrees per second
-    private static final int MAX_DURATION = 10000; // milliseconds
+    private static final int MAX_SPEED = 999; // degrees per second
+    private static final int MAX_DURATION = 9999; // milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

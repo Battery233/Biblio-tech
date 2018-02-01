@@ -17,6 +17,15 @@ class SplashActivity : AppCompatActivity() {
         slogan.typeface = typeface
         Bibliotech.typeface = typeface
         val handler = Handler()
+
+        val packageInfoManager = packageManager
+        try {
+            val pm = packageInfoManager.getPackageInfo("com.luckythirteen.bibliotech", 0)           //Show version number at bottom
+            versionNumber.text = "Version:" + pm.versionName
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         handler.postDelayed({
             val intent = Intent(this, MainActivity::class.java)               //Delay 3seconds at splash
             startActivity(intent)
