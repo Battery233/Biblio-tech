@@ -11,6 +11,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 import android.content.DialogInterface;
+
 import com.luckythirteen.bibliotech.R;
 
 import java.util.HashMap;
@@ -50,26 +51,22 @@ public class FetchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo_fetch);
         getButton = findViewById(R.id.btnGet);
 
-        findViewById(R.id.databaseButton).setOnClickListener(new View.OnClickListener(){
+        findViewById(R.id.databaseButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FetchActivity.this);
                 builder.setTitle("BookList:");
                 builder.setMessage("void list");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-                {
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(FetchActivity.this, "positive: " + which, Toast.LENGTH_SHORT).show();
                     }
                 });
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                {
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(FetchActivity.this, "negative: " + which, Toast.LENGTH_SHORT).show();
                     }
                 });

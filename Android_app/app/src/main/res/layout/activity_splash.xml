@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background = "#6a1b9a"
+    android:background="#6a1b9a"
     tools:context="com.luckythirteen.bibliotech.SplashActivity">
 
     <ImageView
@@ -30,8 +30,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="The future library"
-        android:textSize = "25sp"
-        android:textColor = "#ffffff"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,8 +46,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Bibliotech"
-        android:textSize = "40sp"
-        android:textColor = "#ffffff"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

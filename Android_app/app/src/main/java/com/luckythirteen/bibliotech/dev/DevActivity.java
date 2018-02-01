@@ -19,8 +19,9 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.Intent;
 import com.luckythirteen.bibliotech.R;
+import com.luckythirteen.bibliotech.demo.FetchActivity;
 
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public class DevActivity extends AppCompatActivity {
     // UI elements
     private TextView bluetoothStatus;
     private EditText messageText, speedText, durationText;
-    private Button sendButton, forwardButton, backwardButton, stopButton;
+    private Button sendButton, forwardButton, backwardButton, stopButton,bookDatabase;
     private ImageButton reconnectButton;
     private SeekBar speedBar, durationBar;
 
@@ -83,9 +84,10 @@ public class DevActivity extends AppCompatActivity {
 
                 // Vibrate phone (different methods depending on API version)
                 if (Build.VERSION.SDK_INT >= 26) {
-                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-                } else {
-                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(150);
+                    try {
+                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+                    }catch(Exception ignored){}} else {
+                    try {((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(150);}catch(Exception ignored){}
                 }
 
             }
@@ -178,6 +180,15 @@ public class DevActivity extends AppCompatActivity {
         });
         // ***********************************************************
         // ***********************************************************
+
+        findViewById(R.id.bookDatabase).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                    Intent intent = new Intent(DevActivity.super.getApplicationContext(), FetchActivity.class);
+                    startActivity(intent);
+            }
+        });
 
         // Set listeners for all buttons
         sendButton.setOnClickListener(new View.OnClickListener() {

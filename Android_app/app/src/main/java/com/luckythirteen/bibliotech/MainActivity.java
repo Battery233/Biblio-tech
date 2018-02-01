@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 
 /**
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Attach listener to demo button to load the "fetch book" activity
-        demoButton = (Button) findViewById(R.id.btnDemoMode);
+        /*demoButton = findViewById(R.id.btnDemoMode);
         demoButton.findViewById(R.id.btnDemoMode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -50,12 +49,12 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-        });
+        });*/
 
 
 
         // Attach listener to demo button to load the "dev mode" activity
-        devButton = (Button) findViewById(R.id.btnDevMode);
+        devButton = findViewById(R.id.btnDevMode);
         devButton.setOnClickListener(new View.OnClickListener()
         {
             @Override

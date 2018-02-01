@@ -11,39 +11,59 @@
         android:id="@+id/editMessage"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@+id/btnSendMessage"
-        app:layout_constraintStart_toEndOf="@+id/txtMessageSendLabel" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtMessageSendLabel"
+        app:layout_constraintTop_toBottomOf="@+id/btnStop" />
 
     <TextView
         android:id="@+id/txtMessageSendLabel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
+        android:layout_height="27dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:text="@string/txtMessage"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSendMessage"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnStop" />
 
     <Button
         android:id="@+id/btnSendMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
         android:elevation="12dp"
         android:text="@string/btnSendMessage"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
+
+    <Button
+        android:id="@+id/bookDatabase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/colorAccent"
+        android:elevation="12dp"
+        android:text="@string/BookDatabase"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
     <TextView
         android:id="@+id/txtBluetoothStatus"
@@ -164,9 +184,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
-        android:maxLength="4"
         android:ems="10"
         android:inputType="numberSigned"
+        android:maxLength="4"
         android:singleLine="true"
         android:text="@string/txtDefaultSpeedValue"
         android:textColor="@color/colorBluetoothConnected"
@@ -177,11 +197,11 @@
         android:id="@+id/txtDurationValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLength="5"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:inputType="numberSigned"
+        android:maxLength="5"
         android:singleLine="true"
         android:text="@string/txtDefaultDurationValue"
         android:textColor="@color/colorBluetoothConnected"
@@ -199,5 +219,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_popup_sync" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="205dp" />
 
 </android.support.constraint.ConstraintLayout>
