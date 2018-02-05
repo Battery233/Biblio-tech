@@ -9,16 +9,17 @@ from enum import Enum
 from threading import Thread
 import subprocess
 
+# MAC addresses of EV3 bricks
+EV3_33_MAC = "B0:B4:48:76:E7:86"
+EV3_13_MAC = "B0:B4:48:76:A2:C9"
+
+# Message size (bytes)
+MESSAGE_SIZE = 1024
 
 # Device enum used for picking a target client to send a message to
 class Device(Enum):
     OTHER_EV3 = 0  # The other EV3 brick
     APP = 1  # Only the clients connected via the app
-
-
-# MAC addresses of EV3 bricks
-EV3_33_MAC = "B0:B4:48:76:E7:86"
-EV3_13_MAC = "B0:B4:48:76:A2:C9"
 
 
 # Class representing a bluetooth server, only ONE instance should be created
@@ -54,7 +55,7 @@ class BluetoothServer:
             while self.should_run:
 
                 # Get bytes from client socket
-                data = client_sock.recv(1024)
+                data = client_sock.recv(MESSAGE_SIZE)
 
                 # If we have received no data then break - exit while loop (i.e. don't progress to code below)
                 if len(data) == 0:
