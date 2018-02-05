@@ -16,8 +16,13 @@ In the example below we're using Python's built-in [`threading`](https://docs.py
 
 First import the `BluetoothServer` class and the `Thread` class using:
 ```py
-from ev3bt.ev3_bluetooth import BluetoothServer
+from ev3bt import ev3_bluetooth
 from threading import Thread
+
+# ONLY NEEDED IF SCRIPT IS NOT IN ROOT DIRECTORY (PARENT OF MODULES - e.g. in Robot_control folder)
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 ```
 
 Then create a Bluetooth server object and start the server on a new `Thread`:
@@ -28,9 +33,13 @@ thread = Thread(target=my_server.start_server)
 thread.start()
 ```
 
-You can send data to the client (Android app) using:
+You can send data to any connected clients using:
 ```py
-my_server.send("string")
+# Send message to the second EV3 Brick
+my_server.send_to_device("message", ev3_bluetooth.Device.OTHER_EV3)
+
+# Send message to all connected app client(s)
+my_server.send_to_device("message", ev3_bluetooth.Device.APP)
 ```
 
 You can close the server permanently using:
@@ -38,13 +47,16 @@ You can close the server permanently using:
 my_server.close_server()
 ```
 
-Finally, the received data handling function should take **one** argument (which will be the received message string):
+Finally, the received data handling function should take **two** arguments (which will be the received message string and the sender's socket):
 ```py
-def your_function(data):
-	...
+def your_function(data, socket):
+
+	# Reply to client who sent the message
+	socket.send("message")
+
 ```
 
-Take a look at `example.py` also if you need to.
+Take a look at `Robot_control/dev_mode.py` also if you need to.
 
 # Steps to get it working properly
 1. In the service file `/etc/systemd/system/dbus-org.bluez.service` change
