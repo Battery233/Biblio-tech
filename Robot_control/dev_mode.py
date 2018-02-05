@@ -4,14 +4,13 @@
 
 import sys
 import os
+from ev3bt import ev3_bluetooth
+import ev3dev.ev3 as ev3
+from threading import Thread
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-
-from ev3bt import ev3_bluetooth
-import ev3dev.ev3 as ev3
-from threading import Thread
 
 # Get motor connected to output A
 output_socket = 'outA'
