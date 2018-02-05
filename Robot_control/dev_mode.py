@@ -4,6 +4,7 @@
 
 import sys
 import os
+import math
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -38,7 +39,7 @@ def stop_motor():
         print('[ERROR] Can\'t find motor connected to ' + output_socket + '. Uh oh.')
 
 
-def parse_message(data):
+def parse_message(data, socket):
     parts = str(data).split(":")
 
     command = parts[0]
@@ -51,9 +52,14 @@ def parse_message(data):
 
     elif command == 'close':
         server.close_server()
+        server_thread.join()
+        sys.exit(0)
 
     elif command == 'ping':
-        server.send('pong')
+        socket.send('pong')
+
+    elif command == 'status':
+        server.send_to_device("test", ev3_bluetooth.Device.OTHER_EV3)
 
 
 # Create bluetooth server and start it listening on a new thread
