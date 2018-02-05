@@ -4,10 +4,11 @@
 
 # Code adapted from: https://github.com/karulis/pybluez/blob/master/examples/simple/rfcomm-server.py
 
-from bluetooth import *
+import subprocess
 from enum import Enum
 from threading import Thread
-import subprocess
+
+from bluetooth import *
 
 # MAC addresses of EV3 bricks
 EV3_33_MAC = "B0:B4:48:76:E7:86"
@@ -15,6 +16,7 @@ EV3_13_MAC = "B0:B4:48:76:A2:C9"
 
 # Message size (bytes)
 MESSAGE_SIZE = 1024
+
 
 # Device enum used for picking a target client to send a message to
 class Device(Enum):
@@ -25,7 +27,7 @@ class Device(Enum):
 # Class representing a bluetooth server, only ONE instance should be created
 # as it can handle multiple connections
 class BluetoothServer:
-    # UUID for connection (must be same on client, in our case the android app)
+    # UUID for connection (must be same on client, in our case the android app and the other EV3 brick)
     uuid = "00001101-0000-1000-8000-00805F9B34FB"
 
     # Dictionary of clients { MAC (String) : Client socket {BluetoothSocket})
@@ -49,8 +51,8 @@ class BluetoothServer:
         # Boolean used for while loops that check for connections/messages
         self.should_run = True
 
+    # Loop for checking for messages sent from a client (called from __connection_loop)
     def __client_loop__(self, client_sock, client_info):
-        # Continually loop checking for incoming messages
         try:
             while self.should_run:
 
@@ -73,9 +75,12 @@ class BluetoothServer:
         except IOError as e:
             # Occurs when client disconnects (usually)
             print(e)
+            # Remove client from dictionary and close their socket
             self.clients.pop(client_info[0])
             client_sock.close()
 
+    # Main loop essentially, checks for new connections and when it finds one
+    # it creates a data receiving loop on a new thread
     def __connection_loop__(self):
         while self.should_run:
             # Wait for connection (sever_sock.accept() blocks until it receives a connection)
@@ -85,6 +90,7 @@ class BluetoothServer:
             # Connection received if we've reached this point
             print("Accepted connection from ", client_info)
 
+            # Start message receiving loop for this client on a new thread
             t = Thread(target=self.__client_loop__, args=(client_sock, client_info))
             t.start()
 
@@ -100,17 +106,20 @@ class BluetoothServer:
 
         if device_type == Device.OTHER_EV3:
             for mac, client_socket in self.clients.items():
+                # Only get MAC address of other EV3 (first condition probably redundant since
+                # it shouldn't be possible for our own MAC address to be placed in the dictionary...
                 if self.__get_local_mac() != mac and (mac == EV3_33_MAC or mac == EV3_13_MAC):
                     targets.append(client_socket)
                     return targets
         else:
             for mac, client_socket in self.clients.items():
+                # Only get clients that are not either of the two EV3 bricks
                 if mac != EV3_13_MAC and mac != EV3_33_MAC:
                     targets.append(client_socket)
 
         return targets
 
-    # Send data to client (Android app)
+    # Send data to client (Android app or other EV3 brick)
     # @param string data         Message to send
     # @param Device device_type  Type of client to send message to (Device enum defined above)
     def send_to_device(self, data, device_type):
@@ -123,10 +132,13 @@ class BluetoothServer:
                 except Exception as e:
                     print(e)
         else:
+            # This means no phones were connected if device_type = Device.APP or
+            # the other brick wasn't connected if device_type = Device.OTHER_EV3
             print('No message sent! send_to_device() obtained an empty target list.')
 
     # Gets bluetooth MAC of the local device (brick we're running on)
-    # return
+    #
+    # @return string    MAC address of this device
     def __get_local_mac(self):
         # Run shell command that outputs info about local bluetooth device
         cmd_output = subprocess.check_output(['hcitool', 'dev'])
@@ -140,11 +152,12 @@ class BluetoothServer:
         advertise_service(self.server_sock, self.name, self.uuid)
         self.__connection_loop__()
 
+    # Closes all client sockets in clients dictionary
     def __close_clients(self):
         for mac, client in self.clients.items():
             client.close()
 
-    # Close the server
+    # Close the server and clients
     def close_server(self):
         print('BLUETOOTH SERVER CLOSING')
         self.should_run = False
