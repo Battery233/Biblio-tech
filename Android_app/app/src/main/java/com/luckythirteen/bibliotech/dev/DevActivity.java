@@ -292,7 +292,7 @@ public class DevActivity extends AppCompatActivity {
         outputSocketSpinner = findViewById(R.id.spinnerOutSocket);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.output_socket_array, android.R.layout.simple_spinner_item);
+                R.array.output_socket_array, R.layout.spinner);
 // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
@@ -330,8 +330,7 @@ public class DevActivity extends AppCompatActivity {
         }
     }
 
-    private String getSelectedSocket()
-    {
+    private String getSelectedSocket() {
         String selectedSocket = outputSocketSpinner.getSelectedItem().toString();
         Log.d(TAG, selectedSocket);
         return selectedSocket;
