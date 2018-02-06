@@ -28,6 +28,13 @@
     <string name="txtDefaultDurationValue">0</string>
     <string name="BookDatabase">Book Database</string>
 
+    <string-array name="output_socket_array">
+        <item>outA</item>
+        <item>outB</item>
+        <item>outC</item>
+        <item>outD</item>
+    </string-array>
+
     <string name="btnForward">Forward</string>
     <string name="btnBackward">Backward</string>
     <string name="btnStop">STOP</string>

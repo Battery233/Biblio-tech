@@ -13,10 +13,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
@@ -45,6 +47,7 @@ public class DevActivity extends AppCompatActivity {
     private Button sendButton, forwardButton, backwardButton, stopButton, bookDatabase;
     private ImageButton reconnectButton;
     private SeekBar speedBar, durationBar;
+    private Spinner outputSocketSpinner;
 
     // BluetoothController object for creating a connection to the EV3
     private BluetoothController bluetoothController;
@@ -285,6 +288,15 @@ public class DevActivity extends AppCompatActivity {
         // ***********************************************************
         // ***********************************************************
 
+        // OUTPUT SOCKET SPINNER
+        outputSocketSpinner = findViewById(R.id.spinnerOutSocket);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.output_socket_array, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        outputSocketSpinner.setAdapter(adapter);
 
     }
 
@@ -297,6 +309,8 @@ public class DevActivity extends AppCompatActivity {
         // Set direction multiplier to 1 if forward = true, -1 otherwise (we're going backwards)
         int directionMultiplier = forward ? 1 : -1;
 
+        String outputSocketName = getSelectedSocket();
+
         // Store speed and duration values as ints
         int speedValue = Integer.valueOf(speedText.getText().toString());
         int durationValue = Integer.valueOf(durationText.getText().toString());
@@ -306,7 +320,7 @@ public class DevActivity extends AppCompatActivity {
         if (speedValue > 0 && speedValue <= MAX_SPEED) {
             if (durationValue > 0 && durationValue <= MAX_DURATION) {
                 // Dev script takes message in form of move:<speed>:<duration>
-                String commandMessage = "move:" + (speedValue * directionMultiplier) + ":" + durationValue;
+                String commandMessage = "move:" + outputSocketName + ":" + (speedValue * directionMultiplier) + ":" + durationValue;
                 bluetoothController.write(commandMessage.getBytes());
             } else {
                 Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
@@ -314,6 +328,13 @@ public class DevActivity extends AppCompatActivity {
         } else {
             Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String getSelectedSocket()
+    {
+        String selectedSocket = outputSocketSpinner.getSelectedItem().toString();
+        Log.d(TAG, selectedSocket);
+        return selectedSocket;
     }
 
     /**
