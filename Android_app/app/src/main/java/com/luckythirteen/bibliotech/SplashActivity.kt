@@ -15,7 +15,6 @@ class SplashActivity : AppCompatActivity() {
         supportActionBar?.hide()
         val typeface = Typeface.createFromAsset(assets, "fonts/comicbd.ttf")
         slogan.typeface = typeface
-        Bibliotech.typeface = typeface
         val handler = Handler()
 
         val packageInfoManager = packageManager

@@ -46,7 +46,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Bibliotech"
+        android:text="bibliotech"
         android:textColor="#ffffff"
         android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
