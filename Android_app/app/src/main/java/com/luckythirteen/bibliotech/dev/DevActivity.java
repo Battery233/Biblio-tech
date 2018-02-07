@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
 import co.lujun.lmbluetoothsdk.base.BluetoothListener;
+import co.lujun.lmbluetoothsdk.base.State;
 
 
 public class DevActivity extends AppCompatActivity {
@@ -37,9 +38,9 @@ public class DevActivity extends AppCompatActivity {
     private static final String TAG = "DevActivity";
 
     // MAC addresses
-    // private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
+    private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
     // private static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   // Chenghao's laptop
-    private static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
+    // private static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
 
     // UI elements
     private TextView bluetoothStatus;
@@ -70,7 +71,6 @@ public class DevActivity extends AppCompatActivity {
         // For classic bluetooth
         bluetoothController = BluetoothController.getInstance().build(this);
         bluetoothController.setAppUuid(MY_UUID);
-        bluetoothController.connect(TARGET_MAC);
 
         bluetoothController.setBluetoothListener(new BluetoothListener() {
             @Override
@@ -119,7 +119,7 @@ public class DevActivity extends AppCompatActivity {
             @Override
             public void onBluetoothServiceStateChanged(int state) {
                 Log.d(TAG, "BT STATE: " + state);
-                updateStatusText(state);
+                updateBluetoothStatusUI(state);
             }
 
             @Override
@@ -127,6 +127,8 @@ public class DevActivity extends AppCompatActivity {
 
             }
         });
+
+        bluetoothController.connect(TARGET_MAC);
     }
 
     /**
@@ -337,52 +339,64 @@ public class DevActivity extends AppCompatActivity {
     }
 
     /**
-     * Updates connection status text (NOTE: statuses are buggy need to fix properly later)
+     * Updates connection status text and hides/shows reconnect button
      *
      * @param state State of bluetooth connection
      */
-    private void updateStatusText(int state) {
-        // CONNECTED CODE = 3
-        if (state == 3) {
-            bluetoothStatus.setText(getString(R.string.txtBluetoothConnected));
-            bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothConnected));
+    private void updateBluetoothStatusUI(int state)
+    {
+        final int stringResId;
+        final int colorResId;
+        final int reconnectButtonVisibility;
 
-            // Needed to stop error: "Only the original thread that created a view hierarchy can touch its views"
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    reconnectButton.setVisibility(View.INVISIBLE);
-                }
-            });
-
-        }
-        /* Commented out for now as it's unreliable and misleading
-        else if (state == STATE_CONNECTING)
+        switch (state)
         {
-            bluetoothStatus.setText(getString(R.string.txtBluetoothConnecting));
-            bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothConnecting));
-        } */
-        else {
-            bluetoothStatus.setText(getString(R.string.txtBluetoothDisconnected));
-            bluetoothStatus.setTextColor(getResources().getColor(R.color.colorBluetoothDisconnected));
-
-            // Needed to stop error: "Only the original thread that created a view hierarchy can touch its views"
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    reconnectButton.setVisibility(View.VISIBLE);
-
-                }
-            });
-
+            case State.STATE_CONNECTED:
+                stringResId = R.string.txtBluetoothConnected;
+                colorResId = R.color.colorBluetoothConnected;
+                reconnectButtonVisibility = View.INVISIBLE;
+                break;
+            case State.STATE_DISCONNECTED:
+                stringResId = R.string.txtBluetoothDisconnected;
+                colorResId = R.color.colorBluetoothDisconnected;
+                reconnectButtonVisibility = View.VISIBLE;
+                break;
+            case State.STATE_CONNECTING:
+                stringResId = R.string.txtBluetoothConnecting;
+                colorResId = R.color.colorBluetoothConnecting;
+                reconnectButtonVisibility = View.INVISIBLE;
+                break;
+            default:
+                stringResId = R.string.txtBluetoothDisconnected;
+                colorResId = R.color.colorBluetoothDisconnected;
+                reconnectButtonVisibility = View.VISIBLE;
         }
+
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                bluetoothStatus.setText(stringResId);
+                bluetoothStatus.setTextColor(getResources().getColor(colorResId));
+                reconnectButton.setVisibility(reconnectButtonVisibility);
+            }
+        });
+
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onDestroy()
+    {
+        Log.d(TAG, "onDestroy()");
         super.onDestroy();
-        if (bluetoothController.isAvailable()) {
+        if (bluetoothController.isAvailable())
+        {
+            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
+            {
+                bluetoothController.disconnect();
+            }
+
             bluetoothController.release();
         }
     }
