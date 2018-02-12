@@ -23,7 +23,7 @@ def read_QR(camera):
 
     return decode_QR(CAMERA_VIEW_FILE)
 
-def decode_QR(filename):
+def get_QR_symbol(filename):
     # create a reader
     scanner = zbar.ImageScanner()
     # configure the reader
@@ -39,13 +39,21 @@ def decode_QR(filename):
     # scan the image for barcodes
     result = scanner.scan(image)
     if result == 0:
-        return (None, None)
+        return None
 
     for symbol in image:
         pass
 
     # clean up
     del(image)
+
+    return symbol
+
+def decode_QR(filename):
+    symbol = get_QR_symbol(filename)
+    
+    if symbol is None:
+        return (None, None)
 
     # decode text in QR code
     data = symbol.data.decode(u'utf-8')
