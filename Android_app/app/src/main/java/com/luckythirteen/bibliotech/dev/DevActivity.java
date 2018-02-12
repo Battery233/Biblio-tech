@@ -38,9 +38,9 @@ public class DevActivity extends AppCompatActivity {
     private static final String TAG = "DevActivity";
 
     // MAC addresses
-    private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
+    // private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
     // private static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   // Chenghao's laptop
-    // private static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
+    private static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
 
     // UI elements
     private TextView bluetoothStatus;
