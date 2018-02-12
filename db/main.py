@@ -1,6 +1,8 @@
 import sqlite3
 import os
 
+# test for travis-ci
+
 PRODUCTION_DB = 'production.db'
 TEST_DB = 'test.db'
 
@@ -50,14 +52,16 @@ def add_sample_books(db):
     c.execute(
         "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives', 'Brian Clegg', '1:1'," + STATUS_AVAILABLE + ")")
     c.execute(
-        "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '1:2'," + STATUS_AVAILABLE + ")")
+        "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '1:2',"
+        + STATUS_AVAILABLE + ")")
     c.execute("INSERT INTO books VALUES (9780241197806, 'The Castle', 'Franz Kafka', '1:3'," + STATUS_AVAILABLE + ")")
     c.execute(
         "INSERT INTO books VALUES (9781840226881, 'Wealth of Nations', 'Adam Smith', '2:1'," + STATUS_AVAILABLE + ")")
     c.execute(
         "INSERT INTO books VALUES (9780349140438, 'Steve Jobs', 'Walter Isaacson', '2:2'," + STATUS_AVAILABLE + ")")
     c.execute(
-        "INSERT INTO books VALUES (9780140441185, 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', '2:3'," + STATUS_UNAVAILABLE + ")")
+        "INSERT INTO books VALUES (9780140441185, 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', '2:3'," +
+        STATUS_UNAVAILABLE + ")")
 
     conn.commit()
     conn.close()
