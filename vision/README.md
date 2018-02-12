@@ -9,7 +9,6 @@ sudo apt-get install libzbar-dev
 sudo apt-get install python-zbar
 
 sudo pip install pygame
-sudo pip install qrtools
 sudo pip install Pillow
 ```
 
@@ -20,16 +19,17 @@ import vision.main as vision
 import time
 
 camera = vision.activate_camera()
-ISBN = vision.read_QR(camera)
+# com is a tuple with the x and y coordinates of the center of mass of the QR code
+ISBN, com = vision.read_QR(camera)
 
 time.sleep(5)
 
-next_ISBN = vision.read_QR(camera)
+next_ISBN, next_com = vision.read_QR(camera)
 
 camera.stop()
 ```
 
-If no QR code is detected, `read_QR(camera)` will return `NULL`.
+If no QR code is detected, `read_QR(camera)` will return `(None, None)`.
 *Note:* the EV3 brick will need some time to activate the camera, so that needs
 to be done in the initial setup stage.
 

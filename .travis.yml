@@ -7,7 +7,6 @@ install:
   - sudo apt-get install libzbar-dev
   - sudo apt-get install python2.7-dev
   - sudo apt-get install python-zbar
-  - sudo apt-get install python-qrtools
   - LDFLAGS=-L/usr/local/lib/ CPATH=/usr/local/include/ pip install zbar
   - pip install -r vision/requirements.txt
 # run tests
