@@ -37,11 +37,15 @@ All arguments are optional.
 ['queryDB', {'ISBN': ['9780241197806', '9781840226881']}]
 
 // EV3 TO APP
+
 // Send list of books
 ['bookList',
   [['9780241197806', 'The Castle', 'Franz Kafka', 0],
   [['9781840226881', 'Wealth of Nations', 'Adam Smith', 1]] 
 ]
+
+// Send message
+['message', {'content': 'Hello'}]
 
 
 //  To be implement： 
