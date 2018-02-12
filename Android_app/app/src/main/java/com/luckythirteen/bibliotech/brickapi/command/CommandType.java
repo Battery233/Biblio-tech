@@ -6,6 +6,10 @@ package com.luckythirteen.bibliotech.brickapi.command;
 
 public enum CommandType
 {
-    undefined, move, stop, reachBook, takeBook
-    // TODO: add all commands
+    undefined,
+    move,
+    stop,
+    reachBook,
+    takeBook,
+    queryDB
 }
