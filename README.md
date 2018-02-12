@@ -17,27 +17,30 @@ All arguments are optional.
 // The default for ports is all of them
 ['move', {'speed': <speed>, 'time': 3000, 'ports':[1, 2]}]
 
-
+//  To be implement： 
 // For testing, simple stop command to engines
 // The default for ports is all of them
 ['stop', {'ports':[1, 2]}]
 
-
+//  To be implement： 
 // Command arm to reach position of a given book
 // The default book is a random available book from the database
 ['reachBook', {'ISBN': '9780241197806'}]
 
+//  To be implement： 
 // Command robot to take the book at its current position and bring it to the
 // pick-up point
 // The default book is a random available book from the database
 ['takeBook', {'ISBN': '9780241197806'}]
 
+//  To be implement： 
 // Retrieve list of books
 // The default for ISBN is all of them
 ['queryDB', {'ISBN': ['9780241197806', '9781840226881']}]
 
 // EV3 TO APP
 
+//  To be implement： 
 // Send list of books
 ['bookList',
   [['9780241197806', 'The Castle', 'Franz Kafka', 0],
