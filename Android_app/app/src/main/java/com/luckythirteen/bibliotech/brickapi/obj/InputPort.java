@@ -6,8 +6,14 @@ package com.luckythirteen.bibliotech.brickapi.obj;
 
 public enum InputPort
 {
-    ONE,
-    TWO,
-    THREE,
-    FOUR
+    ONE, // in1
+    TWO,  // in2
+    THREE, // in
+    FOUR;
+
+    @Override
+    public String toString()
+    {
+        return "in" + Integer.toString(this.ordinal() + 1);
+    }
 }

@@ -1,5 +1,8 @@
 package com.luckythirteen.bibliotech;
 
+import com.luckythirteen.bibliotech.brickapi.obj.InputPort;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,9 +12,11 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class ExampleUnitTest
+{
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    public void addition_isCorrect() throws Exception
+    {
+        Assert.assertEquals(InputPort.FOUR.toString(), "in4");
     }
 }
