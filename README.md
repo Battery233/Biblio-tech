@@ -13,42 +13,99 @@ All arguments are optional.
 
 // For testing, simple move command to engines
 
-// Time is in milliseconds. The default is 2000
-// The default for ports is all of them
-['move', {'speed': <speed>, 'time': 3000, 'ports':[1, 2]}]
+// Speed: int (deg / sec)
+// Time: int (ms)
+// Ports: "A", "B", "C", "D"
+{
+   "move":{
+      "speed":219,
+      "time":2851,
+      "ports":[
+         "A",
+         "B",
+         "C",
+         "D"
+      ]
+   }
+}
 
 //  To be implement： 
 // For testing, simple stop command to engines
-// The default for ports is all of them
-['stop', {'ports':[1, 2]}]
+// Ports: "A", "B", "C", "D"
+{
+    "stop":{
+        "ports":[
+            "A",
+            "B"
+        ]
+    }
+}
 
 //  To be implement： 
 // Command arm to reach position of a given book
 // The default book is a random available book from the database
-['reachBook', {'ISBN': '9780241197806'}]
+// ISBN: string
+{
+    "reachBook":{
+        "ISBN":"9780241197806"
+    }
+}
 
 //  To be implement： 
 // Command robot to take the book at its current position and bring it to the
 // pick-up point
 // The default book is a random available book from the database
-['takeBook', {'ISBN': '9780241197806'}]
+// ISBN: string
+{
+    "takeBook":{
+        "ISBN":"9780241197806"
+    }
+}
 
 //  To be implement： 
 // Retrieve list of books
 // The default for ISBN is all of them
-['queryDB', {'ISBN': ['9780241197806', '9781840226881']}]
+{
+    "queryDB":{
+        "ISBN":[
+            "9780241197806",
+            "9781840226881"
+        ]
+    }
+}
 
 // EV3 TO APP
 
 //  To be implement： 
 // Send list of books
-['bookList',
-  [['9780241197806', 'The Castle', 'Franz Kafka', 0],
-  [['9781840226881', 'Wealth of Nations', 'Adam Smith', 1]] 
-]
+// ISBN: string
+// title: string
+// author: string
+// avail: int (bool) Whether book is there or not
+{
+    "booklist":[
+        {
+            "ISBN":"9780241197806",
+            "title":"The Castle",
+            "author":"Franz Kafka",
+            "avail":0
+        },
+        {
+            "ISBN":"9781840226881",
+            "title":"Wealth of Nations",
+            "author":"Adam Smith",
+            "avail":1
+        }
+    ]
+}
 
 // Send message
-['message', {'content': 'Hello'}]
+// content: string Message to send
+{
+    "message":{
+        "content":"Hello"
+    }
+}
 
 
 //  To be implement： 
