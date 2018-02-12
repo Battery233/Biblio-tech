@@ -43,5 +43,16 @@ class TestDB(unittest.TestCase):
         self.assertEqual((9780241197806, u'The Castle', u'Franz Kafka', u'1:3', int(main.STATUS_UNAVAILABLE)),
             books[0])
 
+    def testAddSamePosition(self):
+        main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
+        main.add_book(db, '9781840226881', 'Wealth of Nations', 'Adam Smith', '1:3', main.STATUS_AVAILABLE)
+
+        previous_title = 'The Castle'
+        current_title = 'Wealth of Nations'
+
+        self.assertIsNone(main.get_position_by_title(db, previous_title))
+        self.assertEqual(main.get_position_by_title(db, current_title), '1:3')
+
+
 if __name__ == '__main__':
     unittest.main()

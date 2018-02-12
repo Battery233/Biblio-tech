@@ -17,8 +17,7 @@ def create_book_table(db):
     # Create table
     c.execute('''CREATE TABLE books
                  (ISBN INTEGER, title TEXT, author TEXT, position TEXT,
-                 status INTEGER)''')
-
+                 status INTEGER, UNIQUE(position) ON CONFLICT REPLACE)''')
     conn.commit()
     conn.close()
 
@@ -45,8 +44,6 @@ def clear_books(db):
 def add_sample_books(db):
     conn = sqlite3.connect(db)
     c = conn.cursor()
-
-    # TODO make sure ISBN and positions are unique
 
     # Insert sample data
     c.execute(
@@ -109,3 +106,23 @@ def update_book_status(db, ISBN, status):
 
     conn.commit()
     conn.close()
+
+def get_position_by_title(db, title):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    values = (title,)
+    c.execute('SELECT position FROM books WHERE title=?', values)
+
+    row = c.fetchone()
+
+    conn.close()
+
+    if row is not None:
+        return row[0]
+
+    return None
+
+
+
+
