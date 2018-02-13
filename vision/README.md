@@ -19,12 +19,12 @@ import vision.main as vision
 import time
 
 camera = vision.activate_camera()
-# com is a tuple with the x and y coordinates of the center of mass of the QR code
-ISBN, com = vision.read_QR(camera)
+# offset is horizontal offset in mm between center of QR and center of camera
+ISBN, offset = vision.read_QR(camera)
 
 time.sleep(5)
 
-next_ISBN, next_com = vision.read_QR(camera)
+next_ISBN, next_offset = vision.read_QR(camera)
 
 camera.stop()
 ```
