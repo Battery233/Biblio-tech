@@ -7,10 +7,15 @@ import pygame.camera
 import time
 
 CAMERA_VIEW_FILE = "camera_view.jpg"
+CAMERA_WIDTH = 640
+CAMERA_HEIGHT = 480
+CAMERA_X_CENTER = CAMERA_WIDTH / 2
 
-def activate_camera():
+ACTUAL_QR_SIDE = 300
+
+def activate_camera(source='/dev/video0'):
     pygame.camera.init()
-    camera = pygame.camera.Camera("/dev/video0",(640,480))
+    camera = pygame.camera.Camera(source, (CAMERA_WIDTH,CAMERA_HEIGHT))
     camera.start()
 
     return camera
@@ -51,7 +56,7 @@ def get_QR_symbol(filename):
 
 def decode_QR(filename):
     symbol = get_QR_symbol(filename)
-    
+
     if symbol is None:
         return (None, None)
 
@@ -60,11 +65,22 @@ def decode_QR(filename):
 
     # find corners
     a, b, c, d = [item for item in symbol.location]
-    # compute center of mass: sum coordinates and divide by 4
+
+    # compute center of mass: sum coordinates element-wise and divide by 4
     com = reduce(sum_tuples, [a,b,c,d], (0,0))
     com = tuple(map(lambda x: int(x/4), com))
 
-    return (data, com)
+    # find horizontal offset in pixels (center of QR - center of camera)
+    offset = com[0] - CAMERA_X_CENTER
+
+    # find conversion to mm (ASSUMPTION: camera plane and QR parallel)
+    img_top_side = abs(a[0] - d[0])
+    pix_mm_rate = float(ACTUAL_QR_SIDE) / img_top_side
+
+    # convert to mm
+    offset = int(offset * pix_mm_rate)
+
+    return (data, offset)
 
 def sum_tuples(t1, t2):
     a, b = t1

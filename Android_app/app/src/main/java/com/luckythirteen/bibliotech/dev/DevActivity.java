@@ -343,14 +343,12 @@ public class DevActivity extends AppCompatActivity {
      *
      * @param state State of bluetooth connection
      */
-    private void updateBluetoothStatusUI(int state)
-    {
+    private void updateBluetoothStatusUI(int state) {
         final int stringResId;
         final int colorResId;
         final int reconnectButtonVisibility;
 
-        switch (state)
-        {
+        switch (state) {
             case State.STATE_CONNECTED:
                 stringResId = R.string.txtBluetoothConnected;
                 colorResId = R.color.colorBluetoothConnected;
@@ -372,11 +370,9 @@ public class DevActivity extends AppCompatActivity {
                 reconnectButtonVisibility = View.VISIBLE;
         }
 
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 bluetoothStatus.setText(stringResId);
                 bluetoothStatus.setTextColor(getResources().getColor(colorResId));
                 reconnectButton.setVisibility(reconnectButtonVisibility);
@@ -386,14 +382,11 @@ public class DevActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         Log.d(TAG, "onDestroy()");
         super.onDestroy();
-        if (bluetoothController.isAvailable())
-        {
-            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
-            {
+        if (bluetoothController.isAvailable()) {
+            if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
                 bluetoothController.disconnect();
             }
 

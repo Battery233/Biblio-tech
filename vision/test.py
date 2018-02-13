@@ -5,9 +5,13 @@ import main
 
 class TestDecodeQR(unittest.TestCase):
     def test(self):
-        text, com = main.decode_QR('vision/test_files/easy_qr.png')
+        text, offset = main.decode_QR('vision/test_files/easy_qr.png')
+        # 210: side in pixels
+        # 150: x coordinate of center of mass of QR
+        # 320: horizontal halfpoint for camera
+        expected_offset = int((float(main.ACTUAL_QR_SIDE) / 210) * (150 - 320))
         self.assertEqual('123456789abcd', text)
-        self.assertEqual((150,160), com)
+        self.assertEqual(expected_offset, offset)
 
         text, _ = main.decode_QR('vision/test_files/distorted_qr.png')
         self.assertEqual('HORN O.K. PLEASE.', text)

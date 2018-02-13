@@ -34,7 +34,7 @@ public class FetchActivity extends AppCompatActivity {
      * Value: Book object
      */
     private static HashMap<String, Book> books;
-
+    
     private Button btnSelectBook;
 
     @Override
