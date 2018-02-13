@@ -122,7 +122,4 @@ def get_position_by_title(db, title):
         return row[0]
 
     return None
-
-
-
-
+    

@@ -43,7 +43,6 @@ public class FetchActivity extends AppCompatActivity {
      */
     private Button getButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
