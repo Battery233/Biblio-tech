@@ -6,11 +6,16 @@
     <string name="DevModeButtonLabel">Start exploring</string>
 
     <string name="fetchScreenTitle">Fetch a book!</string>
+    <string name="selectBookButton">Select a book</string>
     <string name="fetchTitleLabel">Title:</string>
     <string name="fetchAuthorLabel">Author:</string>
-    <string name="fetchAuthorPlaceholder">Enter author</string>
-    <string name="fetchTitlePlaceholder">Enter title</string>
+    <string name="fetchAuthorPlaceholder">Brian Clegg</string>
+    <string name="fetchTitlePlaceholder">Big Data How the Information Revolution Is Transforming Our Lives</string>
+    <string name="fetchBookListTitle">Select a book</string>
+    <string name="fetchBookHeaderTitle">Title</string>
+    <string name="fetchBookHeaderAuthor">Author</string>
     <string name="fetchButtonLabel">GET!</string>
+
 
     <string name="txtMessage">Message:</string>
     <string name="editTextPlaceholder">&lt;message&gt;</string>

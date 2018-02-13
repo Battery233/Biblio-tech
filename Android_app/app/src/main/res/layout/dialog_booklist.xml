@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:elevation="24dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtBookList"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_weight="0"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="casual"
+        android:text="@string/fetchBookListTitle"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_weight="0"
+        android:background="@color/colorAccent"
+        app:srcCompat="?android:attr/dividerHorizontal" />
+
+    <ListView
+        android:id="@+id/lstBooks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_weight="10"
+        android:background="@color/colorPrimaryDark"
+        android:divider="@color/colorPrimary"
+        android:dividerHeight="2dp"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

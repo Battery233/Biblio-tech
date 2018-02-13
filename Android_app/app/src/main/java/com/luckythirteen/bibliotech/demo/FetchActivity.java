@@ -3,18 +3,18 @@ package com.luckythirteen.bibliotech.demo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Toast;
-import android.content.DialogInterface;
+import android.widget.ListView;
 
 import com.luckythirteen.bibliotech.R;
+import com.luckythirteen.bibliotech.brickapi.obj.Book;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This activity will be used by the end-user to send a retrieve book request to the robot
@@ -29,132 +29,92 @@ public class FetchActivity extends AppCompatActivity {
     private static final String TAG = "FetchActivity";
 
     /**
-     * Placeholder HashMap that holds a database of books for testing UI functionality
+     * Hashmap that holds the list of books sent from the brick
+     * Key: ISBN
+     * Value: Book object
      */
-    private static HashMap<String, String> testBooks;
+    private static HashMap<String, Book> books;
 
-    /**
-     * Stores strings of the currently typed title and author
-     */
-    private static String title, author;
-
-    /**
-     * Button for sending fetch message to robot
-     */
-    private Button getButton;
-
+    private Button btnSelectBook;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_demo_new);
 
-        setContentView(R.layout.activity_demo_fetch);
-        getButton = findViewById(R.id.btnGet);
+        generateBookMap();
+        setupUI();
 
-        findViewById(R.id.databaseButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FetchActivity.this);
-                builder.setTitle("BookList:");
-                builder.setMessage("void list");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(FetchActivity.this, "positive: " + which, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(FetchActivity.this, "negative: " + which, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                builder.show();
-            }
-        });
-
-        initialiseTestBooks();
-        setTextViewAutocompletes();
     }
 
-    /**
-     * Populates the autocomplete suggestions for the title & author TextViews using (for now)
-     * the mock book database (testBooks HashMap)
-     */
-    private void setTextViewAutocompletes() {
-        // Populate suggestions for title text view
-        ArrayAdapter<String> titleAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, testBooks.keySet().toArray(new String[]{}));
-        AutoCompleteTextView titleView = findViewById(R.id.autoTxtTitle);
-        titleView.setAdapter(titleAdapter);
+    private void setupUI()
+    {
+        btnSelectBook = findViewById(R.id.btnViewBooks);
 
-        titleView.addTextChangedListener(new TextWatcher() {
+        btnSelectBook.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                title = s.toString();
-                buttonCheck();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        // Populate suggestions for author text view
-        ArrayAdapter<String> authorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, testBooks.values().toArray(new String[]{}));
-        AutoCompleteTextView authorView = findViewById(R.id.autoTxtAuthor);
-        authorView.setAdapter(authorAdapter);
-
-        authorView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                author = s.toString();
-                buttonCheck();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+            public void onClick(View v)
+            {
+                onSelectBookButton();
             }
         });
     }
 
+    private void onSelectBookButton()
+    {
+        Log.d(TAG, "Select book button pressed");
+        // Inflate dialog
+        LayoutInflater layoutInflater = LayoutInflater.from(FetchActivity.this);
+        View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(FetchActivity.this, R.style.AlertDialogTheme);
+        promptBuilder.setView(wordsPrompt);
+
+        final AlertDialog ad = promptBuilder.show();
+        populateListView(wordsPrompt, ad);
+    }
+
+    private void populateListView(View prompt, AlertDialog ad)
+    {
+        Log.w(TAG, "populateListView() - updating found words view");
+
+        BookListArrayAdapter listAdapter = new BookListArrayAdapter(this, R.layout.list_books_row, getBooks(), ad);
+        ListView listView = (ListView) prompt.findViewById(R.id.lstBooks);
+
+        // Set ListView to use updated listAdapter
+        listView.setAdapter(listAdapter);
+    }
+
     /**
-     * Hides or shows "get" button dependent on whether entered title and author combination are valid
+     * Generates the hashmap of books
+     * @return Hashmap of books ISBN: Book
      */
-    private void buttonCheck() {
-        if (testBooks.containsKey(title)) {
-            if (testBooks.get(title).equals(author)) {
-                getButton.setVisibility(View.VISIBLE);
-            } else {
-                getButton.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            getButton.setVisibility(View.INVISIBLE);
+    private void generateBookMap()
+    {
+        books = new HashMap<>();
+
+        for(Book b : getBooks())
+        {
+            books.put(b.getISBN(), b);
         }
     }
 
     /**
-     * Placeholder method to populate "database" of books
+     * Dummy function that mimics receiving the list of books from the brick
+     * (will be replaced eventually)
+     * @return List of books
      */
-    private void initialiseTestBooks() {
-        testBooks = new HashMap<>();
-        testBooks.put("Animal Farm", "George Orwell");
-        testBooks.put("Harry Potter and the Philosopher's Stone", "J. K. Rowling");
-        testBooks.put("To Kill a Mockingbird", "Harper Lee");
-        testBooks.put("The Great Gatsby", "F. Scott Fitzgerald");
-        testBooks.put("The Da Vinci Code", "Dan Brown");
+    private List<Book> getBooks()
+    {
+        ArrayList<Book> books = new ArrayList<>();
+        books.add(new Book("9781785782343" , "Big Data How the Information Revolution Is Transforming Our Lives", "Brian Clegg", true));
+        books.add(new Book("9781447221098" , "Dirk Gently Holistic Detective Agency", "Douglas Adams", true));
+        books.add(new Book("9780241197806" , "The Castle", "Franz Kafka", true));
+        books.add(new Book("9781840226881", "Wealth of Nations", "Adam Smith", true));
+        books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", true));
+        books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", false));
+
+        return books;
+
     }
 }
