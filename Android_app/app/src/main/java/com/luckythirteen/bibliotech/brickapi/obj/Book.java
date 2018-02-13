@@ -6,12 +6,14 @@ public class Book
     private String ISBN;
     private String title;
     private String author;
+    private boolean available;
 
-    public Book(String ISBN, String title, String author)
+    public Book(String ISBN, String title, String author, boolean available)
     {
         this.ISBN = ISBN;
         this.title = title;
         this.author = author;
+        this.available = available;
     }
 
     public String getISBN() {
@@ -27,4 +29,7 @@ public class Book
     }
 
 
+    public boolean isAvailable() {
+        return available;
+    }
 }
