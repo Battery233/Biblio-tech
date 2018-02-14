@@ -7,6 +7,7 @@ import sys
 from threading import Thread
 import ev3dev.ev3 as ev3
 from ev3bt import ev3_server
+import json
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -27,36 +28,52 @@ def move_motor(socket, speed, time):
         print('[ERROR] No motor connected to ' + socket)
 
 
-# Stops all connected motors
-def stop_motor():
-    for socket in ['outA', 'outB', 'outC', 'outD']:
+def stop_motor(sockets=None):
+    # Stop all the motors if nothing received
+    if sockets is None:
+        sockets = ['outA', 'outB', 'outC', 'outD']
+    for socket in sockets:
         m = ev3.Motor(socket)
         if m.connected:
             m.stop(stop_action='brake')
 
 
 def parse_message(data, socket):
-    parts = str(data).split(":")
+    json_command = json.loads(data)
 
-    command = parts[0]
+    command_type = list(json_command.keys())[0]
+    command_args = json_command[command_type]
 
-    if command == 'move' and len(parts) == 4:
-        move_motor(parts[1], parts[2], parts[3])
+    if command_type == 'move' and len(command_args) == 3:
+        move_motor(command_args['ports'], command_args['speed'], command_args['time'])
+    elif command_type == 'stop':
+        if len(command_args) == 1:
+            stop_motor(command_args['ports'])
+        else:
+            stop_motor()
+    elif command_type == 'reachBook' and len(command_args) == 1:
+        # reach_book(command_args['ISBN'])
+        pass
+    elif command_type == 'takeBook' and len(command_args) == 0:
+        # take_book()
+        pass
+    elif command_type == 'queryDB':
+        if len(command_args) == 1:
+            # query_DB(command_args['ISBN'])
+            pass
+        else:
+            # query_DB()
+            pass
 
-    elif command == 'stop':
-        stop_motor()
-
-    elif command == 'close':
+    elif command_type == 'close':
         server.close_server()
         server_thread.join()
         sys.exit(0)
 
-    elif command == 'ping':
+    elif command_type == 'ping':
         socket.send('pong')
-
-    elif command == 'status':
-        server.send_to_device("test", ev3_server.Device.OTHER_EV3)
-
+    else:
+        raise ValueError('Invalid command')
 
 # Create bluetooth server and start it listening on a new thread
 server = ev3_server.BluetoothServer("ev3 dev", parse_message)
