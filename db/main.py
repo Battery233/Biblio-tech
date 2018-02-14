@@ -107,7 +107,7 @@ def update_book_status(db, ISBN, status):
     conn.commit()
     conn.close()
 
-def get_position_by_title(db, title):
+def get_position_by_ISBN(db, ISBN):
     conn = sqlite3.connect(db)
     c = conn.cursor()
 
@@ -122,7 +122,3 @@ def get_position_by_title(db, title):
         return row[0]
 
     return None
-
-
-
-
