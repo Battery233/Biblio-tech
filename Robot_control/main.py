@@ -39,7 +39,7 @@ def reachCell(cell):
 def scanISBN(ISBN):
     # start horizontal movement needed to almost reach next cell
 
-    while(!motorReady(motor)):
+    while(not motorReady(motor)):
         decoded_ISBN, offset = vision.read_QR(camera)
         if ISBN == decoded_ISBN and offset < TOLERABLE_OFFSET:
             # stop motor
@@ -52,7 +52,7 @@ def scanISBN(ISBN):
 def reachBook(ISBN):
     cell = db.get_position_by_ISBN(ISBN)
     reachCell(cell)
-    if !scanISBN(ISBN):
+    if not scanISBN(ISBN):
         completeScan(ISBN)
     else:
         state['alignedToBook'] = ISBN
