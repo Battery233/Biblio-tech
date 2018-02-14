@@ -6,6 +6,7 @@ import android.util.Log;
 import com.luckythirteen.bibliotech.brickapi.command.Command;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
+import co.lujun.lmbluetoothsdk.base.State;
 
 /**
  * Send messages to brick
@@ -36,10 +37,20 @@ public class MessageSender {
      * @return True if succeeded, false otherwise
      */
     private boolean sendMessage(String s) {
-        try {
-            bluetoothController.write(s.getBytes());
-            return true;
-        } catch (Exception e) {
+        try
+        {
+            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
+            {
+                bluetoothController.write(s.getBytes());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
             Log.e(TAG, e.getMessage());
             return false;
         }
