@@ -1,6 +1,7 @@
 package com.luckythirteen.bibliotech.demo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -29,8 +30,9 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
     private int resourceId;
     private List<Book> books;
     private AlertDialog parentDialog;
+    private FetchActivity fetchActivity;
 
-    public BookListArrayAdapter(Context context, int resourceId, List<Book> books, AlertDialog parentDialog)
+    public BookListArrayAdapter(Context context, int resourceId, List<Book> books, AlertDialog parentDialog, FetchActivity fetchActivity)
     {
         super(context, resourceId, books);
 
@@ -38,6 +40,7 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
         this.resourceId = resourceId;
         this.books = books;
         this.parentDialog = parentDialog;
+        this.fetchActivity = fetchActivity;
     }
 
     // Code adapted from: https://www.androidcode.ninja/android-viewholder-pattern-example/
@@ -77,11 +80,15 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
 
         }
 
+        // Call back to fetchActivity to let it know the user has selected a book
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Log.d(TAG, String.format("Clicked book with title: %s \t author: %s", books.get(position).getTitle(), books.get(position).getAuthor()));
+                Log.d(TAG, "Book chosen");
+                fetchActivity.onBookSelected(books.get(position));
+
+                // Close whole dialog
                 parentDialog.dismiss();
             }
         });

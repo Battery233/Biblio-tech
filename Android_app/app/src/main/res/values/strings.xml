@@ -12,9 +12,11 @@
     <string name="fetchAuthorPlaceholder">Brian Clegg</string>
     <string name="fetchTitlePlaceholder">Big Data How the Information Revolution Is Transforming Our Lives</string>
     <string name="fetchBookListTitle">Select a book</string>
+    <string name="fetchBookHelperMessage">Select a book first</string>
     <string name="fetchBookHeaderTitle">Title</string>
     <string name="fetchBookHeaderAuthor">Author</string>
-    <string name="fetchButtonLabel">GET!</string>
+    <string name="fetchButtonFindLabel">FIND BOOK</string>
+    <string name="fetchButtonGetLabel">GET!</string>
 
 
     <string name="txtMessage">Message:</string>
