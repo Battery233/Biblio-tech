@@ -111,8 +111,8 @@ def get_position_by_ISBN(db, ISBN):
     conn = sqlite3.connect(db)
     c = conn.cursor()
 
-    values = (title,)
-    c.execute('SELECT position FROM books WHERE title=?', values)
+    values = (ISBN,)
+    c.execute('SELECT position FROM books WHERE ISBN=?', values)
 
     row = c.fetchone()
 

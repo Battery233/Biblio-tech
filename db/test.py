@@ -47,11 +47,11 @@ class TestDB(unittest.TestCase):
         main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
         main.add_book(db, '9781840226881', 'Wealth of Nations', 'Adam Smith', '1:3', main.STATUS_AVAILABLE)
 
-        previous_title = 'The Castle'
-        current_title = 'Wealth of Nations'
+        previous_ISBN = '9780241197806'
+        current_ISBN = '9781840226881'
 
-        self.assertIsNone(main.get_position_by_title(db, previous_title))
-        self.assertEqual(main.get_position_by_title(db, current_title), '1:3')
+        self.assertIsNone(main.get_position_by_ISBN(db, previous_ISBN))
+        self.assertEqual(main.get_position_by_ISBN(db, current_ISBN), '1:3')
 
 
 if __name__ == '__main__':

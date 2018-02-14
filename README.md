@@ -29,7 +29,7 @@ All arguments are optional.
    }
 }
 
-//  To be implement： 
+//  To be implement：
 // For testing, simple stop command to engines
 // Ports: "A", "B", "C", "D"
 {
@@ -41,7 +41,7 @@ All arguments are optional.
     }
 }
 
-//  To be implement： 
+//  To be implement：
 // Command arm to reach position of a given book
 // The default book is a random available book from the database
 // ISBN: string
@@ -51,18 +51,16 @@ All arguments are optional.
     }
 }
 
-//  To be implement： 
+//  To be implement：
 // Command robot to take the book at its current position and bring it to the
 // pick-up point
 // The default book is a random available book from the database
 // ISBN: string
 {
-    "takeBook":{
-        "ISBN":"9780241197806"
-    }
+    "takeBook"
 }
 
-//  To be implement： 
+//  To be implement：
 // Retrieve list of books
 // The default for ISBN is all of them
 {
@@ -76,7 +74,7 @@ All arguments are optional.
 
 // EV3 TO APP
 
-//  To be implement： 
+//  To be implement：
 // Send list of books
 // ISBN: string
 // title: string
@@ -107,8 +105,4 @@ All arguments are optional.
     }
 }
 
-
-//  To be implement： 
-//  Send database to App
-['databaseRequest']
 ```
