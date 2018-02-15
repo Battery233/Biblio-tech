@@ -2,8 +2,8 @@
     <string name="app_name">Bibliotech</string>
 
     <string name="selectModeLabel">Welcome</string>
-    <string name="DemoModeButtonLabel">Demo mode</string>
-    <string name="DevModeButtonLabel">Start exploring</string>
+    <string name="DemoModeButtonLabel">Start exploring</string>
+    <string name="DevModeButtonLabel">Dev Mode</string>
 
     <string name="fetchScreenTitle">Fetch a book!</string>
     <string name="selectBookButton">Select a book</string>

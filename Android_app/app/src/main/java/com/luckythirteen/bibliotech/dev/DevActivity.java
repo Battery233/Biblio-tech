@@ -38,9 +38,9 @@ public class DevActivity extends AppCompatActivity {
     private static final String TAG = "DevActivity";
 
     // MAC addresses
-    // private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
-    // private static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   // Chenghao's laptop
-    private static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
+    public static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
+    // public static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   // Chenghao's laptop
+    // public static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
 
     // UI elements
     private TextView bluetoothStatus;
@@ -51,10 +51,10 @@ public class DevActivity extends AppCompatActivity {
     private Spinner outputSocketSpinner;
 
     // BluetoothController object for creating a connection to the EV3
-    private BluetoothController bluetoothController;
+    private static BluetoothController bluetoothController;
 
     // UUID of bluetooth connection (must be set the same on the EV3 bluetooth server)
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // Max speed and max duration to allow app to send to robot (for motors)
     private static final int MAX_SPEED = 999; // degrees per second
@@ -72,64 +72,77 @@ public class DevActivity extends AppCompatActivity {
         bluetoothController = BluetoothController.getInstance().build(this);
         bluetoothController.setAppUuid(MY_UUID);
 
-        bluetoothController.setBluetoothListener(new BluetoothListener() {
-            @Override
-            public void onReadData(BluetoothDevice device, byte[] data) {
-                final String msg = new String(data);
-                Log.d(TAG, "Received: " + msg);
-
-                // Make a toast appear with the message received from the EV3 brick (have to run on UI thread otherwise an error is thrown)
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                // Vibrate phone (different methods depending on API version)
-                if (Build.VERSION.SDK_INT >= 26) {
-                    try {
-                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } catch (Exception ignored) {
-                    }
-                } else {
-                    try {
-                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(150);
-                    } catch (Exception ignored) {
-                    }
-                }
-
-            }
-
-            @Override
-            public void onActionStateChanged(int preState, int state) {
-
-            }
-
-            @Override
-            public void onActionDiscoveryStateChanged(String discoveryState) {
-
-            }
-
-            @Override
-            public void onActionScanModeChanged(int preScanMode, int scanMode) {
-
-            }
-
-            @Override
-            public void onBluetoothServiceStateChanged(int state) {
-                Log.d(TAG, "BT STATE: " + state);
-                updateBluetoothStatusUI(state);
-            }
-
-            @Override
-            public void onActionDeviceFound(BluetoothDevice device, short rssi) {
-
-            }
-        });
-
+        bluetoothController.setBluetoothListener(bluetoothListener);
         bluetoothController.connect(TARGET_MAC);
     }
+
+    private final BluetoothListener bluetoothListener = new BluetoothListener()
+    {
+        @Override
+        public void onReadData(BluetoothDevice device, byte[] data) {
+            final String msg = new String(data);
+            Log.d(TAG, "Received: " + msg);
+
+            // Make a toast appear with the message received from the EV3 brick (have to run on UI thread otherwise an error is thrown)
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            // Vibrate phone (different methods depending on API version)
+            if (Build.VERSION.SDK_INT >= 26) {
+                try {
+                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+                } catch (Exception ignored) {
+                }
+            } else {
+                try {
+                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(150);
+                } catch (Exception ignored) {
+                }
+            }
+
+        }
+
+        @Override
+        public void onActionStateChanged(int preState, int state) {
+
+        }
+
+        @Override
+        public void onActionDiscoveryStateChanged(String discoveryState) {
+
+        }
+
+        @Override
+        public void onActionScanModeChanged(int preScanMode, int scanMode) {
+
+        }
+
+        @Override
+        public void onBluetoothServiceStateChanged(int state) {
+            Log.d(TAG, "BT STATE: " + state);
+            updateBluetoothStatusUI(state);
+        }
+
+        @Override
+        public void onActionDeviceFound(BluetoothDevice device, short rssi) {
+
+        }
+    };
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+        updateBluetoothStatusUI(bluetoothController.getConnectionState());
+        bluetoothController = BluetoothController.getInstance();
+        bluetoothController.setBluetoothListener(bluetoothListener);
+    }
+
 
     /**
      * Method for finding UI components and setting their event handlers
@@ -351,21 +364,25 @@ public class DevActivity extends AppCompatActivity {
         switch (state) {
             case State.STATE_CONNECTED:
                 stringResId = R.string.txtBluetoothConnected;
+                Log.d(TAG, "Connected");
                 colorResId = R.color.colorBluetoothConnected;
                 reconnectButtonVisibility = View.INVISIBLE;
                 break;
             case State.STATE_DISCONNECTED:
                 stringResId = R.string.txtBluetoothDisconnected;
+                Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
                 reconnectButtonVisibility = View.VISIBLE;
                 break;
             case State.STATE_CONNECTING:
                 stringResId = R.string.txtBluetoothConnecting;
+                Log.d(TAG, "Connecting");
                 colorResId = R.color.colorBluetoothConnecting;
                 reconnectButtonVisibility = View.INVISIBLE;
                 break;
             default:
                 stringResId = R.string.txtBluetoothDisconnected;
+                Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
                 reconnectButtonVisibility = View.VISIBLE;
         }
@@ -379,6 +396,11 @@ public class DevActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public static BluetoothController getBluetoothController()
+    {
+        return bluetoothController;
     }
 
     @Override

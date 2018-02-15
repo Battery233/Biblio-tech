@@ -1,5 +1,7 @@
 package com.luckythirteen.bibliotech.demo;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,15 +24,18 @@ import com.luckythirteen.bibliotech.brickapi.obj.Book;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
+import co.lujun.lmbluetoothsdk.BluetoothController;
+import co.lujun.lmbluetoothsdk.base.BluetoothListener;
+import co.lujun.lmbluetoothsdk.base.State;
 
 /**
  * This activity will be used by the end-user to send a retrieve book request to the robot
  * and is therefore the primary activity of the whole application.
  */
 
-public class FetchActivity extends AppCompatActivity {
+public class FetchActivity extends AppCompatActivity
+{
 
     /**
      * Debugging tag
@@ -39,38 +45,128 @@ public class FetchActivity extends AppCompatActivity {
 
     private ArrayList<Book> books;
 
+    // UI Elements
     private Button btnSelectBook, btnGetBook;
-    private TextView authorLabel, titleLabel;
+    private TextView authorLabel, titleLabel, bluetoothStatus;
     private TextView titleTextView, authorTextView;
-
+    private ImageButton reconnectButton;
     private TextView helperText;
     private ImageView helperArrow;
     private Animation arrowAnim;
 
+
     private Book chosenBook;
 
-    private boolean beenInitialisedBefore = false;
     private MessageSender messageSender;
+
+    private BluetoothController bluetoothController;
+
+    private final static String SHARED_PREFS_KEY = "APP_INFO";
+    private final static String DEMO_ACTIVE_KEY = "demo_active";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_demo_new);
+        setupUI();
 
-        if(!beenInitialisedBefore)
-        {
-            setContentView(R.layout.activity_demo_new);
-            setupUI();
-            books = getBooks();
-            beenInitialisedBefore = true;
-            messageSender = new MessageSender(DevActivity.getBluetoothController());
+
+        books = getBooks();
+
+
+        // For classic bluetooth
+        bluetoothController = BluetoothController.getInstance().build(this);
+        bluetoothController.setAppUuid(DevActivity.MY_UUID);
+
+        bluetoothController.setBluetoothListener(bluetoothListener);
+        bluetoothController.connect(DevActivity.TARGET_MAC);
+
+        messageSender = new MessageSender(BluetoothController.getInstance());
+        updateBluetoothStatusUI(bluetoothController.getConnectionState());
+
+    }
+
+    /**
+     * Updates connection status text and hides/shows reconnect button
+     *
+     * @param state State of bluetooth connection
+     */
+    private void updateBluetoothStatusUI(int state) {
+        final int stringResId;
+        final int colorResId;
+        final int reconnectButtonVisibility;
+
+        switch (state) {
+            case State.STATE_CONNECTED:
+                stringResId = R.string.txtBluetoothConnected;
+                Log.d(TAG, "Connected");
+                colorResId = R.color.colorBluetoothConnected;
+                reconnectButtonVisibility = View.INVISIBLE;
+                break;
+            case State.STATE_DISCONNECTED:
+                stringResId = R.string.txtBluetoothDisconnected;
+                Log.d(TAG, "Disconnected");
+                colorResId = R.color.colorBluetoothDisconnected;
+                reconnectButtonVisibility = View.VISIBLE;
+                break;
+            case State.STATE_CONNECTING:
+                stringResId = R.string.txtBluetoothConnecting;
+                Log.d(TAG, "Connecting");
+                colorResId = R.color.colorBluetoothConnecting;
+                reconnectButtonVisibility = View.INVISIBLE;
+                break;
+            default:
+                stringResId = R.string.txtBluetoothDisconnected;
+                Log.d(TAG, "Disconnected");
+                colorResId = R.color.colorBluetoothDisconnected;
+                reconnectButtonVisibility = View.VISIBLE;
         }
 
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothStatus.setText(stringResId);
+                bluetoothStatus.setTextColor(getResources().getColor(colorResId));
+                reconnectButton.setVisibility(reconnectButtonVisibility);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+        bluetoothController = BluetoothController.getInstance();
+        bluetoothController.setBluetoothListener(bluetoothListener);
+
+        if(bluetoothController.getConnectionState() != State.STATE_CONNECTED && bluetoothController.getConnectionState() != State.STATE_CONNECTING)
+        {
+            // TODO: FIX HARDCODED MAC AND DUMB WAY TO ACCESS (QUICK AND EASY FOR NOW)
+            bluetoothController.connect(DevActivity.TARGET_MAC);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean(DEMO_ACTIVE_KEY, false);
+        ed.commit();
     }
 
     private void setupUI()
     {
+        bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
+        reconnectButton = findViewById(R.id.btnReconnect);
+
         btnSelectBook = findViewById(R.id.btnViewBooks);
         btnGetBook = findViewById(R.id.btnGet);
         helperArrow = findViewById(R.id.imgArrow);
@@ -99,8 +195,21 @@ public class FetchActivity extends AppCompatActivity {
                 onGetButton();
             }
         });
+
+        reconnectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Only retry if we're not already connected
+                if (bluetoothController.getConnectionState() != 3)
+                    // TODO: PLACE MAC ADDRESS SOMEWHERE ELSE (THIS IS DUMB RIGHT NOW, BUT QUICK)
+                    bluetoothController.connect(DevActivity.TARGET_MAC);
+            }
+        });
     }
 
+    /**
+     * Shows list of books user can select
+     */
     private void onSelectBookButton()
     {
         Log.d(TAG, "Select book button pressed");
@@ -164,10 +273,6 @@ public class FetchActivity extends AppCompatActivity {
                 Toast.makeText(this.getApplicationContext(), "Waiting for robot...", Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(this.getApplicationContext(), "Failed to send message to robot :(", Toast.LENGTH_SHORT).show();
-
-
-
-
         }
         else
         {
@@ -193,6 +298,49 @@ public class FetchActivity extends AppCompatActivity {
 
 
     /**
+     * Bluetooth event listener
+     */
+    private final BluetoothListener bluetoothListener = new BluetoothListener()
+    {
+        @Override
+        public void onReadData(BluetoothDevice device, byte[] data)
+        {
+
+        }
+
+        @Override
+        public void onActionStateChanged(int preState, int state)
+        {
+
+        }
+
+        @Override
+        public void onActionDiscoveryStateChanged(String discoveryState)
+        {
+
+        }
+
+        @Override
+        public void onActionScanModeChanged(int preScanMode, int scanMode)
+        {
+
+        }
+
+        @Override
+        public void onBluetoothServiceStateChanged(int state)
+        {
+            updateBluetoothStatusUI(state);
+        }
+
+        @Override
+        public void onActionDeviceFound(BluetoothDevice device, short rssi)
+        {
+
+        }
+    };
+
+
+    /**
      * Dummy function that mimics receiving the list of books from the brick
      * (will be replaced eventually)
      * @return List of books
@@ -210,4 +358,22 @@ public class FetchActivity extends AppCompatActivity {
         return books;
 
     }
+
+
+    /**
+     * Release bluetooth controller
+     */
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy()");
+        super.onDestroy();
+        if (bluetoothController.isAvailable()) {
+            if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
+                bluetoothController.disconnect();
+            }
+
+            bluetoothController.release();
+        }
+    }
+
 }

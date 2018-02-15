@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 
 /**
@@ -37,19 +38,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Attach listener to demo button to load the "fetch book" activity
-        /*demoButton = findViewById(R.id.btnDemoMode);
-        demoButton.findViewById(R.id.btnDemoMode).setOnClickListener(new View.OnClickListener() {
+        demoButton = findViewById(R.id.btnDemoMode);
+        demoButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                // Only start demo activity if bluetooth is on
-                if(bluetoothOn(DEMO_REQUEST_ENABLE_BT))
-                {
+            public void onClick(View v) {
+                // Only start dev activity if bluetooth is on
+                if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
                     Intent intent = new Intent(MainActivity.super.getApplicationContext(), FetchActivity.class);
                     startActivity(intent);
                 }
             }
-        });*/
+        });
 
 
         // Attach listener to demo button to load the "dev mode" activity
