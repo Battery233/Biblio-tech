@@ -12,10 +12,12 @@ public class UserPrefsManager
     private static final String TAG = "UserPrefsManager";
     private static final String APP_KEY = "app_info";
 
+    private static final String DEFAULT_MAC = "B0:B4:48:76:E7:86"; // EV33
+
     private Context context;
     private SharedPreferences sharedPrefs;
 
-    public UserPrefsManager(Context c)
+    public UserPrefsManager(Context context)
     {
         this.context = context;
         this.sharedPrefs = this.context.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE);
@@ -38,7 +40,7 @@ public class UserPrefsManager
      */
     public String getMacAddress()
     {
-        return sharedPrefs.getString(StorageKeys.MAC_ADDRESS.name(), "");
+        return sharedPrefs.getString(StorageKeys.MAC_ADDRESS.name(), DEFAULT_MAC);
     }
 
 

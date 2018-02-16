@@ -22,6 +22,7 @@ import com.luckythirteen.bibliotech.brickapi.MessageSender;
 import com.luckythirteen.bibliotech.brickapi.command.ReachBook;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
 import com.luckythirteen.bibliotech.dev.DevActivity;
+import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
 import java.util.ArrayList;
 
@@ -60,6 +61,7 @@ public class FetchActivity extends AppCompatActivity
     private MessageSender messageSender;
 
     private BluetoothController bluetoothController;
+    private static String targetMac;
 
     private final static String SHARED_PREFS_KEY = "APP_INFO";
     private final static String DEMO_ACTIVE_KEY = "demo_active";
@@ -76,13 +78,16 @@ public class FetchActivity extends AppCompatActivity
 
         books = getBooks();
 
+        // Use stored MAC address
+        targetMac = new UserPrefsManager(this.getApplicationContext()).getMacAddress();
+
 
         // For classic bluetooth
         bluetoothController = BluetoothController.getInstance().build(this);
         bluetoothController.setAppUuid(DevActivity.MY_UUID);
 
         bluetoothController.setBluetoothListener(bluetoothListener);
-        bluetoothController.connect(DevActivity.TARGET_MAC);
+        bluetoothController.connect(targetMac);
 
         messageSender = new MessageSender(BluetoothController.getInstance());
         updateBluetoothStatusUI(bluetoothController.getConnectionState());
@@ -146,8 +151,7 @@ public class FetchActivity extends AppCompatActivity
 
         if(bluetoothController.getConnectionState() != State.STATE_CONNECTED && bluetoothController.getConnectionState() != State.STATE_CONNECTING)
         {
-            // TODO: FIX HARDCODED MAC AND DUMB WAY TO ACCESS (QUICK AND EASY FOR NOW)
-            bluetoothController.connect(DevActivity.TARGET_MAC);
+            bluetoothController.connect(targetMac);
         }
     }
 
@@ -201,8 +205,7 @@ public class FetchActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Only retry if we're not already connected
                 if (bluetoothController.getConnectionState() != 3)
-                    // TODO: PLACE MAC ADDRESS SOMEWHERE ELSE (THIS IS DUMB RIGHT NOW, BUT QUICK)
-                    bluetoothController.connect(DevActivity.TARGET_MAC);
+                    bluetoothController.connect(targetMac);
             }
         });
     }

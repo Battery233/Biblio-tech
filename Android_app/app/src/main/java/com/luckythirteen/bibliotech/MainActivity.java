@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int DEMO_REQUEST_ENABLE_BT = 2;
 
     // Buttons on screen
-    private Button demoButton, devButton;
+    private Button demoButton, devButton, settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,16 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
                     startActivity(intent);
                 }
+            }
+        });
+
+        settingsButton = findViewById(R.id.btnSettings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
             }
         });
     }

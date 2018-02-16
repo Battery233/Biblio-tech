@@ -25,6 +25,7 @@ import android.content.Intent;
 
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.demo.FetchActivity;
+import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
 import java.util.UUID;
 
@@ -38,9 +39,9 @@ public class DevActivity extends AppCompatActivity {
     private static final String TAG = "DevActivity";
 
     // MAC addresses
-    // public static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
-    // public static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   // Chenghao's laptop
-    public static final String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
+    // private static final String TARGET_MAC = "AC:FD:CE:2B:82:F1";                                   // Colin's laptop
+    // private static final String TARGET_MAC = "78:0c:b8:0b:a0:44";                                   // Chenghao's laptop
+    private static String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
 
     // UI elements
     private TextView bluetoothStatus;
@@ -67,6 +68,9 @@ public class DevActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dev);
 
         setupUI();
+
+        // Use stored mac address
+        TARGET_MAC = new UserPrefsManager(this.getApplicationContext()).getMacAddress();
 
         // For classic bluetooth
         bluetoothController = BluetoothController.getInstance().build(this);

@@ -4,6 +4,7 @@
     <string name="selectModeLabel">Welcome</string>
     <string name="DemoModeButtonLabel">Start exploring</string>
     <string name="DevModeButtonLabel">Dev Mode</string>
+    <string name="SettingsButtonLabel">Settings</string>
 
     <string name="fetchScreenTitle">Fetch a book!</string>
     <string name="selectBookButton">Select a book</string>
@@ -45,5 +46,13 @@
     <string name="btnForward">Forward</string>
     <string name="btnBackward">Backward</string>
     <string name="btnStop">STOP</string>
+
+    <string name="txtSettingsMacTitle">MAC Address</string>
+    <string name="btnSettingsLoadEV33">Load EV33</string>
+    <string name="btnSettingsLoadEV13">Load EV13</string>
+    <string name="btnSettingsSave">Save</string>
+
+    <string name="msgSaveSuccessful">Saved successfully!</string>
+    <string name="msgSaveUnsuccessful">Failed to save</string>
 
 </resources>
