@@ -5,12 +5,14 @@ public class Book {
     private String ISBN;
     private String title;
     private String author;
+    private String pos;
     private boolean available;
 
-    public Book(String ISBN, String title, String author, boolean available) {
+    public Book(String ISBN, String title, String author, String pos, boolean available) {
         this.ISBN = ISBN;
         this.title = title;
         this.author = author;
+        this.pos = pos;
         this.available = available;
     }
 
@@ -24,6 +26,11 @@ public class Book {
 
     public String getAuthor() {
         return author;
+    }
+
+    public String getPos()
+    {
+        return pos;
     }
 
 
