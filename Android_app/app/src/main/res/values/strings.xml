@@ -37,10 +37,10 @@
     <string name="BookDatabase">Book Database</string>
 
     <string-array name="output_socket_array">
-        <item>outA</item>
-        <item>outB</item>
-        <item>outC</item>
-        <item>outD</item>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
     </string-array>
 
     <string name="btnForward">Forward</string>

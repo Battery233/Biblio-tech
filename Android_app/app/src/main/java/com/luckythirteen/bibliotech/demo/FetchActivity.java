@@ -19,7 +19,9 @@ import android.widget.Toast;
 
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
+import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
 import com.luckythirteen.bibliotech.brickapi.command.ReachBook;
+import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
@@ -216,6 +218,8 @@ public class FetchActivity extends AppCompatActivity
     private void onSelectBookButton()
     {
         Log.d(TAG, "Select book button pressed");
+        messageSender.sendCommand(new QueryDB(null));
+
         // Inflate dialog
         LayoutInflater layoutInflater = LayoutInflater.from(FetchActivity.this);
         View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
@@ -308,7 +312,7 @@ public class FetchActivity extends AppCompatActivity
         @Override
         public void onReadData(BluetoothDevice device, byte[] data)
         {
-
+            
         }
 
         @Override
@@ -320,7 +324,6 @@ public class FetchActivity extends AppCompatActivity
         @Override
         public void onActionDiscoveryStateChanged(String discoveryState)
         {
-
         }
 
         @Override

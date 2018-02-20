@@ -1,5 +1,6 @@
 package com.luckythirteen.bibliotech;
 
+import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
 import com.luckythirteen.bibliotech.brickapi.obj.InputPort;
 
 import org.junit.Assert;
@@ -17,6 +18,6 @@ public class ExampleUnitTest
     @Test
     public void addition_isCorrect() throws Exception
     {
-        Assert.assertEquals(InputPort.FOUR.toString(), "in4");
+        System.out.println(new QueryDB(null).toJSONString());
     }
 }

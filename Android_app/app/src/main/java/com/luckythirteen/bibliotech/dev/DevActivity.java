@@ -24,6 +24,10 @@ import android.widget.Toast;
 import android.content.Intent;
 
 import com.luckythirteen.bibliotech.R;
+import com.luckythirteen.bibliotech.brickapi.MessageSender;
+import com.luckythirteen.bibliotech.brickapi.command.Move;
+import com.luckythirteen.bibliotech.brickapi.command.Stop;
+import com.luckythirteen.bibliotech.brickapi.obj.OutputPort;
 import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
@@ -61,6 +65,8 @@ public class DevActivity extends AppCompatActivity {
     private static final int MAX_SPEED = 999; // degrees per second
     private static final int MAX_DURATION = 9999; // milliseconds
 
+    private MessageSender messageSender;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
@@ -78,10 +84,11 @@ public class DevActivity extends AppCompatActivity {
 
         bluetoothController.setBluetoothListener(bluetoothListener);
         bluetoothController.connect(TARGET_MAC);
+
+        messageSender = new MessageSender(bluetoothController);
     }
 
-    private final BluetoothListener bluetoothListener = new BluetoothListener()
-    {
+    private final BluetoothListener bluetoothListener = new BluetoothListener() {
         @Override
         public void onReadData(BluetoothDevice device, byte[] data) {
             final String msg = new String(data);
@@ -138,8 +145,7 @@ public class DevActivity extends AppCompatActivity {
     };
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
         updateBluetoothStatusUI(bluetoothController.getConnectionState());
@@ -242,7 +248,7 @@ public class DevActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetoothController.write("stop".getBytes());
+                messageSender.sendCommand(new Stop(null));
             }
         });
 
@@ -328,7 +334,7 @@ public class DevActivity extends AppCompatActivity {
         // Set direction multiplier to 1 if forward = true, -1 otherwise (we're going backwards)
         int directionMultiplier = forward ? 1 : -1;
 
-        String outputSocketName = getSelectedSocket();
+        OutputPort outputPort = getSelectedPort();
 
         // Store speed and duration values as ints
         int speedValue = Integer.valueOf(speedText.getText().toString());
@@ -338,9 +344,7 @@ public class DevActivity extends AppCompatActivity {
         // Only send message to EV3 if speed and duration values are valid ("safe")
         if (speedValue > 0 && speedValue <= MAX_SPEED) {
             if (durationValue > 0 && durationValue <= MAX_DURATION) {
-                // Dev script takes message in form of move:<speed>:<duration>
-                String commandMessage = "move:" + outputSocketName + ":" + (speedValue * directionMultiplier) + ":" + durationValue;
-                bluetoothController.write(commandMessage.getBytes());
+                messageSender.sendCommand(new Move(speedValue, durationValue, new OutputPort[]{outputPort}));
             } else {
                 Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
             }
@@ -349,10 +353,24 @@ public class DevActivity extends AppCompatActivity {
         }
     }
 
-    private String getSelectedSocket() {
+    private OutputPort getSelectedPort() {
         String selectedSocket = outputSocketSpinner.getSelectedItem().toString();
         Log.d(TAG, selectedSocket);
-        return selectedSocket;
+
+        switch (selectedSocket)
+        {
+            case "A":
+                return OutputPort.A;
+            case "B":
+                return OutputPort.B;
+            case "C":
+                return OutputPort.C;
+            case "D":
+                return OutputPort.D;
+            default:
+                return OutputPort.A;
+        }
+
     }
 
     /**
@@ -402,8 +420,7 @@ public class DevActivity extends AppCompatActivity {
 
     }
 
-    public static BluetoothController getBluetoothController()
-    {
+    public static BluetoothController getBluetoothController() {
         return bluetoothController;
     }
 
