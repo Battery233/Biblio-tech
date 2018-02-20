@@ -86,14 +86,14 @@ All arguments are optional.
             "ISBN":"9780241197806",
             "title":"The Castle",
             "author":"Franz Kafka",
-            "avail":0
+            "avail":0,
             "pos": "1,2" 
         },
         {
             "ISBN":"9781840226881",
             "title":"Wealth of Nations",
             "author":"Adam Smith",
-            "avail":1
+            "avail":1,
             "pos": "2,3"
         }
     ]
