@@ -1,6 +1,7 @@
 package com.luckythirteen.bibliotech.demo;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -17,12 +18,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.luckythirteen.bibliotech.BuildConfig;
 import com.luckythirteen.bibliotech.R;
+import com.luckythirteen.bibliotech.brickapi.MessageParser;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
 import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
 import com.luckythirteen.bibliotech.brickapi.command.ReachBook;
 import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
+import com.luckythirteen.bibliotech.brickapi.messages.MessageType;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
+import com.luckythirteen.bibliotech.brickapi.obj.BookList;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
@@ -219,15 +224,6 @@ public class FetchActivity extends AppCompatActivity
     {
         Log.d(TAG, "Select book button pressed");
         messageSender.sendCommand(new QueryDB(null));
-
-        // Inflate dialog
-        LayoutInflater layoutInflater = LayoutInflater.from(FetchActivity.this);
-        View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(FetchActivity.this, R.style.AlertDialogTheme);
-        promptBuilder.setView(wordsPrompt);
-
-        final AlertDialog ad = promptBuilder.show();
-        populateListView(wordsPrompt, ad);
     }
 
 
@@ -287,20 +283,40 @@ public class FetchActivity extends AppCompatActivity
         }
     }
 
+
     /**
-     * Populates the view containing the list of books
-     * @param prompt The inner view we want to fill
-     * @param ad The whole dialog (so we can close it later)
+     * Show view containing list of books
+     * @param books List of books
      */
-    private void populateListView(View prompt, AlertDialog ad)
+    private void showBookList(final ArrayList<Book> books)
     {
-        Log.w(TAG, "populateListView() - updating found words view");
+        final Context context = this;
+        final FetchActivity fetchActivity = this;
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                // Inflate dialog
+                LayoutInflater layoutInflater = LayoutInflater.from(FetchActivity.this);
+                View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
+                AlertDialog.Builder promptBuilder = new AlertDialog.Builder(FetchActivity.this, R.style.AlertDialogTheme);
+                promptBuilder.setView(wordsPrompt);
 
-        BookListArrayAdapter listAdapter = new BookListArrayAdapter(this, R.layout.list_books_row, getBooks(), ad, this);
-        ListView listView = (ListView) prompt.findViewById(R.id.lstBooks);
+                final AlertDialog ad = promptBuilder.show();
+                Log.w(TAG, "populateListView() - updating found words view");
+                BookListArrayAdapter listAdapter = new BookListArrayAdapter(context, R.layout.list_books_row, books, ad, fetchActivity);
+                ListView listView = (ListView) wordsPrompt.findViewById(R.id.lstBooks);
 
-        // Set ListView to use updated listAdapter
-        listView.setAdapter(listAdapter);
+                // Set ListView to use updated listAdapter
+                listView.setAdapter(listAdapter);
+
+
+            }
+        });
+
+
+
     }
 
 
@@ -312,7 +328,10 @@ public class FetchActivity extends AppCompatActivity
         @Override
         public void onReadData(BluetoothDevice device, byte[] data)
         {
-            
+            Log.d(TAG, "Received: " + new String(data));
+            String json = new String(data);
+            MessageType type = MessageParser.determineMessageType(json);
+            performAction(type, json);
         }
 
         @Override
@@ -345,6 +364,17 @@ public class FetchActivity extends AppCompatActivity
         }
     };
 
+    private void performAction(MessageType type, String json)
+    {
+        if(type == MessageType.booklist)
+        {
+            showBookList(MessageParser.getBookListFromJson(json).getBooks());
+        }
+        else if(type == MessageType.undefined)
+        {
+            Log.w(TAG, "Don't understand message: " + json);
+        }
+    }
 
     /**
      * Dummy function that mimics receiving the list of books from the brick
