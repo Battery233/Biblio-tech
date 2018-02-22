@@ -2,6 +2,7 @@ package com.luckythirteen.bibliotech.demo;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -41,6 +42,8 @@ import co.lujun.lmbluetoothsdk.base.State;
  * This activity will be used by the end-user to send a retrieve book request to the robot
  * and is therefore the primary activity of the whole application.
  */
+
+//TODO: WHOLE CLASS NEEDS SOME HANDLING FOR WHEN ROBOT IS BUSY
 
 public class FetchActivity extends AppCompatActivity
 {
@@ -268,7 +271,6 @@ public class FetchActivity extends AppCompatActivity
             // Send ReachBook command
             ReachBook reachBook = new ReachBook(chosenBook.getISBN());
 
-
             // Try to send message and store if worked or not
             boolean messageSuccess = messageSender.sendCommand(reachBook);
 
@@ -276,6 +278,7 @@ public class FetchActivity extends AppCompatActivity
                 Toast.makeText(this.getApplicationContext(), "Waiting for robot...", Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(this.getApplicationContext(), "Failed to send message to robot :(", Toast.LENGTH_SHORT).show();
+
         }
         else
         {
@@ -364,16 +367,108 @@ public class FetchActivity extends AppCompatActivity
         }
     };
 
+    /**
+     * Performs an action based on the message received from the robot
+     * @param type Type of the message
+     * @param json The raw JSON message
+     */
     private void performAction(MessageType type, String json)
     {
-        if(type == MessageType.booklist)
+        if(type == MessageType.bookList)
         {
             showBookList(MessageParser.getBookListFromJson(json).getBooks());
+        }
+        else if(type == MessageType.foundBook)
+        {
+            showGetPrompt();
+        }
+        else if(type == MessageType.missingBook)
+        {
+            showMissingBookPrompt();
         }
         else if(type == MessageType.undefined)
         {
             Log.w(TAG, "Don't understand message: " + json);
         }
+    }
+
+    /**
+     * Called when the robot has told the app the requested book is there
+     */
+    private void showMissingBookPrompt()
+    {
+        final Context context = this;
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        switch (which)
+                        {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                // TODO: ADD COMMAND FOR SCANNING WHOLE SELF
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Book not found, would you like to scan the whole shelf?")
+                        .setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener)
+                        .setCancelable(false)
+                        .show();
+            }
+        });
+
+    }
+
+
+        /**
+         * Called when the robot has told the app the requested book is there
+         */
+    private void showGetPrompt()
+    {
+        final Context context = this;
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which)
+                        {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                messageSender.sendCommand(new TakeBook());
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Book found, do you want to retrieve it?")
+                        .setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener)
+                        .setCancelable(false)
+                        .show();
+            }
+        });
+
     }
 
     /**

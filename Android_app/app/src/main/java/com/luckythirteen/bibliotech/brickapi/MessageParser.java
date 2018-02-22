@@ -50,9 +50,17 @@ public class MessageParser
 
     private static MessageType getType(JsonObject object)
     {
-        if(object.has(MessageType.booklist.name()))
+        if(object.has(MessageType.bookList.name()))
         {
-            return MessageType.booklist;
+            return MessageType.bookList;
+        }
+        else if(object.has(MessageType.foundBook.name()))
+        {
+            return MessageType.foundBook;
+        }
+        else if(object.has(MessageType.missingBook.name()))
+        {
+            return MessageType.missingBook;
         }
         else
         {
@@ -70,7 +78,7 @@ public class MessageParser
         if (jsonElement.isJsonObject())
         {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            JsonArray books = jsonObject.getAsJsonArray("booklist");
+            JsonArray books = jsonObject.getAsJsonArray(MessageType.bookList.name());
 
             for (JsonElement e : books.getAsJsonArray())
             {
