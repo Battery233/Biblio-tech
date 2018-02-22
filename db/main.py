@@ -122,3 +122,49 @@ def get_position_by_ISBN(db, ISBN):
         return row[0]
 
     return None
+
+# TODO: refactor this and extract querying bit into a method with parameterized values
+def get_position_by_title(db, title):
+	conn = sqlite3.connect(db)
+	c = conn.cursor()
+	
+	values = (title,)
+	c.execute('SELECT position FROM books WHERE title=?', values)
+	
+	row = c.fetchone()
+
+	conn.close()
+
+	if row is not None:
+		return row[0]
+	
+	return None
+
+def get_all_titles_and_positions(db):
+	conn = sqlite3.connect(db)
+	c = conn.cursor()
+
+	c.execute('SELECT title, position FROM books')
+
+	books = c.fetchall();
+
+	conn.close()
+	
+	return books
+
+def get_ISBN_by_title(db, title):
+	conn = sqlite3.connect(db)
+	c = conn.cursor()
+	
+	values = (title,)
+	c.execute('SELECT ISBN FROM books WHERE title=?', values)
+	
+	row = c.fetchone()
+
+	conn.close()
+
+	if row is not None:
+		return row[0]
+	
+	return None
+

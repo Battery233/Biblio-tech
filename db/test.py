@@ -53,6 +53,27 @@ class TestDB(unittest.TestCase):
         self.assertIsNone(main.get_position_by_ISBN(db, previous_ISBN))
         self.assertEqual(main.get_position_by_ISBN(db, current_ISBN), '1:3')
 
+    def testGetPositionByTitle(self):
+        main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
+        main.add_book(db, '9781840226881', 'Wealth of Nations', 'Adam Smith', '1:4', main.STATUS_AVAILABLE)
+
+        self.assertEqual(main.get_position_by_title(db, 'The Castle'), '1:3')
+        self.assertIsNone(main.get_position_by_title(db, 'The Wrong Castle'))
+
+    def testGetAllTitlesAndPositions(self):
+        main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
+        main.add_book(db, '9781840226881', 'Wealth of Nations', 'Adam Smith', '1:4', main.STATUS_AVAILABLE)
+
+        self.assertEqual(main.get_all_titles_and_positions(db), [('The Castle', '1:3'), ('Wealth of Nations', '1:4')])
+
+    def testGetISBNByTitle(self):
+        main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
+        main.add_book(db, '9781840226881', 'Wealth of Nations', 'Adam Smith', '1:4', main.STATUS_AVAILABLE)
+
+        self.assertEqual(main.get_ISBN_by_title(db, 'The Castle'), 9780241197806)
+        self.assertIsNone(main.get_ISBN_by_title(db, 'The Wrong Castle'))
+
+    
 
 if __name__ == '__main__':
     unittest.main()
