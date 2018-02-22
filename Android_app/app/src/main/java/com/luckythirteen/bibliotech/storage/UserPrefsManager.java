@@ -12,8 +12,7 @@ public class UserPrefsManager
     private static final String TAG = "UserPrefsManager";
     private static final String APP_KEY = "app_info";
 
-    //TODO: PUT BACK TO EV3 MAC (CURRENTLY COLIN'S LAPTOP)
-    private static final String DEFAULT_MAC = "AC:FD:CE:2B:82:F1"; // EV33
+    private static final String DEFAULT_MAC = "B0:B4:48:76:E7:86"; // EV33
 
     private Context context;
     private SharedPreferences sharedPrefs;
