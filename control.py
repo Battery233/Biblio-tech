@@ -39,9 +39,18 @@ class Controller:
         return False
 
 
-    def reachBook(self, ISBN):
-        cell = db.get_position_by_ISBN(ISBN)
+    def findBook(self, title):
+		'''
+		Move the robot at the position of the book having the title received
+		as an argument.
+		'''
+        cell = db.get_position_by_title(title)
+		if cell is None:
+			print('Book does not exist')
+			return
+
         reachCell(cell)
+		ISBN = db.get_ISBN_by_title(title)
         if not scanISBN(ISBN):
             fullScan(ISBN)
         else:

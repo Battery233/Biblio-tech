@@ -44,19 +44,38 @@ def parse_message(data, socket):
             stop_motor(command_args['ports'])
         else:
             stop_motor()
-    elif command_type == 'reachBook' and len(command_args) == 1:
-        # reach_book(command_args['ISBN'])
-        pass
+    elif command_type == 'findBook' and len(command_args) == 1:
+		if not findBook(command_args['ISBN']):
+			send_message('missingBook')
+		else:
+			send_message('foundBook')
     elif command_type == 'takeBook' and len(command_args) == 0:
         # take_book()
         pass
     elif command_type == 'queryDB':
+		'''
+		The user might ask for the list of all books or for a specific book.
+
+		If only a book is asked, then its position is searched in the database
+		using the title. The message sent back to the app in this case is
+		`bookItem` containing a tuple of `(title, position)` if the book is
+		found or `None` otherwise.
+
+		If all the books are requested, then the database is queried for all
+		the books and their positions. The mesage sent back to the app in 
+		this case is `bookList` containing a list of `(title, position)`
+		with all the books available.
+		'''
         if len(command_args) == 1:
-            # query_DB(command_args['ISBN'])
-            pass
+            query_result = query_DB(command_args['title'])
+			if query_result is not None:
+				args = (title, query_result)
+			else:
+				args = None
+			send_message('bookItem', args)
         else:
-            # query_DB()
-            pass
+            query_result = query_DB()
+			send_message('bookList', query_result)
 
     elif command_type == 'close':
         server.close_server()
@@ -68,8 +87,18 @@ def parse_message(data, socket):
     else:
         raise ValueError('Invalid command')
 
-def queryDB(ISBN=None):
-    pass
+def query_DB(title=None):
+	'''
+	If title is None, return a list of `(title, position)` for all the books
+	in the database. Otherwise return a tuple of the form `(title, position)`
+	for the title received as argument, or `None` if it is unavailable in the
+	database.
+	'''
+	
+	if title is None:
+		return db.get_books()
+	else:
+		return db.get_position_by_title(title)
 
 if __name__ == '__main__':
     startUp()
