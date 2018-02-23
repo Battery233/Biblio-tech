@@ -18,13 +18,17 @@ def primary_action(action):
         if not self.state_wait():
             self.send_busy_message(socket)
             return
+
         # If any of the motors is busy, robot is busy
         for motor in self.MOTORS:
             if not self.motor_ready(motor):
-                self.send_busy_message()
+                self.send_busy_message(socket)
                 return
 
+        # Perform the action described by the method
         action(self, *args, **kwargs)
+
+        # Free the robot
         self.state_signal()
 
     return safety_wrapper
@@ -166,17 +170,31 @@ class Controller:
         command_type = list(json_command.keys())[0]
         command_args = json_command[command_type]
 
-        if command_type == 'move' and len(command_args) == 3:
+        if command_type == 'move' and len(command_args) == 3 and
+            ('ports' in command_args.keys() and
+                'speed' in command_args.keys() and
+                'time' in command_args.keys()):
             self.move_motor(command_args['ports'], command_args['speed'], command_args['time'])
+
         elif command_type == 'stop':
-            if len(command_args) == 1:
+            if len(command_args) == 1 and ('stop' in command_args.keys()):
                 self.stop_motor(command_args['ports'])
-            else:
+            elif len(command_args) == 0:
                 self.stop_motor()
-        elif command_type == 'findBook' and len(command_args) == 1:
-            self.find_book(command_args['ISBN']):
+            else:
+                raise ValueError('Invalid command')
+
+        elif command_type == 'findBook' and len(command_args) == 1
+            and ('ISBN' in command_args.keys):
+            self.find_book(socket, command_args['ISBN']):
+
+        elif command_type == 'fullScan' and len(command_args) == 1
+            and ('ISBN' in command_args.keys):
+            self.full_scan(socket, command_args['ISBN']):
+
     	elif command_type == 'takeBook' and len(command_args) == 0:
-            self.take_book()
+            self.take_book(socket)
+
         elif command_type == 'queryDB':
     		'''
     		The user might ask for the list of all books or for a specific book.
@@ -191,16 +209,18 @@ class Controller:
     		this case is `bookList` containing a list of `(title, position)`
     		with all the books available.
     		'''
-            if len(command_args) == 1:
+            if len(command_args) == 1 and ('title' in command_args.keys()):
                 query_result = self.query_DB(command_args['title'])
     			if query_result is not None:
     				args = (title, query_result)
     			else:
     				args = None
     			self.send_message(socket, 'bookItem', args)
-            else:
+            elif len(command_args) == 0:
                 query_result = self.query_DB()
     			self.send_message(socket, 'bookList', query_result)
+            else:
+                raise ValueError('Invalid arguments for queryDB')
 
         elif command_type == 'close':
             self.server.close_server()
@@ -209,13 +229,13 @@ class Controller:
 
         elif command_type == 'ping':
             socket.send('pong')
+
         else:
             raise ValueError('Invalid command')
 
     def send_message(self, socket, title, body=None):
-        # TODO: fix nonsensical API
         if body is not None:
-            message = {'title': query_result}
+            message = {title: body}
         else:
             message = {'message': title}
 
