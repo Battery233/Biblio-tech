@@ -7,9 +7,31 @@ from threading import Thread
 
 import ev3dev.ev3 as ev3
 
+def primary_action(action):
+    '''
+    Method decorator to check whether robot is busy with some other operation
+    before having it start a new action, and to prevent other actions from
+    starting
+    '''
+    def safety_wrapper(self, socket, *args, **kwargs):
+        if self.state_wait() == False:
+            self.send_busy_message(socket)
+            return
+        # If any of the motors is busy, robot is busy
+        for motor in self.MOTORS:
+            if not self.motor_ready(motor):
+                self.send_busy_message()
+                return
+
+        self.state_wait()
+        action(self, *args, **kwargs)
+        self.state_signal()
+
+    return safety_wrapper
+
 class Controller:
 
-    INITIAL_STATE = {'alignedToBook': None}
+    INITIAL_STATE = {'alignedToBook': None, 'busy': False}
 
     MOTORS = [
         ev3.Motor('outA'),
@@ -35,7 +57,7 @@ class Controller:
         self.reachCell(0)
 
         # Check motors
-        for i, motor in enumerate(control.MOTORS):
+        for i, motor in enumerate(self.MOTORS):
             if not motor.connected:
                 print('Motor ' + i + ' non connected')
 
@@ -43,6 +65,15 @@ class Controller:
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
         self.server_thread = Thread(target=server.start_server)
         self.server_thread.start()
+
+    def state_wait(self):
+        if self.state['busy']:
+            return False
+        else:
+            self.state['busy'] = True
+
+    def state_signal(self):
+        self.state['busy'] = False
 
     def reach_cell(self, cell):
         # do some movement
@@ -61,8 +92,8 @@ class Controller:
 
         return False
 
-
-    def find_book(self, title):
+    @primary_action
+    def find_book(self, socket, title):
 		'''
 		Move the robot at the position of the book having the title received
 		as an argument.
@@ -75,13 +106,14 @@ class Controller:
         self.reachCell(cell)
 		ISBN = db.get_ISBN_by_title(title)
         if not self.scan_ISBN(ISBN):
-            self.send_message('missingBook')
+            self.send_message(socket, 'missingBook')
             # self.full_scan(ISBN) if requested by app
     	else:
             self.state['alignedToBook'] = ISBN
-    		self.send_message('foundBook')
+    		self.send_message(socket, 'foundBook')
 
-    def take_book(self):
+    @primary_action
+    def take_book(self, socket):
         if self.state['alignedToBook'] is not None:
             # do some movement
             pass
@@ -89,7 +121,8 @@ class Controller:
             # send some error message
             pass
 
-    def full_scan(self, ISBN):
+    @primary_action
+    def full_scan(self, socket, ISBN):
         pass
 
     def wait_for_motor(self, motor):
@@ -163,7 +196,7 @@ class Controller:
     				args = (title, query_result)
     			else:
     				args = None
-    			self.send_message('bookItem', args)
+    			self.send_message(socket, 'bookItem', args)
             else:
                 query_result = self.query_DB()
     			self.send_message(socket, 'bookList', query_result)
@@ -186,6 +219,9 @@ class Controller:
             message = {'message': title}
 
         socket.send(json.dumps(message))
+
+    def send_busy_message(self, socket):
+        self.send_message(socket, 'busy')
 
     def query_DB(self, title=None):
     	'''
