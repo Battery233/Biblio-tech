@@ -14,7 +14,8 @@ def primary_action(action):
     starting
     '''
     def safety_wrapper(self, socket, *args, **kwargs):
-        if self.state_wait() == False:
+        # If state is already busy trying to change it will return False
+        if not self.state_wait():
             self.send_busy_message(socket)
             return
         # If any of the motors is busy, robot is busy
@@ -23,7 +24,6 @@ def primary_action(action):
                 self.send_busy_message()
                 return
 
-        self.state_wait()
         action(self, *args, **kwargs)
         self.state_signal()
 
@@ -71,6 +71,7 @@ class Controller:
             return False
         else:
             self.state['busy'] = True
+            return True
 
     def state_signal(self):
         self.state['busy'] = False
