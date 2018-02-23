@@ -25,9 +25,6 @@ def primary_action(action):
                 self.send_busy_message(socket)
                 return
 
-        # Break the flow of findBook - takeBook. Sorry user, too slow
-        self.state['alignedToBook'] = None
-
         # Perform the action described by the method
         action(self, *args, **kwargs)
 
@@ -35,6 +32,15 @@ def primary_action(action):
         self.state_signal()
 
     return safety_wrapper
+
+def disruptive_action(action):
+    def break_get_book_flow(self, socket, *args, **kwargs):
+        # Break the flow of findBook - takeBook. Sorry user, too slow
+        self.state['alignedToBook'] = None
+
+        action(self, *args, **kwargs)
+
+    return break_get_book_flow
 
 class Controller:
 
@@ -101,6 +107,7 @@ class Controller:
         return False
 
     @primary_action
+    @disruptive_action
     def find_book(self, socket, title):
 		'''
 		Move the robot at the position of the book having the title received
@@ -130,6 +137,7 @@ class Controller:
             pass
 
     @primary_action
+    @disruptive_action
     def full_scan(self, socket, ISBN):
         pass
 
