@@ -29,10 +29,10 @@ class Controller:
         self.camera = vision.activate_camera()
 
         # Stop all motors
-        robot.stop_motor()
+        self.stop_motor()
 
         # Position arm at the beginning of first cell
-        robot.reachCell(0)
+        self.reachCell(0)
 
         # Check motors
         for i, motor in enumerate(control.MOTORS):
