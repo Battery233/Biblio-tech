@@ -86,27 +86,27 @@ All arguments are optional.
 {
     "booklist":[
         {
-            "ISBN":"9780241197806",
-            "title":"The Castle",
-            "author":"Franz Kafka",
-            "avail":0,
+            "ISBN": "9780241197806",
+            "title": "The Castle",
+            "author": "Franz Kafka",
+            "avail": 0,
             "pos": "1,2"
         },
         {
-            "ISBN":"9781840226881",
-            "title":"Wealth of Nations",
-            "author":"Adam Smith",
-            "avail":1,
+            "ISBN": "9781840226881",
+            "title": "Wealth of Nations",
+            "author": "Adam Smith",
+            "avail": 1,
             "pos": "2,3"
         }
     ]
 }
 
 // Send message
-// content: string, message to send (busy/bookNotFound)
+// content: string, message to send (busy/bookNotFound/bookNotAligned)
 {
     "message": {
-        "content":"busy"
+        "content": "busy"
     }
 }
 

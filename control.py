@@ -25,6 +25,9 @@ def primary_action(action):
                 self.send_busy_message(socket)
                 return
 
+        # Break the flow of findBook - takeBook. Sorry user, too slow
+        self.state['alignedToBook'] = None
+
         # Perform the action described by the method
         action(self, *args, **kwargs)
 
@@ -118,8 +121,8 @@ class Controller:
     		self.send_message(socket, 'foundBook')
 
     @primary_action
-    def take_book(self, socket):
-        if self.state['alignedToBook'] is not None:
+    def take_book(self, socket, ISBN):
+        if self.state['alignedToBook'] == ISBN:
             # do some movement
             pass
         else:
@@ -185,15 +188,15 @@ class Controller:
                 raise ValueError('Invalid command')
 
         elif command_type == 'findBook' and len(command_args) == 1
-            and ('ISBN' in command_args.keys):
+            and ('ISBN' in command_args.keys()):
             self.find_book(socket, command_args['ISBN']):
 
         elif command_type == 'fullScan' and len(command_args) == 1
-            and ('ISBN' in command_args.keys):
+            and ('ISBN' in command_args.keys()):
             self.full_scan(socket, command_args['ISBN']):
 
     	elif command_type == 'takeBook' and len(command_args) == 0:
-            self.take_book(socket)
+            self.take_book(socket, ISBN)
 
         elif command_type == 'queryDB':
     		'''
