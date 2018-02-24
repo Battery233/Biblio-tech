@@ -15,6 +15,8 @@ char *GetMidStr(const char*string,const char *left,const char *right)
     string_len = strlen(string);
     left_len = strlen(left);
     right_len = strlen(right);
+    int counter = 0;
+    counter = string_len - left_len;
     for(i=0;i<string_len;i++){
       if(*(string+i)==*left)
       {
@@ -27,12 +29,21 @@ char *GetMidStr(const char*string,const char *left,const char *right)
 
       if(flag==1 && *(string+i)==*right)
       {
-        if(strnicmp(string+i,right,right_len)==0)
+        if(strnicmp(string+i-1,right,right_len)==0)
         {
             flag=2;
             end=i;
         }
       } 
+	if(flag==0 && *(string+i)==*left)
+      {
+        if(strnicmp(string+i,right,right_len)==0)
+        {
+            flag=1;
+            end=i+1;
+        }
+      } 
+	
       {
         result_len = end-start-left_len;
         flag=0;
@@ -41,6 +52,8 @@ char *GetMidStr(const char*string,const char *left,const char *right)
         strncpy(result,string+start+left_len,result_len);
       }
     }
+    counter = counter++;
+    cout<<counter<<" ";
     return result;
 }
 
@@ -53,6 +66,13 @@ int main(void)
     char *left="<a href=\"https://github.com/leo-mazz/sdp-group13/blob/master/Testing/databaselist.html">";
     char *right="</a>";
     printf("%s",GetMidStr(p,left,right));
+    
+    if(log == ""){
+        cout<<"empty log";
+    }
+    else{
+        cout<<"log recorded";
+    }
     
     log = GetMidStr(p,left,right);
     ofstream SaveFile(“databaselist.html”);
