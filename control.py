@@ -7,6 +7,11 @@ from threading import Thread
 
 import ev3dev.ev3 as ev3
 
+DEG_PER_CM = 29.0323
+
+def cm_to_deg(cm):
+    return DEG_PER_CM * cm
+
 def primary_action(action):
     '''
     Method decorator to check whether robot is busy with some other operation
@@ -53,8 +58,32 @@ class Controller:
         ev3.Motor('outD')
         ]
 
-    CELLS_START = [(0,0), (500,0), (0,500), (500,500)]
+    # SOCKET A IS HORIZONTAL movement
+    # SOCKET B IS FOR arm
+    # SOCKET C IS FOR FINGER
+    HORIZONTAL_MOTOR = MOTORS[0]
+    VERTICAL_MOTOR = MOTORS[3]
+    ARM_MOTOR = MOTORS[1]
+    FINGER_MOTOR = MOTORS[2]
+
+    # finger: 55 dps per 1500 sec
+
+    HORIZONTAL_SPEED = 360
+    # TODO: ARM_SPEED
+    # TODO: ARM_EXTENDED_DISTANCE
+    # TODO: ARM_RETRACTED_DISTANCE, has to be negative
+    # TODO: FINGER_RETRACTED_DISTANCE, has to be negative
+    # TODO: FINGER_SPEED
+
+    CELLS_START = [(0,0), (250,0), (0,300), (250,300)]
+    CELL_SIZE = 249
+
     TOLERABLE_OFFSET = 5
+
+    MESSAGE_BOOK_NOT_ALIGNED = 'bookNotAligned'
+    MESSAGE_BUSY = 'busy'
+    MESSAGE_MISSING_BOOK = 'missingBook'
+    MESSAGE_FOUND_BOOK = 'foundBook'
 
     def __init__(self):
         # Initialize robot's internal model
@@ -67,7 +96,7 @@ class Controller:
         self.stop_motor()
 
         # Position arm at the beginning of first cell
-        self.reachCell(0)
+        self.reach_cell(0)
 
         # Check motors
         for i, motor in enumerate(self.MOTORS):
@@ -90,12 +119,24 @@ class Controller:
         self.state['busy'] = False
 
     def reach_cell(self, cell):
-        # do some movement
+        # TODO: get the current position from the distance sensor
+        current_position = (0,0)
+        self.move_motor_by_dist(
+            HORIZONTAL_MOTOR,
+            CELLS_START[cell][0] - current_position[0]
+            HORIZONTAL_SPEED
+        )
+        # TODO: implement vertical movement
         self.wait_for_motor(motor)
         self.state['position'] = CELLS[cell]
 
     def scan_ISBN(self, ISBN):
         # start horizontal movement needed to almost reach next cell
+        self.move_motor_by_dist(
+            HORIZONTAL_MOTOR,
+            CELL_SIZE,
+            HORIZONTAL_SPEED
+        )
 
         while(not self.motor_ready(motor)):
             decoded_ISBN, offset = vision.read_QR(self.camera)
@@ -118,27 +159,46 @@ class Controller:
 			print('Book does not exist')
 			return
 
-        self.reachCell(cell)
+        self.reach_cell(cell)
 		ISBN = db.get_ISBN_by_title(title)
         if not self.scan_ISBN(ISBN):
-            self.send_message(socket, 'missingBook')
-            # self.full_scan(ISBN) if requested by app
+            self.send_message(socket, MESSAGE_MISSING_BOOK)
     	else:
             self.state['alignedToBook'] = ISBN
-    		self.send_message(socket, 'foundBook')
+    		self.send_message(socket, MESSAGE_FOUND_BOOK)
 
     @primary_action
     def take_book(self, socket, ISBN):
         if self.state['alignedToBook'] == ISBN:
-            # do some movement
-            pass
+            # extend arm
+            self.move_motor_by_dist(
+                ARM_MOTOR,
+                ARM_EXTENDED_DISTANCE
+                ARM_SPEED
+            )
+            time.sleep(5)
+            # retract finger
+            self.move_motor_by_dist(
+                FINGER_MOTOR,
+                FINGER_RETRACTED_DISTANCE
+                FINGER_SPEED
+            )
+            time.sleep(5)
+            # retract arm
+            self.move_motor_by_dist(
+                FINGER_MOTOR,
+                FINGER_RETRACTED_DISTANCE
+                FINGER_SPEED
+            )
+
+            # TODO: put arm and fingers back to initial position
         else:
-            # send some error message
-            pass
+            self.send_message(socket, MESSAGE_BOOK_NOT_ALIGNED)
 
     @primary_action
     @disruptive_action
     def full_scan(self, socket, ISBN):
+        # TODO: A LOT
         pass
 
     def wait_for_motor(self, motor):
@@ -165,6 +225,19 @@ class Controller:
                 motor.run_timed(speed_sp=speed, time_sp=time)
         else:
             print('[ERROR] No motor connected to ' + socket)
+
+    # Moves motor by specified distance at a certain speed and direction
+    # @param int    socket     Socket index in MOTORS to use
+    # @param float  dist       Distance to move motor in centimeters
+    # @param int    speed      Speed to move motor at (degrees / sec)
+    def move_motor_by_dist(self, socket, dist, speed):
+        motor = MOTORS[socket]
+
+        if motor.connected:
+            angle = cm_to_deg(dist)
+            motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+        else:
+            print('[ERROR] No motor connected to ' + str(motor))
 
     def stop_motor(self, sockets=None):
         # Stop all the motors by default
@@ -253,7 +326,7 @@ class Controller:
         socket.send(json.dumps(message))
 
     def send_busy_message(self, socket):
-        self.send_message(socket, 'busy')
+        self.send_message(socket, MESSAGE_BUSY)
 
     def query_DB(self, title=None):
     	'''
@@ -267,6 +340,8 @@ class Controller:
     		return db.get_books()
     	else:
     		return db.get_position_by_title(title)
+
+
 
 
 if __name__ == '__main__':

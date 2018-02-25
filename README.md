@@ -103,7 +103,7 @@ All arguments are optional.
 }
 
 // Send message
-// content: string, message to send (busy/bookNotFound/bookNotAligned)
+// content: string, message to send (busy/missingBook/foundBook/bookNotAligned)
 {
     "message": {
         "content": "busy"
