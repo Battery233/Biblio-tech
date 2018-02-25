@@ -19,16 +19,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.luckythirteen.bibliotech.BuildConfig;
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.brickapi.MessageParser;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
+import com.luckythirteen.bibliotech.brickapi.command.Command;
+import com.luckythirteen.bibliotech.brickapi.command.FindBook;
+import com.luckythirteen.bibliotech.brickapi.command.FullScan;
 import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
-import com.luckythirteen.bibliotech.brickapi.command.ReachBook;
 import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
 import com.luckythirteen.bibliotech.brickapi.messages.MessageType;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
-import com.luckythirteen.bibliotech.brickapi.obj.BookList;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
@@ -226,7 +226,7 @@ public class FetchActivity extends AppCompatActivity
     private void onSelectBookButton()
     {
         Log.d(TAG, "Select book button pressed");
-        messageSender.sendCommand(new QueryDB(null));
+        sendMessageWithFeedback(new QueryDB(null));
     }
 
 
@@ -268,16 +268,11 @@ public class FetchActivity extends AppCompatActivity
             // Make sure MessageSender object initialised
             assert messageSender != null: "MessageSender object not initialised";
 
-            // Send ReachBook command
-            ReachBook reachBook = new ReachBook(chosenBook.getISBN());
+            // Send FindBook command
+            FindBook reachBook = new FindBook(chosenBook.getISBN());
 
-            // Try to send message and store if worked or not
-            boolean messageSuccess = messageSender.sendCommand(reachBook);
-
-            if(messageSuccess)
-                Toast.makeText(this.getApplicationContext(), "Waiting for robot...", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this.getApplicationContext(), "Failed to send message to robot :(", Toast.LENGTH_SHORT).show();
+            // Send message
+            sendMessageWithFeedback(reachBook);
 
         }
         else
@@ -411,7 +406,7 @@ public class FetchActivity extends AppCompatActivity
                         switch (which)
                         {
                             case DialogInterface.BUTTON_POSITIVE:
-                                // TODO: ADD COMMAND FOR SCANNING WHOLE SELF
+                                messageSender.sendCommand(new FullScan(chosenBook.getISBN()));
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -450,7 +445,7 @@ public class FetchActivity extends AppCompatActivity
                         switch (which)
                         {
                             case DialogInterface.BUTTON_POSITIVE:
-                                messageSender.sendCommand(new TakeBook());
+                                sendMessageWithFeedback(new TakeBook());
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -487,6 +482,38 @@ public class FetchActivity extends AppCompatActivity
         books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", "2,3", false));
 
         return books;
+
+    }
+
+    /**
+     * Function to send a message that displays a failed message if messageSender.sendMessage()
+     * returns false
+     * @param c Command to send
+     */
+    private void sendMessageWithFeedback(Command c)
+    {
+        Log.d(TAG, "sendMessageWithFeedback");
+        if(messageSender == null)
+        {
+            
+            messageSender = new MessageSender(bluetoothController);
+        }
+
+        final boolean success = messageSender.sendCommand(c);
+        final Context context = this.getApplicationContext();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(!success)
+                {
+                    if(bluetoothController.getConnectedDevice() != null)
+                        Toast.makeText(context, "Failed to send message to robot :(", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(context, "Not connected to robot!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 

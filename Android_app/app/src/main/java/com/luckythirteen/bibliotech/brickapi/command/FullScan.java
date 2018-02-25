@@ -4,11 +4,11 @@ package com.luckythirteen.bibliotech.brickapi.command;
  * Command arm to reach position of a given book
  */
 
-public class ReachBook extends Command {
+public class FullScan extends Command {
     private String ISBN;
 
-    public ReachBook(String ISBN) {
+    public FullScan(String ISBN) {
         this.ISBN = ISBN;
-        this.commandType = CommandType.reachBook;
+        this.commandType = CommandType.fullScan;
     }
 }
