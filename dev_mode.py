@@ -23,6 +23,8 @@ MOTORS = [
     ev3.Motor('outD')
 ]
 
+DEG_PER_CM = 29.0323
+
 
 # Move motor
 # @param string socket  Output socket string (outA / outB / outC / outD)
@@ -34,6 +36,20 @@ def move_motor(socket, speed, time):
         # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
         if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
             motor.run_timed(speed_sp=speed, time_sp=time)
+    else:
+        print('[ERROR] No motor connected to ' + str(motor))
+
+
+# Moves motor by specified distance at a certain speed and direction
+# @param int    socket     Socket index in MOTORS to use
+# @param float  dist       Distance to move motor in centimeters
+# @param int    speed      Speed to move motor at (degrees / sec)
+def move_motor_by_dist(socket, dist, speed):
+    motor = MOTORS[socket]
+
+    if motor.connected:
+        angle = cm_to_deg(dist)
+        motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
     else:
         print('[ERROR] No motor connected to ' + str(motor))
 
@@ -60,6 +76,10 @@ def stop_motor():
             m.stop(stop_action='brake')
 
 
+def cm_to_deg(cm):
+    return DEG_PER_CM * cm
+
+
 def parse_message(data, socket):
     valid_json = True
 
@@ -79,6 +99,10 @@ def parse_message(data, socket):
         elif command_type == 'stop':
             stop_motor()
 
+        if command_type == 'moveDist' and len(command_args) == 3:
+            move_motor(letter_to_int(port), command_args['dist'], command_args['speed'])
+
+
     elif data == 'ping':
         socket.send('pong')
 
@@ -90,4 +114,3 @@ def parse_message(data, socket):
 server = ev3_server.BluetoothServer("ev3 dev", parse_message)
 server_thread = Thread(target=server.start_server)
 server_thread.start()
-
