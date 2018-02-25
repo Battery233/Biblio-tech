@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -26,6 +27,7 @@ import android.content.Intent;
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
 import com.luckythirteen.bibliotech.brickapi.command.Move;
+import com.luckythirteen.bibliotech.brickapi.command.MoveDist;
 import com.luckythirteen.bibliotech.brickapi.command.Stop;
 import com.luckythirteen.bibliotech.brickapi.obj.OutputPort;
 import com.luckythirteen.bibliotech.demo.FetchActivity;
@@ -48,12 +50,13 @@ public class DevActivity extends AppCompatActivity {
     private static String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
 
     // UI elements
-    private TextView bluetoothStatus;
+    private TextView bluetoothStatus, speedLabel, spinDurationLabel;
     private EditText messageText, speedText, durationText;
     private Button sendButton, forwardButton, backwardButton, stopButton, bookDatabase;
     private ImageButton reconnectButton;
     private SeekBar speedBar, durationBar;
     private Spinner outputSocketSpinner;
+    private CheckBox distanceModeCheckBox;
 
     // BluetoothController object for creating a connection to the EV3
     private static BluetoothController bluetoothController;
@@ -64,6 +67,7 @@ public class DevActivity extends AppCompatActivity {
     // Max speed and max duration to allow app to send to robot (for motors)
     private static final int MAX_SPEED = 999; // degrees per second
     private static final int MAX_DURATION = 9999; // milliseconds
+    private static final int MAX_DISTANCE = 600; // millimetres
 
     private MessageSender messageSender;
 
@@ -167,6 +171,9 @@ public class DevActivity extends AppCompatActivity {
         forwardButton = findViewById(R.id.btnForward);
         backwardButton = findViewById(R.id.btnBackward);
         stopButton = findViewById(R.id.btnStop);
+        distanceModeCheckBox = findViewById(R.id.checkMoveMode);
+        speedLabel = findViewById(R.id.txtSetSpeed);
+        spinDurationLabel = findViewById(R.id.txtSetDuration);
 
         reconnectButton = findViewById(R.id.btnReconnect);
 
@@ -269,9 +276,9 @@ public class DevActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                try {
+                try
+                {
                     int value = Integer.valueOf(s.toString());
-
                     if (value > MAX_SPEED)
                         speedText.setText(String.valueOf(MAX_SPEED));
                 } catch (NumberFormatException e) {
@@ -295,8 +302,10 @@ public class DevActivity extends AppCompatActivity {
                 try {
                     int value = Integer.valueOf(s.toString());
 
-                    if (value > MAX_DURATION)
+                    if (!distanceModeCheckBox.isChecked() && value > MAX_DURATION)
                         speedText.setText(String.valueOf(MAX_DURATION));
+                    else if(distanceModeCheckBox.isChecked() && value > MAX_DISTANCE)
+                        speedText.setText(String.valueOf(MAX_DISTANCE));
                 } catch (NumberFormatException e) {
                     // it's fine, just means string is empty "" or user somehow pasted non
                     // numeric characters in
@@ -305,6 +314,20 @@ public class DevActivity extends AppCompatActivity {
         });
         // ***********************************************************
         // ***********************************************************
+
+        distanceModeCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (distanceModeCheckBox.isChecked()) {
+                    spinDurationLabel.setText(getString(R.string.txtSetDistance));
+                    durationBar.setMax(MAX_DISTANCE);
+                } else {
+                    spinDurationLabel.setText(getString(R.string.txtSetDuration));
+                    durationBar.setMax(MAX_DURATION);
+                }
+            }
+        });
+
 
         // OUTPUT SOCKET SPINNER
         outputSocketSpinner = findViewById(R.id.spinnerOutSocket);
@@ -334,15 +357,31 @@ public class DevActivity extends AppCompatActivity {
         int durationValue = Integer.valueOf(durationText.getText().toString());
 
 
-        // Only send message to EV3 if speed and duration values are valid ("safe")
-        if (speedValue > 0 && speedValue <= MAX_SPEED) {
-            if (durationValue > 0 && durationValue <= MAX_DURATION) {
-                messageSender.sendCommand(new Move(speedValue, durationValue, new OutputPort[]{outputPort}));
+        if(!distanceModeCheckBox.isChecked())
+        {
+            // Only send message to EV3 if speed and duration values are valid ("safe")
+            if (speedValue > 0 && speedValue <= MAX_SPEED) {
+                if (durationValue > 0 && durationValue <= MAX_DURATION) {
+                    messageSender.sendCommand(new Move(speedValue * directionMultiplier, durationValue, new OutputPort[]{outputPort}));
+                } else {
+                    Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            // Only send message to EV3 if speed and distance values are valid ("safe")
+            if (speedValue > 0 && speedValue <= MAX_DISTANCE) {
+                if (durationValue > 0 && durationValue <= MAX_DURATION) {
+                    messageSender.sendCommand(new MoveDist(outputPort, (float) durationValue/10 * directionMultiplier, speedValue));
+                } else {
+                    Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Distance must be > 0 and less than " + MAX_DISTANCE + "cm", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -350,8 +389,7 @@ public class DevActivity extends AppCompatActivity {
         String selectedSocket = outputSocketSpinner.getSelectedItem().toString();
         Log.d(TAG, selectedSocket);
 
-        switch (selectedSocket)
-        {
+        switch (selectedSocket) {
             case "A":
                 return OutputPort.A;
             case "B":

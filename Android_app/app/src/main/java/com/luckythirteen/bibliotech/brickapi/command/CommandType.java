@@ -12,5 +12,6 @@ public enum CommandType
     findBook,
     takeBook,
     queryDB,
-    fullScan
+    fullScan,
+    moveDist
 }

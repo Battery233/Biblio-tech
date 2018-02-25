@@ -126,6 +126,7 @@ public class FetchActivity extends AppCompatActivity
                 Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
                 reconnectButtonVisibility = View.VISIBLE;
+                resetDataAndUI();
                 break;
             case State.STATE_CONNECTING:
                 stringResId = R.string.txtBluetoothConnecting;
@@ -495,7 +496,7 @@ public class FetchActivity extends AppCompatActivity
         Log.d(TAG, "sendMessageWithFeedback");
         if(messageSender == null)
         {
-            
+
             messageSender = new MessageSender(bluetoothController);
         }
 
@@ -517,6 +518,30 @@ public class FetchActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Intended to be called when bluetooth connection is lost
+     */
+    private void resetDataAndUI()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                titleTextView.setVisibility(View.INVISIBLE);
+                titleLabel.setVisibility(View.INVISIBLE);
+                authorLabel.setVisibility(View.INVISIBLE);
+                authorTextView.setVisibility(View.INVISIBLE);
+                btnGetBook.setVisibility(View.INVISIBLE);
+
+                helperText.setVisibility(View.VISIBLE);
+                helperArrow.setVisibility(View.VISIBLE);
+                helperArrow.startAnimation(arrowAnim);
+
+                chosenBook = null;
+            }
+        });
+
+    }
 
     /**
      * Release bluetooth controller

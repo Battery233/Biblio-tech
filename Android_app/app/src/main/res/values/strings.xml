@@ -33,6 +33,7 @@
     <string name="txtSetSpeed">Motor speed (deg / sec):</string>
     <string name="txtDefaultSpeedValue">0</string>
     <string name="txtSetDuration">Spin duration (ms):</string>
+    <string name="txtSetDistance">Distance (mm):</string>
     <string name="txtDefaultDurationValue">0</string>
     <string name="BookDatabase">Book Database</string>
 
@@ -46,6 +47,7 @@
     <string name="btnForward">Forward</string>
     <string name="btnBackward">Backward</string>
     <string name="btnStop">STOP</string>
+    <string name="checkMoveMode">Move by distance</string>
 
     <string name="txtSettingsMacTitle">MAC Address</string>
     <string name="btnSettingsLoadEV33">Load EV33</string>

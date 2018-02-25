@@ -7,6 +7,19 @@
     android:background="@color/colorPrimaryDark"
     tools:context="com.luckythirteen.bibliotech.dev.DevActivity">
 
+    <CheckBox
+        android:id="@+id/checkMoveMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/checkMoveMode"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+
     <EditText
         android:id="@+id/editMessage"
         android:layout_width="wrap_content"
@@ -100,12 +113,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/txtSetDuration"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+        app:layout_constraintTop_toBottomOf="@+id/checkMoveMode" />
 
     <SeekBar
         android:id="@+id/seekBarDuration"
@@ -122,7 +135,7 @@
     <Button
         android:id="@+id/btnForward"
         android:layout_width="130dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
@@ -135,7 +148,7 @@
     <Button
         android:id="@+id/btnBackward"
         android:layout_width="130dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="24dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
@@ -183,7 +196,7 @@
         android:id="@+id/txtDurationValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:inputType="numberSigned"
@@ -192,7 +205,7 @@
         android:text="@string/txtDefaultDurationValue"
         android:textColor="@color/colorBluetoothConnected"
         app:layout_constraintStart_toEndOf="@+id/txtSetSpeed"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+        app:layout_constraintTop_toBottomOf="@+id/checkMoveMode" />
 
     <ImageButton
         android:id="@+id/btnReconnect"
