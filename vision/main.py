@@ -4,6 +4,9 @@ except:
     import Image
 import zbar
 import pygame.camera
+import numpy
+
+import functools
 import time
 
 CAMERA_VIEW_FILE = "camera_view.jpg"
@@ -30,44 +33,42 @@ def read_QR(camera):
 
 def get_QR_symbol(filename):
     # create a reader
-    scanner = zbar.ImageScanner()
-    # configure the reader
-    scanner.parse_config('enable')
+    scanner = zbar.Scanner()
 
     # obtain image data
     pil = Image.open(filename).convert('L')
-    width, height = pil.size
-    raw = pil.tobytes()
-    # wrap image data
-    image = zbar.Image(width, height, 'Y800', raw)
 
-    # scan the image for barcodes
-    result = scanner.scan(image)
-    if result == 0:
-        return None
+    # convert to numpy array
+    image = numpy.array(pil)
 
-    for symbol in image:
+    # look for QR code
+    results = scanner.scan(image)
+
+    result = None
+    for result in results:
         pass
 
     # clean up
+    del(pil)
     del(image)
 
-    return symbol
+    return result
 
 def decode_QR(filename):
     symbol = get_QR_symbol(filename)
-
     if symbol is None:
         return (None, None)
 
+
     # decode text in QR code
     data = symbol.data.decode(u'utf-8')
+    position = symbol.position
 
     # find corners
-    a, b, c, d = [item for item in symbol.location]
+    a, b, c, d = position
 
     # compute center of mass: sum coordinates element-wise and divide by 4
-    com = reduce(sum_tuples, [a,b,c,d], (0,0))
+    com = functools.reduce(sum_tuples, [a,b,c,d], (0,0))
     com = tuple(map(lambda x: int(x/4), com))
 
     # find horizontal offset in pixels (center of QR - center of camera)

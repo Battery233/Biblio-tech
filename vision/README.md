@@ -6,7 +6,7 @@ Some dependencies need to be installed
 
 ```
 sudo apt-get install libzbar-dev
-sudo apt-get install python-zbar
+sudo apt-get install zbar-py
 
 sudo pip install pygame
 sudo pip install Pillow
