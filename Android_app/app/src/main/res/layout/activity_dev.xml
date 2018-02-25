@@ -11,12 +11,13 @@
         android:id="@+id/editMessage"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@+id/btnSendMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txtMessageSendLabel"
         app:layout_constraintTop_toBottomOf="@+id/btnStop" />
@@ -25,11 +26,13 @@
         android:id="@+id/txtMessageSendLabel"
         android:layout_width="wrap_content"
         android:layout_height="27dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/txtMessage"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnSendMessage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnStop" />
 
@@ -37,34 +40,16 @@
         android:id="@+id/btnSendMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
         android:elevation="12dp"
         android:text="@string/btnSendMessage"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
-
-    <Button
-        android:id="@+id/bookDatabase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/colorAccent"
-        android:elevation="12dp"
-        android:text="@string/BookDatabase"
-        android:visibility="invisible"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txtBluetoothStatus"
@@ -136,38 +121,38 @@
 
     <Button
         android:id="@+id/btnForward"
-        android:layout_width="140dp"
+        android:layout_width="130dp"
         android:layout_height="70dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
         android:elevation="6dp"
         android:text="@string/btnForward"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
 
     <Button
         android:id="@+id/btnBackward"
-        android:layout_width="140dp"
+        android:layout_width="130dp"
         android:layout_height="70dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorAccent"
         android:elevation="6dp"
         android:text="@string/btnBackward"
         android:textAlignment="center"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
 
     <Button
         android:id="@+id/btnStop"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorBluetoothDisconnected"
         android:elevation="12dp"
         android:text="@string/btnStop"
@@ -223,18 +208,11 @@
 
     <Spinner
         android:id="@+id/spinnerOutSocket"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="23dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="205dp" />
 
 </android.support.constraint.ConstraintLayout>

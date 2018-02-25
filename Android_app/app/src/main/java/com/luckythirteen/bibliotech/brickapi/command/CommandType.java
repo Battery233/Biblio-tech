@@ -9,7 +9,8 @@ public enum CommandType
     undefined,
     move,
     stop,
-    reachBook,
+    findBook,
     takeBook,
-    queryDB
+    queryDB,
+    fullScan
 }

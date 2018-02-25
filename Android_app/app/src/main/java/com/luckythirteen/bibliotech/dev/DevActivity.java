@@ -215,13 +215,6 @@ public class DevActivity extends AppCompatActivity {
         // ***********************************************************
         // ***********************************************************
 
-        findViewById(R.id.bookDatabase).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DevActivity.super.getApplicationContext(), FetchActivity.class);
-                startActivity(intent);
-            }
-        });
 
         // Set listeners for all buttons
         sendButton.setOnClickListener(new View.OnClickListener() {
