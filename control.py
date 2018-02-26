@@ -171,7 +171,7 @@ class Controller:
         print("The current position is " + str(x_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            -x_position,
+            CELLS_START[cell][0] - x_position,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
@@ -273,7 +273,8 @@ class Controller:
     def move_motor_by_dist(self, motor, dist, speed):
 
         if motor.connected:
-            angle = cm_to_deg(dist)
+            # convert to cm and then to deg
+            angle = int(cm_to_deg(float(dist)/10))
             motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
         else:
             print('[ERROR] No motor connected to ' + str(motor))
