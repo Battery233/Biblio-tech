@@ -80,6 +80,8 @@ class Controller:
     # TODO: ARM_RETRACTED_DISTANCE, has to be negative
     # TODO: FINGER_RETRACTED_DISTANCE, has to be negative
     # TODO: FINGER_SPEED
+    # TODO: Finalise DISTANCE_BOARD_OFFSET (how many mm the board is away from being aligned with the end of the shelf)
+    DISTANCE_BOARD_OFFSET = 130  # 130 mm
 
     CELLS_START = [(0, 0), (250, 0), (0, 300), (250, 300)]
     CELL_SIZE = 249
@@ -109,6 +111,13 @@ class Controller:
             if not motor.connected:
                 print('Motor ' + str(motor) + ' not connected')
 
+        self.dist_sensor = ev3.UltrasonicSensor()
+
+        if not self.dist_sensor.connected:
+            print("Distance sensor not connected")
+        else:
+            self.dist_sensor.mode = 'US-DIST-CM'
+
         # Create bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
         self.server_thread = Thread(target=self.server.start_server)
@@ -128,6 +137,15 @@ class Controller:
         # Make sure that motor has time to start
         time.sleep(0.1)
         return motor.state != ['running']
+
+    def get_pos(self):
+        # Rough sketch of how function will work, not remotely accurate or even logically correct
+        # Assumes distance board is on right hand side, that's why it's 300 (shelf length) - value + offset
+        if self.dist_sensor.connected:
+            return 300 - (self.dist_sensor.value()) + self.DISTANCE_BOARD_OFFSET
+        else:
+            print('Distance sensor not connected')
+            return None
 
     def reach_cell(self, cell):
         # TODO: get the current position from the distance sensor
