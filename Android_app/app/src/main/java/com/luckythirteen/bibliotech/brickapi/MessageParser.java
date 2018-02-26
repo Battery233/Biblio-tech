@@ -59,18 +59,25 @@ public class MessageParser {
         ArrayList<Book> temp = new ArrayList<>();
 
         if (jsonElement.isJsonObject()) {
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            JsonArray books = jsonObject.getAsJsonArray(MessageType.bookList.name());
+            try {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                JsonArray books = jsonObject.getAsJsonArray(MessageType.bookList.name());
 
-            for (JsonElement e : books.getAsJsonArray()) {
-                JsonObject obj = e.getAsJsonObject();
-                temp.add(new Book(obj.get("ISBN").getAsString(), obj.get("title").getAsString(), obj.get("author").getAsString(), obj.get("pos").getAsString(), obj.get("avail").toString().equals("1")));
-            }
+                for (JsonElement e : books.getAsJsonArray()) {
+                    JsonObject obj = e.getAsJsonObject();
+                    temp.add(new Book(obj.get("ISBN").getAsString(), obj.get("title").getAsString(), obj.get("author").getAsString(), obj.get("pos").getAsString(), obj.get("avail").toString().equals("1")));
+                }
 
-            for (Book b : temp) {
-                System.out.println(String.format("%s\n%s\n%s\n\n", b.getTitle(), b.getAuthor(), b.getISBN()));
+                for (Book b : temp) {
+                    System.out.println(String.format("%s\n%s\n%s\n\n", b.getTitle(), b.getAuthor(), b.getISBN()));
+                }
+                return new BookList(temp);
             }
-            return new BookList(temp);
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return null;
+            }
         } else {
             // Shouldn't reach this point assuming caller determined message type beforehand
             return null;

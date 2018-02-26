@@ -29,6 +29,7 @@ import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
 import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
 import com.luckythirteen.bibliotech.brickapi.messages.MessageType;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
+import com.luckythirteen.bibliotech.brickapi.obj.BookList;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
@@ -347,8 +348,22 @@ public class FetchActivity extends AppCompatActivity {
      * @param json The raw JSON message
      */
     private void performAction(MessageType type, String json) {
-        if (type == MessageType.bookList) {
-            showBookList(MessageParser.getBookListFromJson(json).getBooks());
+        if (type == MessageType.bookList)
+        {
+           BookList books = MessageParser.getBookListFromJson(json);
+
+            if(books != null) {
+                showBookList(books.getBooks());
+            }
+            else {
+                final Context context = this.getApplicationContext();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Error parsing DB json", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         } else if (type == MessageType.foundBook) {
             showGetPrompt();
         } else if (type == MessageType.missingBook) {
