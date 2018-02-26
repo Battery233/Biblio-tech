@@ -6,7 +6,6 @@ from threading import Thread
 import ev3dev.ev3 as ev3
 
 import db.main as db
-import main
 import vision.main as vision
 from ev3bt import ev3_server
 
