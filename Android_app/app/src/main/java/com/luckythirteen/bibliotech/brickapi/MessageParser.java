@@ -17,83 +17,61 @@ import java.util.ArrayList;
  * Class to parse messages received from the EV3
  */
 
-public class MessageParser
-{
+public class MessageParser {
     private static final String TAG = "MessageParser";
 
-    public static MessageType determineMessageType(String json)
-    {
+    public static MessageType determineMessageType(String json) {
 
         JsonParser parser = new JsonParser();
 
-        try
-        {
+        try {
             JsonElement jsonElement = parser.parse(json);
 
-            if(jsonElement.isJsonObject())
-            {
+            if (jsonElement.isJsonObject()) {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 return getType(jsonObject);
-            }
-            else
-            {
+            } else {
                 return MessageType.undefined;
             }
-        }
-        catch (JsonParseException e)
-        {
+        } catch (JsonParseException e) {
             Log.w(TAG, e.getMessage());
             return MessageType.malformedjson;
         }
 
     }
 
-    private static MessageType getType(JsonObject object)
-    {
-        if(object.has(MessageType.bookList.name()))
-        {
+    private static MessageType getType(JsonObject object) {
+        if (object.has(MessageType.bookList.name())) {
             return MessageType.bookList;
-        }
-        else if(object.has(MessageType.foundBook.name()))
-        {
+        } else if (object.has(MessageType.foundBook.name())) {
             return MessageType.foundBook;
-        }
-        else if(object.has(MessageType.missingBook.name()))
-        {
+        } else if (object.has(MessageType.missingBook.name())) {
             return MessageType.missingBook;
-        }
-        else
-        {
+        } else {
             return MessageType.undefined;
         }
     }
 
-    public static BookList getBookListFromJson(String json)
-    {
+    public static BookList getBookListFromJson(String json) {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(json);
 
         ArrayList<Book> temp = new ArrayList<>();
 
-        if (jsonElement.isJsonObject())
-        {
+        if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             JsonArray books = jsonObject.getAsJsonArray(MessageType.bookList.name());
 
-            for (JsonElement e : books.getAsJsonArray())
-            {
+            for (JsonElement e : books.getAsJsonArray()) {
                 JsonObject obj = e.getAsJsonObject();
                 temp.add(new Book(obj.get("ISBN").getAsString(), obj.get("title").getAsString(), obj.get("author").getAsString(), obj.get("pos").getAsString(), obj.get("avail").toString().equals("1")));
             }
 
-            for (Book b : temp)
-            {
+            for (Book b : temp) {
                 System.out.println(String.format("%s\n%s\n%s\n\n", b.getTitle(), b.getAuthor(), b.getISBN()));
             }
             return new BookList(temp);
-        }
-        else
-        {
+        } else {
             // Shouldn't reach this point assuming caller determined message type beforehand
             return null;
         }

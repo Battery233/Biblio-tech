@@ -16,12 +16,14 @@ CAMERA_X_CENTER = CAMERA_WIDTH / 2
 
 ACTUAL_QR_SIDE = 300
 
+
 def activate_camera(source='/dev/video0'):
     pygame.camera.init()
-    camera = pygame.camera.Camera(source, (CAMERA_WIDTH,CAMERA_HEIGHT))
+    camera = pygame.camera.Camera(source, (CAMERA_WIDTH, CAMERA_HEIGHT))
     camera.start()
 
     return camera
+
 
 def read_QR(camera):
     # Take input from camera
@@ -30,6 +32,7 @@ def read_QR(camera):
     pygame.image.save(img, CAMERA_VIEW_FILE)
 
     return decode_QR(CAMERA_VIEW_FILE)
+
 
 def get_QR_symbol(filename):
     # create a reader
@@ -49,16 +52,16 @@ def get_QR_symbol(filename):
         pass
 
     # clean up
-    del(pil)
-    del(image)
+    del pil
+    del image
 
     return result
+
 
 def decode_QR(filename):
     symbol = get_QR_symbol(filename)
     if symbol is None:
-        return (None, None)
-
+        return None, None
 
     # decode text in QR code
     data = symbol.data.decode(u'utf-8')
@@ -68,8 +71,8 @@ def decode_QR(filename):
     a, b, c, d = position
 
     # compute center of mass: sum coordinates element-wise and divide by 4
-    com = functools.reduce(sum_tuples, [a,b,c,d], (0,0))
-    com = tuple(map(lambda x: int(x/4), com))
+    com = functools.reduce(sum_tuples, [a, b, c, d], (0, 0))
+    com = tuple(map(lambda x: int(x / 4), com))
 
     # find horizontal offset in pixels (center of QR - center of camera)
     offset = com[0] - CAMERA_X_CENTER
@@ -81,12 +84,14 @@ def decode_QR(filename):
     # convert to mm
     offset = int(offset * pix_mm_rate)
 
-    return (data, offset)
+    return data, offset
+
 
 def sum_tuples(t1, t2):
     a, b = t1
     c, d = t2
-    return (a+c, b+d)
+    return a + c, b + d
+
 
 if __name__ == '__main__':
     camera = activate_camera()

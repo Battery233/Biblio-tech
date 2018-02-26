@@ -28,8 +28,7 @@ public class Book {
         return author;
     }
 
-    public String getPos()
-    {
+    public String getPos() {
         return pos;
     }
 

@@ -107,6 +107,7 @@ def update_book_status(db, ISBN, status):
     conn.commit()
     conn.close()
 
+
 def get_position_by_ISBN(db, ISBN):
     conn = sqlite3.connect(db)
     c = conn.cursor()
@@ -123,48 +124,50 @@ def get_position_by_ISBN(db, ISBN):
 
     return None
 
+
 # TODO: refactor this and extract querying bit into a method with parameterized values
 def get_position_by_title(db, title):
-	conn = sqlite3.connect(db)
-	c = conn.cursor()
-	
-	values = (title,)
-	c.execute('SELECT position FROM books WHERE title=?', values)
-	
-	row = c.fetchone()
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
 
-	conn.close()
+    values = (title,)
+    c.execute('SELECT position FROM books WHERE title=?', values)
 
-	if row is not None:
-		return row[0]
-	
-	return None
+    row = c.fetchone()
+
+    conn.close()
+
+    if row is not None:
+        return row[0]
+
+    return None
+
 
 def get_all_titles_and_positions(db):
-	conn = sqlite3.connect(db)
-	c = conn.cursor()
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
 
-	c.execute('SELECT title, position FROM books')
+    c.execute('SELECT title, position FROM books')
 
-	books = c.fetchall();
+    books = c.fetchall();
 
-	conn.close()
-	
-	return books
+    conn.close()
+
+    return books
+
 
 def get_ISBN_by_title(db, title):
-	conn = sqlite3.connect(db)
-	c = conn.cursor()
-	
-	values = (title,)
-	c.execute('SELECT ISBN FROM books WHERE title=?', values)
-	
-	row = c.fetchone()
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
 
-	conn.close()
+    values = (title,)
+    c.execute('SELECT ISBN FROM books WHERE title=?', values)
 
-	if row is not None:
-		return row[0]
-	
-	return None
+    row = c.fetchone()
 
+    conn.close()
+
+    if row is not None:
+        return row[0]
+
+    return None

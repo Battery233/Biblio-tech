@@ -37,20 +37,14 @@ public class MessageSender {
      * @return True if succeeded, false otherwise
      */
     private boolean sendMessage(String s) {
-        try
-        {
-            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
-            {
+        try {
+            if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
                 bluetoothController.write(s.getBytes());
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
             return false;
         }

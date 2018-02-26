@@ -67,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.btnSettings);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
                 startActivity(intent);
             }

@@ -21,8 +21,7 @@ import java.util.List;
  * Custom ArrayAdapter for displaying the found books in MapsActivity
  */
 
-public class BookListArrayAdapter extends ArrayAdapter<Book>
-{
+public class BookListArrayAdapter extends ArrayAdapter<Book> {
 
     private static final String TAG = "BookListArrayAdapter";
 
@@ -32,8 +31,7 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
     private AlertDialog parentDialog;
     private FetchActivity fetchActivity;
 
-    public BookListArrayAdapter(Context context, int resourceId, List<Book> books, AlertDialog parentDialog, FetchActivity fetchActivity)
-    {
+    public BookListArrayAdapter(Context context, int resourceId, List<Book> books, AlertDialog parentDialog, FetchActivity fetchActivity) {
         super(context, resourceId, books);
 
         this.context = context;
@@ -46,34 +44,29 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
     // Code adapted from: https://www.androidcode.ninja/android-viewholder-pattern-example/
     @NonNull
     @Override
-    public View getView(final int position, View convertView, final ViewGroup parent)
-    {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         ViewHolderItem viewHolder;
 
 
         // If we've not loaded this row before, inflate it otherwise get it's ViewHolder and update it
-        if(convertView == null)
-        {
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_books_row, parent, false);
 
 
             viewHolder = new BookListArrayAdapter.ViewHolderItem();
             viewHolder.txtTitle = (TextView) convertView.findViewById(R.id.txtRowTitle);
-            viewHolder.txtAuthor = (TextView)convertView.findViewById(R.id.txtRowAuthor);
+            viewHolder.txtAuthor = (TextView) convertView.findViewById(R.id.txtRowAuthor);
 
             convertView.setTag(viewHolder);
-        }
-        else
-        {
+        } else {
             ViewHolderItem tag = (ViewHolderItem) convertView.getTag();
             viewHolder = tag;
         }
 
         // Update row with info for that song
         final Book book = books.get(position);
-        if(book != null)
-        {
+        if (book != null) {
 
             viewHolder.txtTitle.setText(book.getTitle());
             viewHolder.txtAuthor.setText(book.getAuthor());
@@ -83,8 +76,7 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
         // Call back to fetchActivity to let it know the user has selected a book
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Log.d(TAG, "Book chosen");
                 fetchActivity.onBookSelected(books.get(position));
 
@@ -99,8 +91,7 @@ public class BookListArrayAdapter extends ArrayAdapter<Book>
     /**
      * Object representing a row
      */
-    static class ViewHolderItem
-    {
+    static class ViewHolderItem {
         TextView txtTitle, txtAuthor;
     }
 }

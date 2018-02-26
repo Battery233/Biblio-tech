@@ -276,8 +276,7 @@ public class DevActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                try
-                {
+                try {
                     int value = Integer.valueOf(s.toString());
                     if (value > MAX_SPEED)
                         speedText.setText(String.valueOf(MAX_SPEED));
@@ -304,7 +303,7 @@ public class DevActivity extends AppCompatActivity {
 
                     if (!distanceModeCheckBox.isChecked() && value > MAX_DURATION)
                         speedText.setText(String.valueOf(MAX_DURATION));
-                    else if(distanceModeCheckBox.isChecked() && value > MAX_DISTANCE)
+                    else if (distanceModeCheckBox.isChecked() && value > MAX_DISTANCE)
                         speedText.setText(String.valueOf(MAX_DISTANCE));
                 } catch (NumberFormatException e) {
                     // it's fine, just means string is empty "" or user somehow pasted non
@@ -357,8 +356,7 @@ public class DevActivity extends AppCompatActivity {
         int durationValue = Integer.valueOf(durationText.getText().toString());
 
 
-        if(!distanceModeCheckBox.isChecked())
-        {
+        if (!distanceModeCheckBox.isChecked()) {
             // Only send message to EV3 if speed and duration values are valid ("safe")
             if (speedValue > 0 && speedValue <= MAX_SPEED) {
                 if (durationValue > 0 && durationValue <= MAX_DURATION) {
@@ -369,13 +367,11 @@ public class DevActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
             }
-        }
-        else
-        {
+        } else {
             // Only send message to EV3 if speed and distance values are valid ("safe")
             if (speedValue > 0 && speedValue <= MAX_DISTANCE) {
                 if (durationValue > 0 && durationValue <= MAX_DURATION) {
-                    messageSender.sendCommand(new MoveDist(outputPort, (float) durationValue/10 * directionMultiplier, speedValue));
+                    messageSender.sendCommand(new MoveDist(outputPort, (float) durationValue / 10 * directionMultiplier, speedValue));
                 } else {
                     Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Distance must be > 0 and less than " + MAX_DISTANCE + "cm", Toast.LENGTH_SHORT).show();
                 }

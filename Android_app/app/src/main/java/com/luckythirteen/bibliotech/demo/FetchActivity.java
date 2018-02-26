@@ -45,8 +45,7 @@ import co.lujun.lmbluetoothsdk.base.State;
 
 //TODO: WHOLE CLASS NEEDS SOME HANDLING FOR WHEN ROBOT IS BUSY
 
-public class FetchActivity extends AppCompatActivity
-{
+public class FetchActivity extends AppCompatActivity {
 
     /**
      * Debugging tag
@@ -78,8 +77,7 @@ public class FetchActivity extends AppCompatActivity
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_new);
@@ -153,15 +151,13 @@ public class FetchActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
         bluetoothController = BluetoothController.getInstance();
         bluetoothController.setBluetoothListener(bluetoothListener);
 
-        if(bluetoothController.getConnectionState() != State.STATE_CONNECTED && bluetoothController.getConnectionState() != State.STATE_CONNECTING)
-        {
+        if (bluetoothController.getConnectionState() != State.STATE_CONNECTED && bluetoothController.getConnectionState() != State.STATE_CONNECTING) {
             bluetoothController.connect(targetMac);
         }
     }
@@ -177,8 +173,7 @@ public class FetchActivity extends AppCompatActivity
         ed.commit();
     }
 
-    private void setupUI()
-    {
+    private void setupUI() {
         bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
         reconnectButton = findViewById(R.id.btnReconnect);
 
@@ -197,16 +192,13 @@ public class FetchActivity extends AppCompatActivity
 
         btnSelectBook.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 onSelectBookButton();
             }
         });
-        btnGetBook.setOnClickListener(new View.OnClickListener()
-        {
+        btnGetBook.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 onGetButton();
             }
         });
@@ -224,8 +216,7 @@ public class FetchActivity extends AppCompatActivity
     /**
      * Shows list of books user can select
      */
-    private void onSelectBookButton()
-    {
+    private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
         sendMessageWithFeedback(new QueryDB(null));
     }
@@ -233,10 +224,10 @@ public class FetchActivity extends AppCompatActivity
 
     /**
      * Called back from the BookListArrayAdapter when the user selects a book
+     *
      * @param book The book they selected
      */
-    public void onBookSelected(Book book)
-    {
+    public void onBookSelected(Book book) {
         Log.d(TAG, "Selected book with ISBN: " + book.getISBN());
         chosenBook = book;
 
@@ -258,16 +249,14 @@ public class FetchActivity extends AppCompatActivity
         titleTextView.setText(chosenBook.getTitle());
     }
 
-    private void onGetButton()
-    {
+    private void onGetButton() {
         Log.d(TAG, "onGetButton()");
 
-        if(chosenBook != null)
-        {
+        if (chosenBook != null) {
             Log.d(TAG, String.format("[FIND BOOK] \n ISBN: %s \n Title: %s \n Author: %s", chosenBook.getISBN(), chosenBook.getTitle(), chosenBook.getAuthor()));
 
             // Make sure MessageSender object initialised
-            assert messageSender != null: "MessageSender object not initialised";
+            assert messageSender != null : "MessageSender object not initialised";
 
             // Send FindBook command
             FindBook reachBook = new FindBook(chosenBook.getISBN());
@@ -275,9 +264,7 @@ public class FetchActivity extends AppCompatActivity
             // Send message
             sendMessageWithFeedback(reachBook);
 
-        }
-        else
-        {
+        } else {
             Log.e(TAG, "Get button is visible despite chosen book being NULL");
         }
     }
@@ -285,17 +272,15 @@ public class FetchActivity extends AppCompatActivity
 
     /**
      * Show view containing list of books
+     *
      * @param books List of books
      */
-    private void showBookList(final ArrayList<Book> books)
-    {
+    private void showBookList(final ArrayList<Book> books) {
         final Context context = this;
         final FetchActivity fetchActivity = this;
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 // Inflate dialog
                 LayoutInflater layoutInflater = LayoutInflater.from(FetchActivity.this);
                 View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
@@ -315,18 +300,15 @@ public class FetchActivity extends AppCompatActivity
         });
 
 
-
     }
 
 
     /**
      * Bluetooth event listener
      */
-    private final BluetoothListener bluetoothListener = new BluetoothListener()
-    {
+    private final BluetoothListener bluetoothListener = new BluetoothListener() {
         @Override
-        public void onReadData(BluetoothDevice device, byte[] data)
-        {
+        public void onReadData(BluetoothDevice device, byte[] data) {
             Log.d(TAG, "Received: " + new String(data));
             String json = new String(data);
             MessageType type = MessageParser.determineMessageType(json);
@@ -334,56 +316,44 @@ public class FetchActivity extends AppCompatActivity
         }
 
         @Override
-        public void onActionStateChanged(int preState, int state)
-        {
+        public void onActionStateChanged(int preState, int state) {
 
         }
 
         @Override
-        public void onActionDiscoveryStateChanged(String discoveryState)
-        {
+        public void onActionDiscoveryStateChanged(String discoveryState) {
         }
 
         @Override
-        public void onActionScanModeChanged(int preScanMode, int scanMode)
-        {
+        public void onActionScanModeChanged(int preScanMode, int scanMode) {
 
         }
 
         @Override
-        public void onBluetoothServiceStateChanged(int state)
-        {
+        public void onBluetoothServiceStateChanged(int state) {
             updateBluetoothStatusUI(state);
         }
 
         @Override
-        public void onActionDeviceFound(BluetoothDevice device, short rssi)
-        {
+        public void onActionDeviceFound(BluetoothDevice device, short rssi) {
 
         }
     };
 
     /**
      * Performs an action based on the message received from the robot
+     *
      * @param type Type of the message
      * @param json The raw JSON message
      */
-    private void performAction(MessageType type, String json)
-    {
-        if(type == MessageType.bookList)
-        {
+    private void performAction(MessageType type, String json) {
+        if (type == MessageType.bookList) {
             showBookList(MessageParser.getBookListFromJson(json).getBooks());
-        }
-        else if(type == MessageType.foundBook)
-        {
+        } else if (type == MessageType.foundBook) {
             showGetPrompt();
-        }
-        else if(type == MessageType.missingBook)
-        {
+        } else if (type == MessageType.missingBook) {
             showMissingBookPrompt();
-        }
-        else if(type == MessageType.undefined)
-        {
+        } else if (type == MessageType.undefined) {
             Log.w(TAG, "Don't understand message: " + json);
         }
     }
@@ -391,21 +361,15 @@ public class FetchActivity extends AppCompatActivity
     /**
      * Called when the robot has told the app the requested book is there
      */
-    private void showMissingBookPrompt()
-    {
+    private void showMissingBookPrompt() {
         final Context context = this;
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-                {
+            public void run() {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        switch (which)
-                        {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 messageSender.sendCommand(new FullScan(chosenBook.getISBN()));
                                 break;
@@ -429,22 +393,18 @@ public class FetchActivity extends AppCompatActivity
     }
 
 
-        /**
-         * Called when the robot has told the app the requested book is there
-         */
-    private void showGetPrompt()
-    {
+    /**
+     * Called when the robot has told the app the requested book is there
+     */
+    private void showGetPrompt() {
         final Context context = this;
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which)
-                        {
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 sendMessageWithFeedback(new TakeBook());
                                 break;
@@ -470,14 +430,14 @@ public class FetchActivity extends AppCompatActivity
     /**
      * Dummy function that mimics receiving the list of books from the brick
      * (will be replaced eventually)
+     *
      * @return List of books
      */
-    private ArrayList<Book> getBooks()
-    {
+    private ArrayList<Book> getBooks() {
         ArrayList<Book> books = new ArrayList<>();
-        books.add(new Book("9781785782343" , "Big Data How the Information Revolution Is Transforming Our Lives", "Brian Clegg", "1,1", true));
-        books.add(new Book("9781447221098" , "Dirk Gently Holistic Detective Agency", "Douglas Adams", "1,2", true));
-        books.add(new Book("9780241197806" , "The Castle", "Franz Kafka", "1,3", true));
+        books.add(new Book("9781785782343", "Big Data How the Information Revolution Is Transforming Our Lives", "Brian Clegg", "1,1", true));
+        books.add(new Book("9781447221098", "Dirk Gently Holistic Detective Agency", "Douglas Adams", "1,2", true));
+        books.add(new Book("9780241197806", "The Castle", "Franz Kafka", "1,3", true));
         books.add(new Book("9781840226881", "Wealth of Nations", "Adam Smith", "2,1", true));
         books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", "2,2", true));
         books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", "2,3", false));
@@ -489,13 +449,12 @@ public class FetchActivity extends AppCompatActivity
     /**
      * Function to send a message that displays a failed message if messageSender.sendMessage()
      * returns false
+     *
      * @param c Command to send
      */
-    private void sendMessageWithFeedback(Command c)
-    {
+    private void sendMessageWithFeedback(Command c) {
         Log.d(TAG, "sendMessageWithFeedback");
-        if(messageSender == null)
-        {
+        if (messageSender == null) {
 
             messageSender = new MessageSender(bluetoothController);
         }
@@ -506,9 +465,8 @@ public class FetchActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(!success)
-                {
-                    if(bluetoothController.getConnectedDevice() != null)
+                if (!success) {
+                    if (bluetoothController.getConnectedDevice() != null)
                         Toast.makeText(context, "Failed to send message to robot :(", Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(context, "Not connected to robot!", Toast.LENGTH_SHORT).show();
@@ -521,12 +479,10 @@ public class FetchActivity extends AppCompatActivity
     /**
      * Intended to be called when bluetooth connection is lost
      */
-    private void resetDataAndUI()
-    {
+    private void resetDataAndUI() {
         runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 titleTextView.setVisibility(View.INVISIBLE);
                 titleLabel.setVisibility(View.INVISIBLE);
                 authorLabel.setVisibility(View.INVISIBLE);

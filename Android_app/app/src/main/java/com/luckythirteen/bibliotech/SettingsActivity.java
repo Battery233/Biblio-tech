@@ -24,8 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -34,8 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    private void setupUI()
-    {
+    private void setupUI() {
         textMacAddress = findViewById(R.id.editMac);
         buttonEV13 = findViewById(R.id.btnEV13);
         buttonEV33 = findViewById(R.id.btnEV33);
@@ -52,44 +50,37 @@ public class SettingsActivity extends AppCompatActivity {
 
         buttonEV33.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-               loadNewMac(EV33_MAC);
+            public void onClick(View view) {
+                loadNewMac(EV33_MAC);
             }
         });
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 saveNewMac(textMacAddress.getText().toString());
             }
         });
 
     }
 
-    private void loadNewMac(String mac)
-    {
+    private void loadNewMac(String mac) {
         textMacAddress.setText(mac);
     }
 
-    private void saveNewMac(String mac)
-    {
+    private void saveNewMac(String mac) {
         userPrefsManager.updateMacAddress(mac);
         textMacAddress.setText(userPrefsManager.getMacAddress());
 
-        if(mac.equals(userPrefsManager.getMacAddress()))
-        {
+        if (mac.equals(userPrefsManager.getMacAddress())) {
             Toast.makeText(this, getString(R.string.msgSaveSuccessful), Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, getString(R.string.msgSaveUnsuccessful), Toast.LENGTH_SHORT).show();
         }
 
         Vibrator vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        if(vib.hasVibrator())
+        if (vib.hasVibrator())
             vib.vibrate(100);
     }
 }

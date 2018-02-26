@@ -4,11 +4,11 @@ import main
 
 db = main.TEST_DB
 
+
 class TestDB(unittest.TestCase):
     def setUp(self):
         main.flush_db(db)
         main.create_book_table(db)
-
 
     def testAddSampleBooks(self):
         main.add_sample_books(db)
@@ -32,7 +32,7 @@ class TestDB(unittest.TestCase):
         books = main.get_books(db)
 
         self.assertEqual((9780241197806, u'The Castle', u'Franz Kafka', u'1:5', int(main.STATUS_AVAILABLE)),
-            books[0])
+                         books[0])
 
     def testUpdateStatus(self):
         main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
@@ -41,7 +41,7 @@ class TestDB(unittest.TestCase):
         books = main.get_books(db)
 
         self.assertEqual((9780241197806, u'The Castle', u'Franz Kafka', u'1:3', int(main.STATUS_UNAVAILABLE)),
-            books[0])
+                         books[0])
 
     def testAddSamePosition(self):
         main.add_book(db, '9780241197806', 'The Castle', 'Franz Kafka', '1:3', main.STATUS_AVAILABLE)
@@ -73,7 +73,6 @@ class TestDB(unittest.TestCase):
         self.assertEqual(main.get_ISBN_by_title(db, 'The Castle'), 9780241197806)
         self.assertIsNone(main.get_ISBN_by_title(db, 'The Wrong Castle'))
 
-    
 
 if __name__ == '__main__':
     unittest.main()
