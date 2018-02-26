@@ -17,11 +17,11 @@ def cm_to_deg(cm):
 
 
 def primary_action(action):
-    '''
+    """
     Method decorator to check whether robot is busy with some other operation
     before having it start a new action, and to prevent other actions from
     starting
-    '''
+    """
 
     def safety_wrapper(self, socket, *args, **kwargs):
         # If state is already busy trying to change it will return False
