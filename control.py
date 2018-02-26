@@ -155,7 +155,7 @@ class Controller:
         # Rough sketch of how function will work, not remotely accurate or even logically correct
         # Assumes distance board is on right hand side, so that's why we subtract from the shelf length
         if self.dist_sensor.connected:
-            return self.SHELF_LENGTH - (self.dist_sensor.value()) + self.DIST_OFFSET
+            return self.SHELF_LENGTH - (self.dist_sensor.value() + self.DIST_OFFSET)
         else:
             print('Distance sensor not connected')
             return None
@@ -165,7 +165,7 @@ class Controller:
         print("The current position is " + str(current_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            current_position,
+            -current_position,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
