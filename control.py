@@ -165,7 +165,7 @@ class Controller:
         print("The current position is " + str(current_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            current_position[0],
+            current_position,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
