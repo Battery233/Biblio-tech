@@ -82,7 +82,7 @@ def get_books(db):
     # Get all books
     c.execute("SELECT * FROM books")
     books = c.fetchall()
-
+    print("[DBS] running get_books in db.main")
     conn.close()
 
     return books

@@ -6,11 +6,12 @@ from threading import Thread
 import ev3dev.ev3 as ev3
 
 import db.main as db
+import main
 import vision.main as vision
 from ev3bt import ev3_server
 
+db = main.TEST_DB
 DEG_PER_CM = 29.0323
-
 
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
@@ -337,6 +338,7 @@ class Controller:
                     args = None
                 self.send_message(socket, 'bookItem', args)
             elif len(command_args) == 0:
+                print("[DBS in control.py]Give the book list of all books.")
                 query_result = self.query_DB()
                 self.send_message(socket, 'bookList', query_result)
             else:
@@ -365,16 +367,18 @@ class Controller:
         self.send_message(socket, self.MESSAGE_BUSY)
 
     def query_DB(self, title=None):
-        '''
+        """
         If title is None, return a list of `(title, position)` for all the books
         in the database. Otherwise return a tuple of the form `(title, position)`
         for the title received as argument, or `None` if it is unavailable in the
         database.
-        '''
+        """
 
         if title is None:
-            return db.get_books()
+            print("[query_DB], tittle is none")
+            return db.get_books(db)
         else:
+            print("[query_DB], tittle is not none")
             return db.get_position_by_title(title)
 
 
