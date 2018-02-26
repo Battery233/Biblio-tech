@@ -107,7 +107,7 @@ class Controller:
         # Check motors
         for i, motor in enumerate(self.MOTORS):
             if not motor.connected:
-                print('Motor ' + i + ' non connected')
+                print('Motor ' + str(motor) + ' not connected')
 
         # Create bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
@@ -124,6 +124,11 @@ class Controller:
     def state_signal(self):
         self.state['busy'] = False
 
+    def motor_ready(self, motor):
+        # Make sure that motor has time to start
+        time.sleep(0.1)
+        return motor.state != ['running']
+
     def reach_cell(self, cell):
         # TODO: get the current position from the distance sensor
         current_position = (0, 0)
@@ -133,8 +138,9 @@ class Controller:
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
-        self.wait_for_motor(self.motor)
-        self.state['position'] = self.CELLS[cell]
+        # self.wait_for_motor(self.motor)
+        self.HORIZONTAL_MOTOR.wait_until_not_moving()
+        self.state['position'] = self.CELLS_START[cell]
 
     def scan_ISBN(self, ISBN):
         # start horizontal movement needed to almost reach next cell
@@ -144,7 +150,7 @@ class Controller:
             self.HORIZONTAL_SPEED
         )
 
-        while (not self.motor_ready(self.motor)):
+        while not self.motor_ready(self.HORIZONTAL_MOTOR):
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
                 self.stop_motor()
@@ -208,18 +214,6 @@ class Controller:
     def full_scan(self, socket, ISBN):
         # TODO: A LOT
         pass
-
-    def wait_for_motor(self, motor):
-        # Make sure that motor has time to start
-        time.sleep(0.1)
-        while motor.state == ["running"]:
-            print('Motor is still running')
-            time.sleep(0.1)
-
-    def motor_ready(self, motor):
-        # Make sure that motor has time to start
-        time.sleep(0.1)
-        return motor.state != ['running']
 
     # Move motor
     # @param string socket  Output socket string (0 / 1 / 2 / 3)
@@ -300,7 +294,7 @@ class Controller:
             if len(command_args) == 1 and 'title' in command_args.keys():
                 query_result = self.query_DB(command_args['title'])
                 if query_result is not None:
-                    args = (self.title, query_result)
+                    args = (command_args['title'], query_result)
                 else:
                     args = None
                 self.send_message(socket, 'bookItem', args)
