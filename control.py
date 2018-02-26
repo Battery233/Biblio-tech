@@ -162,7 +162,7 @@ class Controller:
 
     def reach_cell(self, cell):
         current_position = self.get_pos()
-		print("The current position is " + str(current_position))
+	    print("The current position is " + str(current_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
             self.CELLS_START[cell][0] - current_position[0],
