@@ -67,7 +67,9 @@ def disruptive_action(action):
 
 
 class Controller:
-    INITIAL_STATE = {'alignedToBook': None, 'busy': False}
+    # TODO: change assumption that robot is initially positioned at the end of
+    # the track
+    INITIAL_STATE = {'alignedToBook': None, 'busy': False, 'x_pos': 500}
 
     MOTORS = [
         ev3.Motor('outA'),
@@ -161,11 +163,15 @@ class Controller:
             return None
 
     def reach_cell(self, cell):
-        current_position = self.get_pos()
+        # offset_to_end is the distance to end of track calculated
+        # by the distance sensor. Temporarily disabled as distance sensor is
+        # very imprecise
+        # x_position = self.get_pos()
+        x_position = self.state['x_pos']
         print("The current position is " + str(current_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            -current_position,
+            -x_position,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
