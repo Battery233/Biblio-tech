@@ -15,6 +15,18 @@ DEG_PER_CM = 29.0323
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
 
+def letter_to_int(letter):
+    if letter == 'A':
+        return 0
+    elif letter == 'B':
+        return 1
+    elif letter == 'C':
+        return 2
+    elif letter == 'D':
+        return 3
+    else:
+        return 0
+
 
 def primary_action(action):
     """
@@ -95,6 +107,11 @@ class Controller:
     MESSAGE_FOUND_BOOK = 'foundBook'
 
     def __init__(self):
+        # Check motors
+        for i, motor in enumerate(self.MOTORS):
+            if not motor.connected:
+                print('Motor ' + str(motor) + ' not connected')
+
         # Initialize robot's internal model
         self.state = self.INITIAL_STATE
 
@@ -106,11 +123,6 @@ class Controller:
 
         # Position arm at the beginning of first cell
         self.reach_cell(0)
-
-        # Check motors
-        for i, motor in enumerate(self.MOTORS):
-            if not motor.connected:
-                print('Motor ' + str(motor) + ' not connected')
 
         self.dist_sensor = ev3.UltrasonicSensor()
 
@@ -238,14 +250,15 @@ class Controller:
     # @param string socket  Output socket string (0 / 1 / 2 / 3)
     # @param int speed      Speed to move motor at (degrees/sec)
     # @param int time       Time to move motor for (milliseconds)
-    def move_motor(self, socket, speed, time):
-        motor = self.MOTORS[socket]
-        if motor.connected:
-            # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
-            if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
-                motor.run_timed(speed_sp=speed, time_sp=time)
-        else:
-            print('[ERROR] No motor connected to ' + socket)
+    def move_motor(self, sockets, speed, time):
+        for socket in sockets:
+            motor = self.MOTORS[letter_to_int(socket)]
+            if motor.connected:
+                # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
+                if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
+                    motor.run_timed(speed_sp=speed, time_sp=time)
+            else:
+                print('[ERROR] No motor connected to ' + socket)
 
     # Moves motor by specified distance at a certain speed and direction
     # @param int    socket     Socket index in MOTORS to use
