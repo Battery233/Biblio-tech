@@ -1,16 +1,20 @@
-import db.main as db
-import vision.main as vision
-
-import time
 import json
+import sys
+import time
 from threading import Thread
 
 import ev3dev.ev3 as ev3
 
+import db.main as db
+import vision.main as vision
+from ev3bt import ev3_server
+
 DEG_PER_CM = 29.0323
+
 
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
+
 
 def primary_action(action):
     '''
@@ -18,6 +22,7 @@ def primary_action(action):
     before having it start a new action, and to prevent other actions from
     starting
     '''
+
     def safety_wrapper(self, socket, *args, **kwargs):
         # If state is already busy trying to change it will return False
         if not self.state_wait():
@@ -38,6 +43,7 @@ def primary_action(action):
 
     return safety_wrapper
 
+
 def disruptive_action(action):
     def break_get_book_flow(self, socket, *args, **kwargs):
         # Break the flow of findBook - takeBook. Sorry user, too slow
@@ -47,8 +53,8 @@ def disruptive_action(action):
 
     return break_get_book_flow
 
-class Controller:
 
+class Controller:
     INITIAL_STATE = {'alignedToBook': None, 'busy': False}
 
     MOTORS = [
@@ -56,7 +62,7 @@ class Controller:
         ev3.Motor('outB'),
         ev3.Motor('outC'),
         ev3.Motor('outD')
-        ]
+    ]
 
     # SOCKET A IS HORIZONTAL movement
     # SOCKET B IS FOR arm
@@ -75,7 +81,7 @@ class Controller:
     # TODO: FINGER_RETRACTED_DISTANCE, has to be negative
     # TODO: FINGER_SPEED
 
-    CELLS_START = [(0,0), (250,0), (0,300), (250,300)]
+    CELLS_START = [(0, 0), (250, 0), (0, 300), (250, 300)]
     CELL_SIZE = 249
 
     TOLERABLE_OFFSET = 5
@@ -105,7 +111,7 @@ class Controller:
 
         # Create bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
-        self.server_thread = Thread(target=server.start_server)
+        self.server_thread = Thread(target=self.server.start_server)
         self.server_thread.start()
 
     def state_wait(self):
@@ -120,27 +126,27 @@ class Controller:
 
     def reach_cell(self, cell):
         # TODO: get the current position from the distance sensor
-        current_position = (0,0)
+        current_position = (0, 0)
         self.move_motor_by_dist(
-            HORIZONTAL_MOTOR,
-            CELLS_START[cell][0] - current_position[0]
-            HORIZONTAL_SPEED
+            self.HORIZONTAL_MOTOR,
+            self.CELLS_START[cell][0] - current_position[0],
+            self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
-        self.wait_for_motor(motor)
-        self.state['position'] = CELLS[cell]
+        self.wait_for_motor(self.motor)
+        self.state['position'] = self.CELLS[cell]
 
     def scan_ISBN(self, ISBN):
         # start horizontal movement needed to almost reach next cell
         self.move_motor_by_dist(
-            HORIZONTAL_MOTOR,
-            CELL_SIZE,
-            HORIZONTAL_SPEED
+            self.HORIZONTAL_MOTOR,
+            self.CELL_SIZE,
+            self.HORIZONTAL_SPEED
         )
 
-        while(not self.motor_ready(motor)):
+        while (not self.motor_ready(self.motor)):
             decoded_ISBN, offset = vision.read_QR(self.camera)
-            if ISBN == decoded_ISBN and offset < TOLERABLE_OFFSET:
+            if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
                 self.stop_motor()
                 return True
             time.sleep(0.1)
@@ -150,50 +156,52 @@ class Controller:
     @primary_action
     @disruptive_action
     def find_book(self, socket, title):
-		'''
-		Move the robot at the position of the book having the title received
-		as an argument.
-		'''
+        '''
+        Move the robot at the position of the book having the title received
+        as an argument.
+        '''
         cell = db.get_position_by_title(title)
-		if cell is None:
-			print('Book does not exist')
-			return
+
+        if cell is None:
+            print('Book does not exist')
+            # TODO: RETURN missingBook
+            pass
 
         self.reach_cell(cell)
-		ISBN = db.get_ISBN_by_title(title)
+        ISBN = db.get_ISBN_by_title(title)
         if not self.scan_ISBN(ISBN):
-            self.send_message(socket, MESSAGE_MISSING_BOOK)
-    	else:
+            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
+        else:
             self.state['alignedToBook'] = ISBN
-    		self.send_message(socket, MESSAGE_FOUND_BOOK)
+            self.send_message(socket, self.MESSAGE_FOUND_BOOK)
 
     @primary_action
     def take_book(self, socket, ISBN):
         if self.state['alignedToBook'] == ISBN:
             # extend arm
             self.move_motor_by_dist(
-                ARM_MOTOR,
-                ARM_EXTENDED_DISTANCE
-                ARM_SPEED
+                self.ARM_MOTOR,
+                self.ARM_EXTENDED_DISTANCE,
+                self.ARM_SPEED
             )
             time.sleep(5)
             # retract finger
             self.move_motor_by_dist(
-                FINGER_MOTOR,
-                FINGER_RETRACTED_DISTANCE
-                FINGER_SPEED
+                self.FINGER_MOTOR,
+                self.FINGER_RETRACTED_DISTANCE,
+                self.FINGER_SPEED
             )
             time.sleep(5)
             # retract arm
             self.move_motor_by_dist(
-                FINGER_MOTOR,
-                FINGER_RETRACTED_DISTANCE
-                FINGER_SPEED
+                self.FINGER_MOTOR,
+                self.FINGER_RETRACTED_DISTANCE,
+                self.FINGER_SPEED
             )
 
             # TODO: put arm and fingers back to initial position
         else:
-            self.send_message(socket, MESSAGE_BOOK_NOT_ALIGNED)
+            self.send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
     @primary_action
     @disruptive_action
@@ -204,7 +212,7 @@ class Controller:
     def wait_for_motor(self, motor):
         # Make sure that motor has time to start
         time.sleep(0.1)
-        while motor.state==["running"]:
+        while motor.state == ["running"]:
             print('Motor is still running')
             time.sleep(0.1)
 
@@ -231,7 +239,7 @@ class Controller:
     # @param float  dist       Distance to move motor in centimeters
     # @param int    speed      Speed to move motor at (degrees / sec)
     def move_motor_by_dist(self, socket, dist, speed):
-        motor = MOTORS[socket]
+        motor = self.MOTORS[socket]
 
         if motor.connected:
             angle = cm_to_deg(dist)
@@ -254,10 +262,8 @@ class Controller:
         command_type = list(json_command.keys())[0]
         command_args = json_command[command_type]
 
-        if command_type == 'move' and len(command_args) == 3 and
-            ('ports' in command_args.keys() and
-                'speed' in command_args.keys() and
-                'time' in command_args.keys()):
+        if (command_type == 'move' and len(command_args) == 3 and
+                'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
             self.move_motor(command_args['ports'], command_args['speed'], command_args['time'])
 
         elif command_type == 'stop':
@@ -268,41 +274,39 @@ class Controller:
             else:
                 raise ValueError('Invalid command')
 
-        elif command_type == 'findBook' and len(command_args) == 1
-            and ('ISBN' in command_args.keys()):
-            self.find_book(socket, command_args['ISBN']):
+        elif command_type == 'findBook' and len(command_args) == 1 and 'ISBN' in command_args.keys():
+            self.find_book(socket, command_args['ISBN'])
 
-        elif command_type == 'fullScan' and len(command_args) == 1
-            and ('ISBN' in command_args.keys()):
-            self.full_scan(socket, command_args['ISBN']):
+        elif command_type == 'fullScan' and len(command_args) == 1 and 'ISBN' in command_args.keys():
+            self.full_scan(socket, command_args['ISBN'])
 
-    	elif command_type == 'takeBook' and len(command_args) == 0:
-            self.take_book(socket, ISBN)
+        elif command_type == 'takeBook' and len(command_args) == 0:
+            self.take_book(socket, command_args['ISBN'])
 
         elif command_type == 'queryDB':
-    		'''
-    		The user might ask for the list of all books or for a specific book.
+            '''
+            The user might ask for the list of all books or for a specific book.
 
-    		If only a book is asked, then its position is searched in the database
-    		using the title. The message sent back to the app in this case is
-    		`bookItem` containing a tuple of `(title, position)` if the book is
-    		found or `None` otherwise.
+            If only a book is asked, then its position is searched in the database
+            using the title. The message sent back to the app in this case is
+            `bookItem` containing a tuple of `(title, position)` if the book is
+            found or `None` otherwise.
 
-    		If all the books are requested, then the database is queried for all
-    		the books and their positions. The mesage sent back to the app in
-    		this case is `bookList` containing a list of `(title, position)`
-    		with all the books available.
-    		'''
-            if len(command_args) == 1 and ('title' in command_args.keys()):
+            If all the books are requested, then the database is queried for all
+            the books and their positions. The mesage sent back to the app in
+            this case is `bookList` containing a list of `(title, position)`
+            with all the books available.
+            '''
+            if len(command_args) == 1 and 'title' in command_args.keys():
                 query_result = self.query_DB(command_args['title'])
-    			if query_result is not None:
-    				args = (title, query_result)
-    			else:
-    				args = None
-    			self.send_message(socket, 'bookItem', args)
+                if query_result is not None:
+                    args = (self.title, query_result)
+                else:
+                    args = None
+                self.send_message(socket, 'bookItem', args)
             elif len(command_args) == 0:
                 query_result = self.query_DB()
-    			self.send_message(socket, 'bookList', query_result)
+                self.send_message(socket, 'bookList', query_result)
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
@@ -326,22 +330,20 @@ class Controller:
         socket.send(json.dumps(message))
 
     def send_busy_message(self, socket):
-        self.send_message(socket, MESSAGE_BUSY)
+        self.send_message(socket, self.MESSAGE_BUSY)
 
     def query_DB(self, title=None):
-    	'''
-    	If title is None, return a list of `(title, position)` for all the books
-    	in the database. Otherwise return a tuple of the form `(title, position)`
-    	for the title received as argument, or `None` if it is unavailable in the
-    	database.
-    	'''
+        '''
+        If title is None, return a list of `(title, position)` for all the books
+        in the database. Otherwise return a tuple of the form `(title, position)`
+        for the title received as argument, or `None` if it is unavailable in the
+        database.
+        '''
 
-    	if title is None:
-    		return db.get_books()
-    	else:
-    		return db.get_position_by_title(title)
-
-
+        if title is None:
+            return db.get_books()
+        else:
+            return db.get_position_by_title(title)
 
 
 if __name__ == '__main__':
