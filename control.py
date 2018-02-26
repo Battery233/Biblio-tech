@@ -80,11 +80,12 @@ class Controller:
     # TODO: ARM_RETRACTED_DISTANCE, has to be negative
     # TODO: FINGER_RETRACTED_DISTANCE, has to be negative
     # TODO: FINGER_SPEED
-    # TODO: Finalise DISTANCE_BOARD_OFFSET (how many mm the board is away from being aligned with the end of the shelf)
-    DISTANCE_BOARD_OFFSET = 130  # 130 mm
+    # TODO: Finalise distance sensor offset
+    DIST_OFFSET = 130  # 130mm for now
 
     CELLS_START = [(0, 0), (250, 0), (0, 300), (250, 300)]
     CELL_SIZE = 249
+    SHELF_LENGTH = 500
 
     TOLERABLE_OFFSET = 5
 
@@ -140,9 +141,9 @@ class Controller:
 
     def get_pos(self):
         # Rough sketch of how function will work, not remotely accurate or even logically correct
-        # Assumes distance board is on right hand side, that's why it's 300 (shelf length) - value + offset
+        # Assumes distance board is on right hand side, so that's why we subtract from the shelf length
         if self.dist_sensor.connected:
-            return 300 - (self.dist_sensor.value()) + self.DISTANCE_BOARD_OFFSET
+            return self.SHELF_LENGTH - (self.dist_sensor.value()) + self.DIST_OFFSET
         else:
             print('Distance sensor not connected')
             return None
