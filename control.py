@@ -136,8 +136,9 @@ class Controller:
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
 
+        # TODO: UNCOMMENT
         # Position arm at the beginning of first cell
-        self.reach_cell(0)
+        # self.reach_cell(0)
 
         # Create bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
@@ -345,11 +346,20 @@ class Controller:
             elif len(command_args) == 0:
                 print("[DBS in control.py]Give the book list of all books.")
                 query_result = self.query_DB()
-                #stringofjsonisamazing= ''.join(query_result)
-                #print(stringofjsonisamazing)
-                print(query_result)
-                builtquery = js.jsonBuilder(query_result)
-                self.send_message(socket, 'bookList', builtquery)
+                # print("Query Result: " + str(query_result))
+                built_query = []
+
+                for i, book in enumerate(query_result):
+                    book_dict = {}
+                    book_dict['ISBN'] = query_result[i][0]
+                    book_dict['title'] = query_result[i][1]
+                    book_dict['author'] = query_result[i][2]
+                    book_dict['avail'] = query_result[i][3]
+                    book_dict['pos'] = query_result[i][4]
+                    built_query.append(book_dict)
+
+                print(built_query)
+                self.send_message(socket, 'bookList', built_query)
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
