@@ -172,7 +172,7 @@ class Controller:
         print("The current position is " + str(x_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            CELLS_START[cell][0] - x_position,
+            self.CELLS_START[cell][0] - x_position,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
@@ -376,7 +376,7 @@ class Controller:
 
         if title is None:
             print("[query_DB], tittle is none")
-            return db.get_books(db_file)
+            return db.get_books(DB_FILE)
         else:
             print("[query_DB], tittle is not none")
             return db.get_position_by_title(title)
