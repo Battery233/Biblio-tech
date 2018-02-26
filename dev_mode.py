@@ -100,14 +100,18 @@ def parse_message(data, socket):
             stop_motor()
 
         if command_type == 'moveDist' and len(command_args) == 3:
-            move_motor(letter_to_int(command_args['ports']), command_args['dist'], command_args['speed'])
-
+            move_motor_by_dist(letter_to_int(command_args['port']), command_args['dist'], command_args['speed'])
 
     elif data == 'ping':
         socket.send('pong')
 
     elif data == 'status':
         server.send_to_device("hello", Device.OTHER_EV3)
+
+    elif command_type == 'close':
+        server.close_server()
+        server_thread.join()
+        sys.exit(0)
 
 
 # Create bluetooth server and start it listening on a new thread
