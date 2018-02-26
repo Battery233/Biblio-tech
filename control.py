@@ -121,15 +121,15 @@ class Controller:
         # Stop all motors
         self.stop_motor()
 
-        # Position arm at the beginning of first cell
-        self.reach_cell(0)
-
         self.dist_sensor = ev3.UltrasonicSensor()
 
         if not self.dist_sensor.connected:
             print("Distance sensor not connected")
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
+
+        # Position arm at the beginning of first cell
+        self.reach_cell(0)
 
         # Create bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
@@ -161,7 +161,8 @@ class Controller:
             return None
 
     def reach_cell(self, cell):
-        current_position = (self.get_pos())
+        current_position = self.get_pos()
+		print("The current position is " + str(current_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
             self.CELLS_START[cell][0] - current_position[0],
