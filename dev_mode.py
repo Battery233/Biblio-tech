@@ -49,7 +49,7 @@ def move_motor_by_dist(socket, dist, speed):
 
     if motor.connected:
         angle = cm_to_deg(dist)
-        motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+        motor.run_to_rel_pos(position_sp=angle, speed_sp=int(speed))
     else:
         print('[ERROR] No motor connected to ' + str(motor))
 
@@ -77,7 +77,7 @@ def stop_motor():
 
 
 def cm_to_deg(cm):
-    return DEG_PER_CM * cm
+    return int(DEG_PER_CM * int(cm))
 
 
 def parse_message(data, socket):
@@ -100,7 +100,7 @@ def parse_message(data, socket):
             stop_motor()
 
         if command_type == 'moveDist' and len(command_args) == 3:
-            move_motor(letter_to_int(port), command_args['dist'], command_args['speed'])
+            move_motor(letter_to_int(command_args['ports']), command_args['dist'], command_args['speed'])
 
 
     elif data == 'ping':
