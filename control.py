@@ -9,8 +9,9 @@ import db.main as db
 import vision.main as vision
 from ev3bt import ev3_server
 
-db = main.TEST_DB
 DEG_PER_CM = 29.0323
+
+DB_FILE = db.PRODUCTION_DB
 
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
@@ -375,7 +376,7 @@ class Controller:
 
         if title is None:
             print("[query_DB], tittle is none")
-            return db.get_books(db)
+            return db.get_books(db_file)
         else:
             print("[query_DB], tittle is not none")
             return db.get_position_by_title(title)
