@@ -161,8 +161,7 @@ class Controller:
             return None
 
     def reach_cell(self, cell):
-        # TODO: get the current position from the distance sensor
-        current_position = (0, 0)
+        current_position = (self.get_pos())
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
             self.CELLS_START[cell][0] - current_position[0],
