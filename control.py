@@ -168,7 +168,7 @@ class Controller:
         # very imprecise
         # x_position = self.get_pos()
         x_position = self.state['x_pos']
-        print("The current position is " + str(current_position))
+        print("The current position is " + str(x_position))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
             -x_position,
