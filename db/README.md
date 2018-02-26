@@ -14,7 +14,7 @@ Database structure:
 
     author TEXT
 
-    position TEXT
+    position TEXT (UNIQUE(position) ON CONFLICT REPLACE)
 
     status INTEGER
     
