@@ -6,6 +6,7 @@ from threading import Thread
 import ev3dev.ev3 as ev3
 
 import db.main as db
+import db.jsonbuilder as js
 import vision.main as vision
 from ev3bt import ev3_server
 
@@ -344,7 +345,11 @@ class Controller:
             elif len(command_args) == 0:
                 print("[DBS in control.py]Give the book list of all books.")
                 query_result = self.query_DB()
-                self.send_message(socket, 'bookList', query_result)
+                #stringofjsonisamazing= ''.join(query_result)
+                #print(stringofjsonisamazing)
+                print(query_result)
+                builtquery = js.jsonBuilder(query_result)
+                self.send_message(socket, 'bookList', builtquery)
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
