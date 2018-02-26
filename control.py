@@ -11,7 +11,11 @@ from ev3bt import ev3_server
 
 DEG_PER_CM = 29.0323
 
+# Create sample production.db in root folder
 DB_FILE = db.PRODUCTION_DB
+db.flush_db(DB_FILE)
+db.create_book_table(DB_FILE)
+db.add_sample_books(DB_FILE)
 
 def cm_to_deg(cm):
     return DEG_PER_CM * cm

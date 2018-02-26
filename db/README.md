@@ -4,6 +4,9 @@ Database interface
 Run tests:
 `python test.py`
 
+Create sample test.db in db folder
+`sampleDBgenerator.py`
+
 Database structure:
 
     TABLE books
