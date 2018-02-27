@@ -76,6 +76,8 @@ public class FetchActivity extends AppCompatActivity {
     private final static String SHARED_PREFS_KEY = "APP_INFO";
     private final static String DEMO_ACTIVE_KEY = "demo_active";
 
+    private boolean queriedDatabase = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,7 +221,15 @@ public class FetchActivity extends AppCompatActivity {
      */
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
-        sendMessageWithFeedback(new QueryDB(null));
+        if(!queriedDatabase)
+        {
+            sendMessageWithFeedback(new QueryDB(null));
+            queriedDatabase = true;
+        }
+        else
+        {
+            showBookList(this.books);
+        }
     }
 
 
@@ -259,11 +269,23 @@ public class FetchActivity extends AppCompatActivity {
             // Make sure MessageSender object initialised
             assert messageSender != null : "MessageSender object not initialised";
 
-            // Send FindBook command
-            FindBook reachBook = new FindBook(chosenBook.getISBN());
-
-            // Send message
-            sendMessageWithFeedback(reachBook);
+            if(books.contains(chosenBook))
+            {
+                // Send FindBook command
+                FindBook reachBook = new FindBook(chosenBook.getISBN());
+                // Send message
+                sendMessageWithFeedback(reachBook);
+            }
+            else
+            {
+                final Context context = this.getApplicationContext();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Book no longer in shelf!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
         } else {
             Log.e(TAG, "Get button is visible despite chosen book being NULL");
@@ -276,7 +298,9 @@ public class FetchActivity extends AppCompatActivity {
      *
      * @param books List of books
      */
-    private void showBookList(final ArrayList<Book> books) {
+    private void showBookList(final ArrayList<Book> books)
+    {
+        this.books = books;
         final Context context = this;
         final FetchActivity fetchActivity = this;
         runOnUiThread(new Runnable() {
@@ -432,6 +456,7 @@ public class FetchActivity extends AppCompatActivity {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 sendMessageWithFeedback(new TakeBook(chosenBook.getISBN()));
+                                removeBookFromArrayList(chosenBook);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -499,6 +524,18 @@ public class FetchActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void removeBookFromArrayList(Book book)
+    {
+        for(Book b : books)
+        {
+            if(b.getISBN().equals(book.getISBN()))
+            {
+                books.remove(b);
+                break;
+            }
+        }
     }
 
     /**
