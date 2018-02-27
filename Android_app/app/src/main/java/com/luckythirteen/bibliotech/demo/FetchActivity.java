@@ -368,7 +368,17 @@ public class FetchActivity extends AppCompatActivity {
             showGetPrompt();
         } else if (type == MessageType.missingBook) {
             showMissingBookPrompt();
-        } else if (type == MessageType.undefined) {
+        } else if(type == MessageType.busy)
+        {
+            final Context context = this.getApplicationContext();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Robot is busy!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else if (type == MessageType.undefined) {
             Log.w(TAG, "Don't understand message: " + json);
         }
     }
@@ -421,7 +431,7 @@ public class FetchActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                sendMessageWithFeedback(new TakeBook());
+                                sendMessageWithFeedback(new TakeBook(chosenBook.getISBN()));
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:

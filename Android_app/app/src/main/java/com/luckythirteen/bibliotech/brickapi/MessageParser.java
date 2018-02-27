@@ -41,13 +41,35 @@ public class MessageParser {
     }
 
     private static MessageType getType(JsonObject object) {
-        if (object.has(MessageType.bookList.name())) {
+        if (object.has(MessageType.bookList.name()))
+        {
             return MessageType.bookList;
-        } else if (object.has(MessageType.foundBook.name())) {
-            return MessageType.foundBook;
-        } else if (object.has(MessageType.missingBook.name())) {
-            return MessageType.missingBook;
-        } else {
+        }
+        else if (object.has(MessageType.message.name()))
+        {
+            try {
+                JsonObject messageObj = object.getAsJsonObject(MessageType.message.name());
+                String messageContent = messageObj.get("content").getAsString();
+
+                if (messageContent.equals(MessageType.foundBook.name())) {
+                    return MessageType.foundBook;
+                } else if (messageContent.equals(MessageType.missingBook.name())) {
+                    return MessageType.missingBook;
+                } else if (messageContent.equals(MessageType.busy)) {
+                    return MessageType.busy;
+                } else {
+                    return MessageType.undefined;
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return MessageType.malformedjson;
+            }
+
+        }
+        else
+        {
             return MessageType.undefined;
         }
     }
@@ -72,9 +94,7 @@ public class MessageParser {
                     System.out.println(String.format("%s\n%s\n%s\n\n", b.getTitle(), b.getAuthor(), b.getISBN()));
                 }
                 return new BookList(temp);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
