@@ -109,7 +109,7 @@ class Controller:
     ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
 
     FINGER_TIME = 1000
-    FINGER_EXTENSION_SPEED = 198
+    FINGER_EXTENSION_SPEED = 218
     FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
     # TODO: Finalise distance sensor offset
@@ -268,13 +268,15 @@ class Controller:
             movement = 200
         else:
             movement = 0
-
+        
+        print("Start to move the motor by horizontal movement")
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
             # self.CELL_SIZE,
             movement,
             self.HORIZONTAL_SPEED
         )
+        print("End moving the robot by horizontal movement")
 
         # while not self.motor_ready(self.HORIZONTAL_MOTOR):
         #     decoded_ISBN, offset = vision.read_QR(self.camera)
@@ -285,6 +287,7 @@ class Controller:
         #     time.sleep(0.1)
 
         # return False
+        print("Return True --> book found :)")
         return True
 
     @primary_action
@@ -295,7 +298,7 @@ class Controller:
         as an argument.
         '''
 
-        if ISBN == 9781840226881:
+        if int(ISBN) == 9781840226881:
             cell = 0
         else:
             cell = 1
@@ -319,31 +322,41 @@ class Controller:
 
     @primary_action
     def take_book(self, socket, ISBN):
-        if self.state['alignedToBook'] == ISBN:
+        print("Enter in take_book")
+        if self.state['alignedToBook'] == ISBN or True:
             # extend arm
+            print("Move first motor")
             self.move_motor(
-                self.ARM_SOCKET,
+                [self.ARM_SOCKET],
                 self.ARM_EXTENSION_SPEED,
                 self.ARM_TIME
             )
+      
+            print("wait 5 secs")
             time.sleep(5) # TODO: check times later
+            print("move second motor")
             # extend finger
             self.move_motor(
-                self.FINGER_SOCKET,
+                [self.FINGER_SOCKET],
                 self.FINGER_EXTENSION_SPEED,
                 self.FINGER_TIME
             )
+
+            print("wait 5 secs again")
             time.sleep(5)
+            print("move third motor")
             # retract arm
             self.move_motor(
-                self.ARM_SOCKET,
+                [self.ARM_SOCKET],
                 self.ARM_RETRACTION_SPEED,
                 self.ARM_TIME
             )
 
+            print("wait 5 secs for last time")
             time.sleep(5)
-            self.move_motor_by_dist(
-                self.FINGER_SOCKET,
+            print("move last motor")
+            self.move_motor(
+                [self.FINGER_SOCKET],
                 self.FINGER_RETRACTION_SPEED,
                 self.FINGER_TIME
             )
@@ -362,7 +375,7 @@ class Controller:
     # @param int time       Time to move motor for (milliseconds)
     def move_motor(self, sockets, speed, time):
         for socket in sockets:
-            motor = self.MOTORS[letter_to_int(socket)]
+            motor = self.MOTORS[socket]
             if motor.connected:
                 # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
                 if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
@@ -412,6 +425,8 @@ class Controller:
 
         elif command_type == 'findBook' and len(command_args) == 1 and 'ISBN' in command_args.keys():
             self.find_book(socket, command_args['ISBN'])
+            # TODO: remove this
+            self.take_book(socket, command_args['ISBN'])
 
         elif command_type == 'fullScan' and len(command_args) == 1 and 'ISBN' in command_args.keys():
             self.full_scan(socket, command_args['ISBN'])
