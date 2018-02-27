@@ -79,7 +79,7 @@ def decode_QR(filename):
 
     # find conversion to mm (ASSUMPTION: camera plane and QR parallel)
     img_top_side = abs(a[0] - d[0])
-    print(a,b,c,d)
+    # print(a,b,c,d)
     pix_mm_rate = float(ACTUAL_QR_SIDE) / img_top_side
 
     # convert to mm

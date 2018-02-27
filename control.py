@@ -11,7 +11,10 @@ from ev3bt import ev3_server
 
 # FOR HARCODE:
 
+IGNORE_QR_CODE = False
+
 WEALTH_OF_NATIONS_ISBN = 9781840226881
+THE_CASTLE_ISBN = 9780241197806
 
 DEG_PER_CM = 29.0323
 
@@ -109,8 +112,8 @@ class Controller:
     HORIZONTAL_SPEED = 360
 
     ARM_TIME = 1500
-    ARM_EXTENSION_SPEED = -206
-    ARM_RETRACTION_SPEED = (-ARM_EXTENSION_SPEED) * 1.5
+    ARM_EXTENSION_SPEED = -280
+    ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
 
     FINGER_TIME = 1000
     FINGER_EXTENSION_SPEED = 218
@@ -121,8 +124,13 @@ class Controller:
     ROBOT_LENGTH = 170 # TODO: compute this again
     RAILS_LENGTH = 705 # TODO: compute this again
 
-    CELLS_START = [(0, 0), (250, 0), (0, 300), (250, 300)]
-    CELL_SIZE = 249
+    BOOK_WIDTH = 80
+    CELL_WIDTH = 270
+    CELLS_START = [(0, 0), (CELL_WIDTH, 0),      # Bottom level, left to right
+                   (0, 300), (CELL_WIDTH, 300)]  # Top level, left to right
+    CELLS_END = [(CELL_WIDTH - BOOK_WIDTH, 0), (2 * CELL_WIDTH - BOOK_WIDTH, 0),  # Bottom level, left to right
+                 (CELL_WIDTH - BOOK_WIDTH, 300), (500 - BOOK_WIDTH, 300)]         # Top level, left to right
+    # This is wrong, probably not needed: CELL_SIZE = 249
 
     TOLERABLE_OFFSET = 5
 
@@ -141,6 +149,9 @@ class Controller:
         for i, motor in enumerate(self.MOTORS):
             if not motor.connected:
                 print('Motor ' + str(motor) + ' not connected')
+
+        # Initialize robot's x_coordinate to 0:
+        self.current_x_coordinate = 0
 
         # Initialize robot's internal model
         self.state = self.INITIAL_STATE
@@ -245,19 +256,33 @@ class Controller:
             print('Distance sensor not connected')
             return None
 
-    def reach_cell(self, cell):
+    def reach_cell(self, cell, end_of_cell = False):
         # offset_to_end is the distance to end of track calculated
         # by the distance sensor. Temporarily disabled as distance sensor is
         # very imprecise
         # x_coordinate = self.get_pos()
         # x_coordinate = self.state['x_pos']
-        x_coordinate = 0
-        print("Move the robot by " + str(-x_coordinate))
+
+        # Get the target x coordinate (the place where we want to move the robot)
+
+        if end_of_cell:
+            target_x_coordinate = self.CELLS_END[cell][0]
+        else:
+            target_x_coordinate = self.CELLS_START[cell][0]
+
+        # Compute the offset that will be moved by the robot
+        x_offset = target_x_coordinate - self.current_x_coordinate
+
+        print("Move the robot by " + str(x_offset))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            self.CELLS_START[cell][0] - x_coordinate,
+            x_offset,
             self.HORIZONTAL_SPEED
         )
+
+        # Update the current x_coordinate to be the target coordinate as the robot is now there
+        self.current_x_coordinate = target_x_coordinate
+
         # TODO: implement vertical movement
         print("[ReachCell]: waiting for motor to free")
         # self.HORIZONTAL_MOTOR.wait_until_not_moving(timeout=5)
@@ -268,11 +293,31 @@ class Controller:
     def scan_ISBN(self, ISBN):
         # start horizontal movement needed to almost reach next cell
         print("Scanning for ISBN " + ISBN)
-        if ISBN == 9781840226881:
-            movement = 200
-        else:
-            movement = 0
-        
+
+        num_attempts = 1000
+
+        time.sleep(0.1)
+        decoded_ISBN, offset = vision.read_QR(self.camera)
+        print("Type of ISBN is " + str(type(ISBN)))
+        print("Type of decoded ISBN is " + str(type(decoded_ISBN)))
+        print("The decoded ISBN is " + str(decoded_ISBN))
+        for attempt in range(0, num_attempts):
+            time.sleep(0.1)
+            decoded_ISBN, offset = vision.read_QR(self.camera)
+            print("Attempt #" + str(attempt))
+            print("The decoded ISBN is " + str(decoded_ISBN))
+            if decoded_ISBN is not None and int(ISBN) == int(decoded_ISBN):
+                print("=========== SUCCESS!")
+                return True
+            else:
+                print("Still different...")
+
+        print("Number of attempts exhausted... return false :( book is definitely not here")
+        return False
+
+        # This is either not needed or must be updated:
+        """
+        movement = 0
         print("Start to move the motor by horizontal movement")
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
@@ -281,6 +326,7 @@ class Controller:
             self.HORIZONTAL_SPEED
         )
         print("End moving the robot by horizontal movement")
+        """
 
         # while not self.motor_ready(self.HORIZONTAL_MOTOR):
         #     decoded_ISBN, offset = vision.read_QR(self.camera)
@@ -302,12 +348,27 @@ class Controller:
         as an argument.
         '''
 
-        if ISBN == WEALTH_OF_NATIONS_ISBN:
-            cell = 0
-        else:
-            cell = 1
 
-        # cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
+        print("The received ISBN is " + str(ISBN))
+        print("The ISBN for Wealth of Nations is " + str(WEALTH_OF_NATIONS_ISBN))
+        print("THE ISBN for The Castle is " + str(THE_CASTLE_ISBN))
+
+        # The received ISBN is a string so we make it an int:
+        end_of_cell = False
+        if int(ISBN) == WEALTH_OF_NATIONS_ISBN:
+            print("The searched book is Wealth of Nations")
+            # Need to reach the end of cell 0 (so the beginning of cell 1)
+            cell = 0
+            end_of_cell = True
+        elif int(ISBN) == THE_CASTLE_ISBN:
+            print("The searched book is The Castle")
+            # Need to reach the end of cell 1 (so the beginning of cell 2 - actually the end of the rails)
+            cell = 1
+            end_of_cell = True
+
+        else:
+            cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
+            end_of_cell = False
 
         print(cell)
 
@@ -316,14 +377,15 @@ class Controller:
             # TODO: RETURN missingBook
             pass
 
-        self.reach_cell(cell)
+        self.reach_cell(cell, end_of_cell)
 
-        if not self.scan_ISBN(ISBN):
-            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
-        else:
+        # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
+        if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
             self.state['alignedToBook'] = ISBN
             print("[FindBook] sending message: book found")
             self.send_message(socket, self.MESSAGE_FOUND_BOOK)
+        else:
+            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
 
     @primary_action
     def take_book(self, socket, ISBN):
