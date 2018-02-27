@@ -2,7 +2,6 @@ package com.luckythirteen.bibliotech.brickapi
 
 import android.util.*
 import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Created on 2018/2/27.
@@ -29,13 +28,12 @@ private fun parseJSONWithJSONObject(jsonData: String) {
             Log.d("parseJSONWithJSONObject", "author " + author)
             Log.d("parseJSONWithJSONObject", "title: " + title)
 
-            val target = "{[\"pos \" + pos],[\"avail \" + avail],[\"isbn \" + isbn],[\"author\" + author],[\"title\" + title]}"
+            val target = "{[\"pos \" $pos],[\"avail \" + $avail],[\"isbn \" + $isbn],[\"author\" + $author],[\"title\" + $title]}"
             print(target)
 
-            val messageParser:MessageParser = MessageParser()
+            val messageParser: MessageParser = MessageParser()
             //Bug here↓
             //println(messageParser.getBookListFromJson(target))
-
         }
     } catch (e: Exception) {
         e.printStackTrace()

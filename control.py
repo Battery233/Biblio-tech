@@ -429,7 +429,7 @@ class Controller:
             found or `None` otherwise.
 
             If all the books are requested, then the database is queried for all
-            the books and their positions. The mesage sent back to the app in
+            the books and their positions. The message sent back to the app in
             this case is `bookList` containing a list of `(title, position)`
             with all the books available.
             '''

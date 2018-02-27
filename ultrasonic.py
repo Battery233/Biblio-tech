@@ -7,9 +7,10 @@ if not dist_sensor.connected:
     print("Distance sensor not connected")
 else:
     dist_sensor.mode = 'US-DIST-CM'
-
-    while(True):
+    counter = 0  # To make sure the while is running normally
+    while True:
         # time.sleep(1)
+        counter += 1
         if dist_sensor.connected:
             sum_of_distances = 0
             num_measurements = 10
@@ -20,6 +21,8 @@ else:
                 print("measurement #" + str(i) + ": " + str(dist_now))
                 sum_of_distances += dist_now
             dist_between_sensor_right_end_and_green_wall = int(sum_of_distances / num_measurements)
-            print("The distance between the right end of the sensor and the green wall is: " + str(dist_between_sensor_right_end_and_green_wall))
+            print("The distance between the right end of the sensor and the green wall is: " + str(
+                dist_between_sensor_right_end_and_green_wall))
         else:
             print('Distance sensor not connected')
+        print("while loop No." + counter)
