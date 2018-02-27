@@ -2,7 +2,7 @@ import main
 import pygame
 import time
 
-camera = main.activate_camera(source='/dev/video0')
+camera = main.activate_camera(source='/dev/video1')
 
 for i in reversed(range(1,5)):
     print('waiting ' + str(i))

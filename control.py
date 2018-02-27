@@ -12,11 +12,8 @@ from ev3bt import ev3_server
 
 DEG_PER_CM = 29.0323
 
-# Create sample production.db in root folder
 DB_FILE = db.PRODUCTION_DB
-db.flush_db(DB_FILE)
-db.create_book_table(DB_FILE)
-db.add_sample_books(DB_FILE)
+
 
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
@@ -45,16 +42,19 @@ def primary_action(action):
         # If state is already busy trying to change it will return False
         if not self.state_wait():
             self.send_busy_message(socket)
+            print('Robot was busy and was not able to perform action')
+            print(self.state)
             return
 
         # If any of the motors is busy, robot is busy
         for motor in self.MOTORS:
-            if not self.motor_ready(motor):
+            if motor.connected and not self.motor_ready(motor):
                 self.send_busy_message(socket)
+                print('Some motors were busy and robot was not able to perform action')
                 return
 
         # Perform the action described by the method
-        action(self, *args, **kwargs)
+        action(self, socket, *args, **kwargs)
 
         # Free the robot
         self.state_signal()
@@ -67,7 +67,7 @@ def disruptive_action(action):
         # Break the flow of findBook - takeBook. Sorry user, too slow
         self.state['alignedToBook'] = None
 
-        action(self, *args, **kwargs)
+        action(self, socket, *args, **kwargs)
 
     return break_get_book_flow
 
@@ -116,6 +116,11 @@ class Controller:
     MESSAGE_FOUND_BOOK = 'foundBook'
 
     def __init__(self):
+        # Create sample production.db in root folder
+        db.flush_db(DB_FILE)
+        db.create_book_table(DB_FILE)
+        db.add_sample_books(DB_FILE)
+
         # Check motors
         for i, motor in enumerate(self.MOTORS):
             if not motor.connected:
@@ -154,11 +159,19 @@ class Controller:
 
     def state_signal(self):
         self.state['busy'] = False
+        print('Ending action, freeing robot')
 
     def motor_ready(self, motor):
         # Make sure that motor has time to start
         time.sleep(0.1)
         return motor.state != ['running']
+
+    def wait_for_motor(self, motor):
+        # Make sure that motor has time to start
+        time.sleep(0.1)
+        while motor.state==["running"]:
+            print('Motor is still running')
+            time.sleep(0.1)
 
     def get_pos(self):
         """
@@ -220,21 +233,25 @@ class Controller:
         # offset_to_end is the distance to end of track calculated
         # by the distance sensor. Temporarily disabled as distance sensor is
         # very imprecise
-        x_coordinate = self.get_pos()
+        # x_coordinate = self.get_pos()
         # x_coordinate = self.state['x_pos']
+        x_coordinate = 0
         print("Move the robot by " + str(-x_coordinate))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            -x_coordinate,
+            self.CELLS_START[cell][0] - x_coordinate,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
-        # self.wait_for_motor(self.motor)
-        self.HORIZONTAL_MOTOR.wait_until_not_moving()
+        print("[ReachCell]: waiting for motor to free")
+        # self.HORIZONTAL_MOTOR.wait_until_not_moving(timeout=5)
+        self.wait_for_motor(self.HORIZONTAL_MOTOR)
+        print("[ReachCell]: action complete")
         self.state['position'] = self.CELLS_START[cell]
 
     def scan_ISBN(self, ISBN):
         # start horizontal movement needed to almost reach next cell
+        print("Scanning for ISBN " + ISBN)
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
             self.CELL_SIZE,
@@ -243,6 +260,7 @@ class Controller:
 
         while not self.motor_ready(self.HORIZONTAL_MOTOR):
             decoded_ISBN, offset = vision.read_QR(self.camera)
+            print("[ScanISBN], camera result: " + str(decoded_ISBN) + ", offset: " + str(offset))
             if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
                 self.stop_motor()
                 return True
@@ -252,12 +270,13 @@ class Controller:
 
     @primary_action
     @disruptive_action
-    def find_book(self, socket, title):
+    def find_book(self, socket, ISBN):
         '''
         Move the robot at the position of the book having the title received
         as an argument.
         '''
-        cell = db.get_position_by_title(title)
+        cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
+        print(cell)
 
         if cell is None:
             print('Book does not exist')
@@ -265,7 +284,7 @@ class Controller:
             pass
 
         self.reach_cell(cell)
-        ISBN = db.get_ISBN_by_title(title)
+
         if not self.scan_ISBN(ISBN):
             self.send_message(socket, self.MESSAGE_MISSING_BOOK)
         else:
@@ -401,8 +420,8 @@ class Controller:
                     book_dict['ISBN'] = query_result[i][0]
                     book_dict['title'] = query_result[i][1]
                     book_dict['author'] = query_result[i][2]
-                    book_dict['avail'] = query_result[i][3]
-                    book_dict['pos'] = query_result[i][4]
+                    book_dict['pos'] = int(query_result[i][3])
+                    book_dict['avail'] = query_result[i][4]
                     built_query.append(book_dict)
 
                 print(built_query)
@@ -445,7 +464,7 @@ class Controller:
             return db.get_books(DB_FILE)
         else:
             print("[query_DB], tittle is not none")
-            return db.get_position_by_title(title)
+            return db.get_position_by_title(DB_FILE, title)
 
 
 if __name__ == '__main__':
