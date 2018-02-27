@@ -9,9 +9,14 @@ import db.main as db
 import vision.main as vision
 from ev3bt import ev3_server
 
+# FOR HARCODE:
+
+WEALTH_OF_NATIONS_ISBN = 9781840226881
+
 DEG_PER_CM = 29.0323
 
 DB_FILE = db.PRODUCTION_DB
+
 
 
 def cm_to_deg(cm):
@@ -105,7 +110,7 @@ class Controller:
 
     ARM_TIME = 1500
     ARM_EXTENSION_SPEED = -206
-    ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
+    ARM_RETRACTION_SPEED = (-ARM_EXTENSION_SPEED) * 1.5
 
     FINGER_TIME = 1000
     FINGER_EXTENSION_SPEED = 218
@@ -113,7 +118,7 @@ class Controller:
 
     # TODO: Finalise distance sensor offset
     DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL = 70 # TODO: compute this again
-    ROBOT_LENGTH= 170 # TODO: compute this again
+    ROBOT_LENGTH = 170 # TODO: compute this again
     RAILS_LENGTH = 705 # TODO: compute this again
 
     CELLS_START = [(0, 0), (250, 0), (0, 300), (250, 300)]
@@ -297,7 +302,7 @@ class Controller:
         as an argument.
         '''
 
-        if int(ISBN) == 9781840226881:
+        if ISBN == WEALTH_OF_NATIONS_ISBN:
             cell = 0
         else:
             cell = 1
