@@ -10,5 +10,7 @@ public enum MessageType {
     bookitem,
     missingBook,
     foundBook,
+    message,
+    busy,
     malformedjson;
 }

@@ -19,7 +19,8 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText textMacAddress;
     private Button buttonEV13, buttonEV33, buttonSave;
 
-    public static final String EV33_MAC = "B0:B4:48:76:E7:86";
+    public static final String EV33_MAC = "AC:FD:CE:2B:82:F1";
+    //public static final String EV33_MAC = "B0:B4:48:76:E7:86";
     public static final String EV13_MAC = "B0:B4:48:76:A2:C9";
 
 
