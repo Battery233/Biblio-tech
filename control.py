@@ -101,11 +101,12 @@ class Controller:
     # TODO: FINGER_RETRACTED_DISTANCE, has to be negative
     # TODO: FINGER_SPEED
     # TODO: Finalise distance sensor offset
-    DIST_OFFSET = 130  # 130mm for now
+    DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL = 70 # TODO: compute this again
+    ROBOT_LENGTH= 170 # TODO: compute this again
+    RAILS_LENGTH = 705 # TODO: compute this again
 
     CELLS_START = [(0, 0), (250, 0), (0, 300), (250, 300)]
     CELL_SIZE = 249
-    SHELF_LENGTH = 500
 
     TOLERABLE_OFFSET = 5
 
@@ -136,9 +137,8 @@ class Controller:
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
 
-        # TODO: UNCOMMENT
         # Position arm at the beginning of first cell
-        # self.reach_cell(0)
+        self.reach_cell(0)
 
         # Create bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
@@ -161,10 +161,57 @@ class Controller:
         return motor.state != ['running']
 
     def get_pos(self):
+        """
+        This is how this works:
+        1. Take n (= 10) measurements of the distance and then average them to get a better estimate of the distance
+           (don't forget to reset the mode of the sensor so that it takes a new measurement provided that the API documentation
+            is right)
+        2. Let dist_between_sensor_right_end_and_green_wall be the average from step 1
+        3. Use maths to compute our x_coordinate (this is defined by the position of the very beginning of the white bar
+           that supports the robot):
+                       <- d ->
+                       *******=oo<--------------- c ------------------>|           |
+                        ****                                           | THE GREEN |
+                         **                                            |   WALL    |
+           ============x=====================================<--- b -->|           |
+           <-------------------- a ------------------------->
+
+           === LEGEND ===
+           The object formed by stars (*) is the robot. 
+           The "=oo" thing is the sensor. c is the distance returned by the sensor's `value()` method (at least that's my
+           understanding but we should definitely take more measurements and be sure that's correct)
+           The "===================================" line are the rails and "THE GREEN WALL", well, it is the green wall.
+           The 'x' within the "=====" line is the value that we are trying to compute.
+ 
+           a = length of rails alone
+           b = distance from the end of rails to the green wall
+           c = distance from the end of sensor to the wall
+           d = length of the robot
+
+           Hence x is just a + b - (c + d) and then the robot will have to move -x (so that it moves backwards) in order
+           to reach cell 0.
+
+        It worked on most of the test, I think the success depends on how accurate the sensor gets the distance to the
+        green wall. We MUST make a larger (both in width and height) target.
+        """
+           
         # Rough sketch of how function will work, not remotely accurate or even logically correct
         # Assumes distance board is on right hand side, so that's why we subtract from the shelf length
         if self.dist_sensor.connected:
-            return self.SHELF_LENGTH - (self.dist_sensor.value() + self.DIST_OFFSET)
+            sum_of_distances = 0
+            num_measurements = 10
+            for i in range(0, num_measurements):
+                time.sleep(0.25)
+                self.dist_sensor.mode = 'US-DIST-CM'
+                dist_now = self.dist_sensor.value()
+                print("measurement #" + str(i) + ": " + str(dist_now))
+                sum_of_distances += dist_now
+            dist_between_sensor_right_end_and_green_wall = int(sum_of_distances / num_measurements)
+            x_coordinate = self.RAILS_LENGTH + self.DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL\
+                           - (dist_between_sensor_right_end_and_green_wall + self.ROBOT_LENGTH)
+            print("The distance between the right end of the sensor and the green wall is: " + str(dist_between_sensor_right_end_and_green_wall))
+            print("My guess for the x_coordinate is: " + str(x_coordinate))
+            return x_coordinate
         else:
             print('Distance sensor not connected')
             return None
@@ -173,12 +220,12 @@ class Controller:
         # offset_to_end is the distance to end of track calculated
         # by the distance sensor. Temporarily disabled as distance sensor is
         # very imprecise
-        # x_position = self.get_pos()
-        x_position = self.state['x_pos']
-        print("The current position is " + str(x_position))
+        x_coordinate = self.get_pos()
+        # x_coordinate = self.state['x_pos']
+        print("Move the robot by " + str(-x_coordinate))
         self.move_motor_by_dist(
             self.HORIZONTAL_MOTOR,
-            self.CELLS_START[cell][0] - x_position,
+            -x_coordinate,
             self.HORIZONTAL_SPEED
         )
         # TODO: implement vertical movement
