@@ -53,7 +53,7 @@ class WifiHotUtil(context: Context) {
      * @param mPasswd
      */
     private fun stratWifiAp(mSSID: String, mPasswd: String) {
-        var method1: Method? = null
+        val method1: Method?
         try {
             method1 = mWifiManager!!.javaClass.getMethod("setWifiApEnabled",
                     WifiConfiguration::class.java,Boolean::class.javaPrimitiveType)
