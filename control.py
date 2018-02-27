@@ -105,7 +105,7 @@ class Controller:
     HORIZONTAL_SPEED = 360
 
     ARM_TIME = 1500
-    ARM_EXTENSION_SPEED = -140
+    ARM_EXTENSION_SPEED = -206
     ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
 
     FINGER_TIME = 1000
@@ -318,6 +318,7 @@ class Controller:
             self.send_message(socket, self.MESSAGE_MISSING_BOOK)
         else:
             self.state['alignedToBook'] = ISBN
+            print("[FindBook] sending message: book found")
             self.send_message(socket, self.MESSAGE_FOUND_BOOK)
 
     @primary_action
@@ -425,13 +426,11 @@ class Controller:
 
         elif command_type == 'findBook' and len(command_args) == 1 and 'ISBN' in command_args.keys():
             self.find_book(socket, command_args['ISBN'])
-            # TODO: remove this
-            self.take_book(socket, command_args['ISBN'])
 
         elif command_type == 'fullScan' and len(command_args) == 1 and 'ISBN' in command_args.keys():
             self.full_scan(socket, command_args['ISBN'])
 
-        elif command_type == 'takeBook' and len(command_args) == 0:
+        elif command_type == 'takeBook' and len(command_args) == 1:
             self.take_book(socket, command_args['ISBN'])
 
         elif command_type == 'queryDB':
@@ -486,8 +485,9 @@ class Controller:
         if body is not None:
             message = {title: body}
         else:
-            message = {'message': title}
+            message = {'message': {"content": self.MESSAGE_FOUND_BOOK}}
 
+        print("sending message: " + json.dumps(message))
         socket.send(json.dumps(message))
 
     def send_busy_message(self, socket):
