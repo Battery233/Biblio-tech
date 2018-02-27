@@ -89,19 +89,29 @@ class Controller:
     # SOCKET A IS HORIZONTAL movement
     # SOCKET B IS FOR arm
     # SOCKET C IS FOR FINGER
-    HORIZONTAL_MOTOR = MOTORS[0]
-    VERTICAL_MOTOR = MOTORS[3]
-    ARM_MOTOR = MOTORS[1]
-    FINGER_MOTOR = MOTORS[2]
+
+    HORIZONTAL_SOCKET = 0
+    VERTICAL_SOCKET = 3
+    ARM_SOCKET = 1
+    FINGER_SOCKET = 2
+
+    HORIZONTAL_MOTOR = MOTORS[HORIZONTAL_SOCKET]
+    VERTICAL_MOTOR = MOTORS[VERTICAL_SOCKET]
+    ARM_MOTOR = MOTORS[ARM_SOCKET]
+    FINGER_MOTOR = MOTORS[FINGER_SOCKET]
 
     # finger: 55 dps per 1500 sec
 
     HORIZONTAL_SPEED = 360
-    # TODO: ARM_SPEED
-    # TODO: ARM_EXTENDED_DISTANCE
-    # TODO: ARM_RETRACTED_DISTANCE, has to be negative
-    # TODO: FINGER_RETRACTED_DISTANCE, has to be negative
-    # TODO: FINGER_SPEED
+
+    ARM_TIME = 1500
+    ARM_EXTENSION_SPEED = -140
+    ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
+
+    FINGER_TIME = 1000
+    FINGER_EXTENSION_SPEED = 198
+    FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
+
     # TODO: Finalise distance sensor offset
     DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL = 70 # TODO: compute this again
     ROBOT_LENGTH= 170 # TODO: compute this again
@@ -255,7 +265,7 @@ class Controller:
         # start horizontal movement needed to almost reach next cell
         print("Scanning for ISBN " + ISBN)
         if ISBN == 9781840226881:
-            movement = 0
+            movement = 200
         else:
             movement = 0
 
@@ -311,27 +321,32 @@ class Controller:
     def take_book(self, socket, ISBN):
         if self.state['alignedToBook'] == ISBN:
             # extend arm
-            self.move_motor_by_dist(
-                self.ARM_MOTOR,
-                self.ARM_EXTENDED_DISTANCE,
-                self.ARM_SPEED
+            self.move_motor(
+                self.ARM_SOCKET,
+                self.ARM_EXTENSION_SPEED,
+                self.ARM_TIME
             )
-            time.sleep(5)
-            # retract finger
-            self.move_motor_by_dist(
-                self.FINGER_MOTOR,
-                self.FINGER_RETRACTED_DISTANCE,
-                self.FINGER_SPEED
+            time.sleep(5) # TODO: check times later
+            # extend finger
+            self.move_motor(
+                self.FINGER_SOCKET,
+                self.FINGER_EXTENSION_SPEED,
+                self.FINGER_TIME
             )
             time.sleep(5)
             # retract arm
-            self.move_motor_by_dist(
-                self.FINGER_MOTOR,
-                self.FINGER_RETRACTED_DISTANCE,
-                self.FINGER_SPEED
+            self.move_motor(
+                self.ARM_SOCKET,
+                self.ARM_RETRACTION_SPEED,
+                self.ARM_TIME
             )
 
-            # TODO: put arm and fingers back to initial position
+            time.sleep(5)
+            self.move_motor_by_dist(
+                self.FINGER_SOCKET,
+                self.FINGER_RETRACTION_SPEED,
+                self.FINGER_TIME
+            )
         else:
             self.send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
