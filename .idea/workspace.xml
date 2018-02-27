@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="6330549c-80d7-4f8c-be2c-3ff09755bfe8" name="Default" comment="Update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/Android_app/.idea/misc.xml" afterPath="$PROJECT_DIR$/Android_app/.idea/misc.xml" />
+      <change beforePath="$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/WifiHotSpot.kt" afterPath="$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/WifiHotSpot.kt" />
       <change beforePath="$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/blurJsonMatching.kt" afterPath="$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/blurJsonMatching.kt" />
       <change beforePath="$PROJECT_DIR$/control.py" afterPath="$PROJECT_DIR$/control.py" />
-      <change beforePath="$PROJECT_DIR$/ultrasonic.py" afterPath="$PROJECT_DIR$/ultrasonic.py" />
+      <change beforePath="$PROJECT_DIR$/db/jsonbuilder.py" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/httpRequests/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,25 +33,33 @@
     <favorites_list name="sdp-group13" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file leaf-file-name="control.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/control.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2837">
-              <caret line="343" column="25" lean-forward="true" selection-start-line="343" selection-start-column="25" selection-end-line="343" selection-end-column="25" />
+            <state relative-caret-position="197">
+              <caret line="8" column="7" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ultrasonic.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ultrasonic.py">
+      <file leaf-file-name="WifiHotSpot.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/WifiHotSpot.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="121">
-              <caret line="9" column="61" lean-forward="false" selection-start-line="9" selection-start-column="61" selection-end-line="9" selection-end-column="61" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-720">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="blurJsonMatching.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/blurJsonMatching.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2">
+              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -74,6 +84,10 @@
       <find>get_books</find>
       <find>move_motor_by_dist</find>
       <find>close</find>
+      <find>fullsca</find>
+      <find>take_book</find>
+      <find>find_book</find>
+      <find>reach_cell</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -97,6 +111,7 @@
         <option value="$PROJECT_DIR$/db/jsonbuilder.py" />
         <option value="$PROJECT_DIR$/dev_mode.py" />
         <option value="$PROJECT_DIR$/ultrasonic.py" />
+        <option value="$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/blurJsonMatching.kt" />
         <option value="$PROJECT_DIR$/control.py" />
       </list>
     </option>
@@ -147,6 +162,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -154,12 +171,96 @@
               <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
               <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="luckythirteen" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="luckythirteen" type="462c0819:PsiDirectoryNode" />
+              <item name="bibliotech" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="Android_app" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="luckythirteen" type="462c0819:PsiDirectoryNode" />
+              <item name="bibliotech" type="462c0819:PsiDirectoryNode" />
+              <item name="brickapi" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sdp-group13" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sdp-group13" type="462c0819:PsiDirectoryNode" />
+              <item name="db" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
@@ -281,10 +382,11 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20386267" sideWeight="0.49622437" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26429343" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20922747" sideWeight="0.49622437" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2360515" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28004292" sideWeight="0.5037756" order="2" side_tool="true" content_ui="tabs" />
@@ -300,7 +402,6 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -317,20 +418,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/db/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="4" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2490">
-          <caret line="84" column="41" lean-forward="false" selection-start-line="84" selection-start-column="41" selection-end-line="84" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/db/sampleDBgenerator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -547,13 +634,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db/jsonbuilder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dev_mode.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
@@ -565,16 +645,37 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="121">
           <caret line="9" column="61" lean-forward="false" selection-start-line="9" selection-start-column="61" selection-end-line="9" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/WifiHotSpot.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-720">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Android_app/app/src/main/java/com/luckythirteen/bibliotech/brickapi/blurJsonMatching.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2">
+          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/jsonbuilder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="12" lean-forward="true" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/control.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2837">
-          <caret line="343" column="25" lean-forward="true" selection-start-line="343" selection-start-column="25" selection-end-line="343" selection-end-column="25" />
+        <state relative-caret-position="197">
+          <caret line="8" column="7" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
           <folding />
         </state>
       </provider>
