@@ -1,4 +1,0 @@
-pygame
-qrtools
-Pillow
-zbar-py

@@ -430,12 +430,8 @@ class Controller:
                 built_query = []
 
                 for i, book in enumerate(query_result):
-                    book_dict = {}
-                    book_dict['ISBN'] = query_result[i][0]
-                    book_dict['title'] = query_result[i][1]
-                    book_dict['author'] = query_result[i][2]
-                    book_dict['pos'] = int(query_result[i][3])
-                    book_dict['avail'] = query_result[i][4]
+                    book_dict = {'ISBN': query_result[i][0], 'title': query_result[i][1], 'author': query_result[i][2],
+                                 'pos': int(query_result[i][3]), 'avail': query_result[i][4]}
                     built_query.append(book_dict)
 
                 print(built_query)
