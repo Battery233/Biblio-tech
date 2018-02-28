@@ -4,8 +4,6 @@ Database interface
 Run tests:
 `python test.py`
 
-Change json format: `jsonBuilder.py`
-
 Create sample test.db in db folder:
 `sampleDBgenerator.py`
 
