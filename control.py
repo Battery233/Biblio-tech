@@ -9,12 +9,14 @@ import db.main as db
 import vision.main as vision
 from ev3bt import ev3_server
 
-# FOR HARCODE:
-
+# ---- FOR HARCODE:
 IGNORE_QR_CODE = False
 
 WEALTH_OF_NATIONS_ISBN = 9781840226881
 THE_CASTLE_ISBN = 9780241197806
+
+# ---- END OF HARDCODE VARIABLEs
+
 
 DEG_PER_CM = 29.0323
 
@@ -110,6 +112,8 @@ class Controller:
     # finger: 55 dps per 1500 sec
 
     HORIZONTAL_SPEED = 360
+    HORIZONTAL_SPEED_FOR_SCANNING = int(HORIZONTAL_SPEED / 4)
+    HORIZONTAL_MOVEMENT_FOR_SCANNING = 55
 
     ARM_TIME = 1500
     ARM_EXTENSION_SPEED = -280
@@ -301,6 +305,9 @@ class Controller:
         print("Type of ISBN is " + str(type(ISBN)))
         print("Type of decoded ISBN is " + str(type(decoded_ISBN)))
         print("The decoded ISBN is " + str(decoded_ISBN))
+
+        found = False
+        movement = -self.HORIZONTAL_MOVEMENT_FOR_SCANNING
         for attempt in range(0, num_attempts):
             time.sleep(0.1)
             decoded_ISBN, offset = vision.read_QR(self.camera)
@@ -308,12 +315,37 @@ class Controller:
             print("The decoded ISBN is " + str(decoded_ISBN))
             if decoded_ISBN is not None and int(ISBN) == int(decoded_ISBN):
                 print("=========== SUCCESS!")
-                return True
+                found = True
+                break
             else:
                 print("Still different...")
 
-        print("Number of attempts exhausted... return false :( book is definitely not here")
-        return False
+            if self.motor_ready(self.HORIZONTAL_MOTOR):
+                if movement > 0:
+                    print("Wiggle to right... :) ---> ")
+                else:
+                    print("<--- Wiggle to left.... :)")
+                    ev3.Sound.speak("wiggle!")
+                self.move_motor_by_dist(
+                    self.HORIZONTAL_MOTOR,
+                    # self.CELL_SIZE,
+                    movement,
+                    self.HORIZONTAL_SPEED_FOR_SCANNING
+                )
+                movement = -movement
+
+        if movement > 0:
+            time.sleep(2)
+            self.move_motor_by_dist(
+                self.HORIZONTAL_MOTOR,
+                # self.CELL_SIZE,
+                movement,
+                self.HORIZONTAL_SPEED_FOR_SCANNING
+            )
+
+        if not found:
+            print("Number of attempts exhausted... return False :( book is definitely not here")
+        return found
 
         # This is either not needed or must be updated:
         """

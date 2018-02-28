@@ -2,7 +2,7 @@ import ev3dev.ev3 as ev3
 import main as vision
 import time
 
-SPEED = 100
+SPEED = 125
 TOLERABLE_OFFSET = 1000
 DISPLACEMENT = 300
 
