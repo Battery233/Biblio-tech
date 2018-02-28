@@ -298,7 +298,7 @@ class Controller:
         # start horizontal movement needed to almost reach next cell
         print("Scanning for ISBN " + ISBN)
 
-        num_attempts = 1000
+        num_attempts = 100
 
         time.sleep(0.1)
         decoded_ISBN, offset = vision.read_QR(self.camera)
