@@ -9,14 +9,12 @@ import db.main as db
 import vision.main as vision
 from ev3bt import ev3_server
 
-# ---- FOR HARCODE:
+# FOR HARCODE:
+
 IGNORE_QR_CODE = False
 
 WEALTH_OF_NATIONS_ISBN = 9781840226881
 THE_CASTLE_ISBN = 9780241197806
-
-# ---- END OF HARDCODE VARIABLEs
-
 
 DEG_PER_CM = 29.0323
 
@@ -130,10 +128,13 @@ class Controller:
 
     BOOK_WIDTH = 80
     CELL_WIDTH = 270
+    END_CELL_OFFSET = 10
     CELLS_START = [(0, 0), (CELL_WIDTH, 0),      # Bottom level, left to right
                    (0, 300), (CELL_WIDTH, 300)]  # Top level, left to right
-    CELLS_END = [(CELL_WIDTH - BOOK_WIDTH, 0), (2 * CELL_WIDTH - BOOK_WIDTH, 0),  # Bottom level, left to right
-                 (CELL_WIDTH - BOOK_WIDTH, 300), (500 - BOOK_WIDTH, 300)]         # Top level, left to right
+    CELLS_END = [(CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),      # Bottom level, left cell
+                 (2 * CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),  # Bottom level, right cell
+                 (CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 300),    # Top level, left cell
+                 (500 - BOOK_WIDTH - END_CELL_OFFSET, 300)]           # Top level, right cell
     # This is wrong, probably not needed: CELL_SIZE = 249
 
     TOLERABLE_OFFSET = 5
@@ -298,14 +299,16 @@ class Controller:
         # start horizontal movement needed to almost reach next cell
         print("Scanning for ISBN " + ISBN)
 
-        num_attempts = 100
-
-        time.sleep(0.1)
-        decoded_ISBN, offset = vision.read_QR(self.camera)
+        decoded_ISBN = 0
+        num_mock_attempts = 3
+        for attempt in range(0, num_mock_attempts):
+            time.sleep(0.1)
+            decoded_ISBN, offset = vision.read_QR(self.camera)
         print("Type of ISBN is " + str(type(ISBN)))
         print("Type of decoded ISBN is " + str(type(decoded_ISBN)))
         print("The decoded ISBN is " + str(decoded_ISBN))
 
+        num_attempts = 50
         found = False
         movement = -self.HORIZONTAL_MOVEMENT_FOR_SCANNING
         for attempt in range(0, num_attempts):
@@ -313,19 +316,23 @@ class Controller:
             decoded_ISBN, offset = vision.read_QR(self.camera)
             print("Attempt #" + str(attempt))
             print("The decoded ISBN is " + str(decoded_ISBN))
-            if decoded_ISBN is not None and int(ISBN) == int(decoded_ISBN):
-                print("=========== SUCCESS!")
-                found = True
-                break
+            if decoded_ISBN is not None:
+                if int(ISBN) == int(decoded_ISBN):
+                    print("=========== SUCCESS!")
+                    found = True
+                    break
+                else:
+                    print("Uuuups! Different ISBN found, so the book is not in the right place!")
+                    break
             else:
-                print("Still different...")
+                print("Still trying to detect the ISBN...")
 
             if self.motor_ready(self.HORIZONTAL_MOTOR):
                 if movement > 0:
                     print("Wiggle to right... :) ---> ")
                 else:
                     print("<--- Wiggle to left.... :)")
-                    ev3.Sound.speak("wiggle!")
+                    # ev3.Sound.speak("wiggle, wiggle, wiggle!")
                 self.move_motor_by_dist(
                     self.HORIZONTAL_MOTOR,
                     # self.CELL_SIZE,
@@ -335,7 +342,7 @@ class Controller:
                 movement = -movement
 
         if movement > 0:
-            time.sleep(2)
+            time.sleep(4)
             self.move_motor_by_dist(
                 self.HORIZONTAL_MOTOR,
                 # self.CELL_SIZE,
@@ -583,7 +590,7 @@ class Controller:
         if body is not None:
             message = {title: body}
         else:
-            message = {'message': {"content": self.MESSAGE_FOUND_BOOK}}
+            message = {'message': {"content": title}}
 
         print("sending message: " + json.dumps(message))
         socket.send(json.dumps(message))
