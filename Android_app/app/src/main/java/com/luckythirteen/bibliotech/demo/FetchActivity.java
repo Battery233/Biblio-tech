@@ -78,6 +78,8 @@ public class FetchActivity extends AppCompatActivity {
 
     private boolean queriedDatabase = false;
 
+    private boolean busy = false;          //flag for avoiding busy status
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,13 +223,10 @@ public class FetchActivity extends AppCompatActivity {
      */
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
-        if(!queriedDatabase)
-        {
+        if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
             queriedDatabase = true;
-        }
-        else
-        {
+        } else {
             showBookList(this.books);
         }
     }
@@ -269,15 +268,14 @@ public class FetchActivity extends AppCompatActivity {
             // Make sure MessageSender object initialised
             assert messageSender != null : "MessageSender object not initialised";
 
-            if(books.contains(chosenBook))
-            {
+            if (books.contains(chosenBook)) {
                 // Send FindBook command
                 FindBook reachBook = new FindBook(chosenBook.getISBN());
+                //set busy status to true, disable back button
+                busy = true;
                 // Send message
                 sendMessageWithFeedback(reachBook);
-            }
-            else
-            {
+            } else {
                 final Context context = this.getApplicationContext();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -298,8 +296,7 @@ public class FetchActivity extends AppCompatActivity {
      *
      * @param books List of books
      */
-    private void showBookList(final ArrayList<Book> books)
-    {
+    private void showBookList(final ArrayList<Book> books) {
         this.books = books;
         final Context context = this;
         final FetchActivity fetchActivity = this;
@@ -315,16 +312,12 @@ public class FetchActivity extends AppCompatActivity {
                 final AlertDialog ad = promptBuilder.show();
                 Log.w(TAG, "populateListView() - updating found words view");
                 BookListArrayAdapter listAdapter = new BookListArrayAdapter(context, R.layout.list_books_row, books, ad, fetchActivity);
-                ListView listView = (ListView) wordsPrompt.findViewById(R.id.lstBooks);
+                ListView listView = wordsPrompt.findViewById(R.id.lstBooks);
 
                 // Set ListView to use updated listAdapter
                 listView.setAdapter(listAdapter);
-
-
             }
         });
-
-
     }
 
 
@@ -372,14 +365,12 @@ public class FetchActivity extends AppCompatActivity {
      * @param json The raw JSON message
      */
     private void performAction(MessageType type, String json) {
-        if (type == MessageType.bookList)
-        {
-           BookList books = MessageParser.getBookListFromJson(json);
+        if (type == MessageType.bookList) {
+            BookList books = MessageParser.getBookListFromJson(json);
 
-            if(books != null) {
+            if (books != null) {
                 showBookList(books.getBooks());
-            }
-            else {
+            } else {
                 final Context context = this.getApplicationContext();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -392,8 +383,7 @@ public class FetchActivity extends AppCompatActivity {
             showGetPrompt();
         } else if (type == MessageType.missingBook) {
             showMissingBookPrompt();
-        } else if(type == MessageType.busy)
-        {
+        } else if (type == MessageType.busy) {
             final Context context = this.getApplicationContext();
             runOnUiThread(new Runnable() {
                 @Override
@@ -401,8 +391,7 @@ public class FetchActivity extends AppCompatActivity {
                     Toast.makeText(context, "Robot is busy!", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        else if (type == MessageType.undefined) {
+        } else if (type == MessageType.undefined) {
             Log.w(TAG, "Don't understand message: " + json);
         }
     }
@@ -429,6 +418,8 @@ public class FetchActivity extends AppCompatActivity {
                         }
                     }
                 };
+
+                busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage("Book not found, would you like to scan the whole shelf?")
@@ -465,6 +456,8 @@ public class FetchActivity extends AppCompatActivity {
                         }
                     }
                 };
+
+                busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage("Book found, do you want to retrieve it?")
@@ -526,12 +519,9 @@ public class FetchActivity extends AppCompatActivity {
 
     }
 
-    private void removeBookFromArrayList(Book book)
-    {
-        for(Book b : books)
-        {
-            if(b.getISBN().equals(book.getISBN()))
-            {
+    private void removeBookFromArrayList(Book book) {
+        for (Book b : books) {
+            if (b.getISBN().equals(book.getISBN())) {
                 books.remove(b);
                 break;
             }
@@ -559,6 +549,20 @@ public class FetchActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * avoid robot fall into busy status
+     */
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed()");
+        final Context context = this.getApplicationContext();
+        if (busy) {
+            Toast.makeText(context, "Still trying to find the book", Toast.LENGTH_SHORT).show();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
