@@ -1,6 +1,12 @@
 # SDP-group13
 [![Build Status](https://travis-ci.com/leo-mazz/sdp-group13.svg?token=JG5WwdVmCAWrpHY3Wcdp&branch=master)](https://travis-ci.com/leo-mazz/sdp-group13)
 
+## BUG to be fixed
+
+1.
+After giving the robot 'findBook' command, before getting the feedback (the alert dialog about whether the book is found or not) is shown, pressing back button may cause robot into 'busy' status and thus have to restart the .py file.
+
+
 ## API
 The following is the interface for the communication between the app and the
 EV3 brick. They exchange JSON messages over Bluetooth. The first element is the
