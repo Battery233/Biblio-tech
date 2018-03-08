@@ -18,9 +18,6 @@ class SplashActivity : AppCompatActivity() {
         //no action bar
         supportActionBar?.hide()
 
-        val typeface = Typeface.createFromAsset(assets, "fonts/comicbd.ttf")
-        slogan.typeface = typeface
-
         val packageInfoManager = packageManager
         try {
             //Show version number at bottom

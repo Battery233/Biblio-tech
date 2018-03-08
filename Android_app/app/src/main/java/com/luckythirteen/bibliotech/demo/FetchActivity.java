@@ -89,7 +89,7 @@ public class FetchActivity extends AppCompatActivity {
         setupUI();
 
 
-        books = getBooks();
+       // books = getBooks();
 
         // Use stored MAC address
         targetMac = new UserPrefsManager(this.getApplicationContext()).getMacAddress();
@@ -225,8 +225,7 @@ public class FetchActivity extends AppCompatActivity {
         Log.d(TAG, "Select book button pressed");
         if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
-            queriedDatabase = true;
-        } else {
+        } else if(books != null) {
             showBookList(this.books);
         }
     }
@@ -370,6 +369,7 @@ public class FetchActivity extends AppCompatActivity {
 
             if (books != null) {
                 showBookList(books.getBooks());
+                queriedDatabase = true;
             } else {
                 final Context context = this.getApplicationContext();
                 runOnUiThread(new Runnable() {
