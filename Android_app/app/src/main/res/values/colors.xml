@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#84ffff</color>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#84ffff</color>-->
+
+    <color name="colorPrimary">#2e4874</color>
+    <color name="colorPrimaryDark">#343635</color>
+    <color name="colorAccent">#7eaba4</color>
+
     <color name="colorButtonBlue">#9c27b0</color>
-    <color name="colorWhite">#fff</color>
+    <color name="colorWhite">#f4eade</color>
 
     <color name="colorBluetoothConnected">#00ff55</color>
     <color name="colorBluetoothDisconnected">#b20000</color>

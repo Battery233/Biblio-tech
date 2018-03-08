@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6a1b9a"
+    android:background="@color/colorPrimaryDark"
     tools:context="com.luckythirteen.bibliotech.SplashActivity">
 
     <ImageView
@@ -46,6 +46,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
         android:text="Bibliotech"
         android:textColor="#ffffff"
         android:textSize="40sp"

@@ -22,7 +22,7 @@
         android:text="@string/fetchTitlePlaceholder"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
-        android:textColor="@android:color/background_light"
+        android:textColor="@color/colorWhite"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -47,7 +47,7 @@
         android:fontFamily="sans-serif"
         android:text="@string/fetchAuthorPlaceholder"
         android:textAlignment="viewStart"
-        android:textColor="@android:color/background_light"
+        android:textColor="@color/colorWhite"
         android:textSize="14sp"
         android:textStyle="bold" />
 

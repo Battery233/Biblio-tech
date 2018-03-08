@@ -4,6 +4,9 @@ package com.luckythirteen.bibliotech.dev;
  */
 
 import android.bluetooth.BluetoothDevice;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -184,6 +187,21 @@ public class DevActivity extends AppCompatActivity {
         // *********************************************************
         // *********************************************************
 
+        // Set thumb color of both bars to white
+        ShapeDrawable thumb = new ShapeDrawable(new OvalShape());
+        thumb.getPaint().setColor(getResources().getColor(R.color.colorWhite));
+        thumb.setIntrinsicHeight(40);
+        thumb.setIntrinsicWidth(40);
+
+        // We need another thumb object or moving one slider, will also move the other's thumb
+        // if we give them the same thumb object
+        ShapeDrawable thumb2 = new ShapeDrawable(new OvalShape());
+        thumb2.getPaint().setColor(getResources().getColor(R.color.colorWhite));
+        thumb2.setIntrinsicHeight(40);
+        thumb2.setIntrinsicWidth(40);
+
+        speedBar.setThumb(thumb);
+        durationBar.setThumb(thumb2);
 
         // Listeners for seek bars that update their respective speed and duration EditTexts
         speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
