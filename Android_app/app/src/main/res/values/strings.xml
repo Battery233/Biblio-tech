@@ -2,12 +2,12 @@
     <string name="app_name">Bibliotech</string>
 
     <string name="selectModeLabel">Welcome</string>
-    <string name="DemoModeButtonLabel">Start exploring</string>
+    <string name="DemoModeButtonLabel">Demo Mode</string>
     <string name="DevModeButtonLabel">Dev Mode</string>
     <string name="SettingsButtonLabel">Settings</string>
 
     <string name="fetchScreenTitle">Fetch a book!</string>
-    <string name="selectBookButton">Select a book</string>
+    <string name="selectBookButton">Select book</string>
     <string name="fetchTitleLabel">Title:</string>
     <string name="fetchAuthorLabel">Author:</string>
     <string name="fetchAuthorPlaceholder">Brian Clegg</string>

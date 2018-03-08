@@ -89,7 +89,7 @@ public class FetchActivity extends AppCompatActivity {
         setupUI();
 
 
-        books = getBooks();
+       // books = getBooks();
 
         // Use stored MAC address
         targetMac = new UserPrefsManager(this.getApplicationContext()).getMacAddress();
@@ -225,8 +225,7 @@ public class FetchActivity extends AppCompatActivity {
         Log.d(TAG, "Select book button pressed");
         if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
-            queriedDatabase = true;
-        } else {
+        } else if(books != null) {
             showBookList(this.books);
         }
     }
@@ -275,6 +274,7 @@ public class FetchActivity extends AppCompatActivity {
                 busy = true;
                 // Send message
                 sendMessageWithFeedback(reachBook);
+
             } else {
                 final Context context = this.getApplicationContext();
                 runOnUiThread(new Runnable() {
@@ -370,6 +370,7 @@ public class FetchActivity extends AppCompatActivity {
 
             if (books != null) {
                 showBookList(books.getBooks());
+                queriedDatabase = true;
             } else {
                 final Context context = this.getApplicationContext();
                 runOnUiThread(new Runnable() {
@@ -481,7 +482,7 @@ public class FetchActivity extends AppCompatActivity {
         books.add(new Book("9781785782343", "Big Data How the Information Revolution Is Transforming Our Lives", "Brian Clegg", "1,1", true));
         books.add(new Book("9781447221098", "Dirk Gently Holistic Detective Agency", "Douglas Adams", "1,2", true));
         books.add(new Book("9780241197806", "The Castle", "Franz Kafka", "1,3", true));
-        books.add(new Book("9781840226881", "Wealth of Nations", "Adam Smith", "2,1", true));
+        books.add(new Book("9781840226881", "Wealth of Nations", "adam Smith", "2,1", true));
         books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", "2,2", true));
         books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", "2,3", false));
 
