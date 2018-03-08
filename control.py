@@ -20,25 +20,10 @@ DEG_PER_CM = 29.0323
 
 DB_FILE = db.PRODUCTION_DB
 
-
-
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
 
-def letter_to_int(letter):
-    if letter == 'A':
-        return 0
-    elif letter == 'B':
-        return 1
-    elif letter == 'C':
-        return 2
-    elif letter == 'D':
-        return 3
-    else:
-        return 0
-
 # just a test
-
 
 def primary_action(action):
     """
@@ -84,7 +69,7 @@ def disruptive_action(action):
 class Controller:
     # TODO: change assumption that robot is initially positioned at the end of
     # the track
-    INITIAL_STATE = {'alignedToBook': None, 'busy': False, 'x_pos': 500}
+    INITIAL_STATE = {'alignedToBook': None, 'busy': False}
 
     MOTORS = [
         ev3.Motor('outA'),
@@ -93,19 +78,20 @@ class Controller:
         ev3.Motor('outD')
     ]
 
-    # SOCKET A IS HORIZONTAL movement
-    # SOCKET B IS FOR arm
-    # SOCKET C IS FOR FINGER
+    # Socket A -> horizontal movement
+    # Socket B -> arm movement
+    # Socket C -> finger movement
+    # Socket D -> vertical movement
 
     HORIZONTAL_SOCKET = 0
-    VERTICAL_SOCKET = 3
     ARM_SOCKET = 1
     FINGER_SOCKET = 2
+    VERTICAL_SOCKET = 3
 
     HORIZONTAL_MOTOR = MOTORS[HORIZONTAL_SOCKET]
-    VERTICAL_MOTOR = MOTORS[VERTICAL_SOCKET]
     ARM_MOTOR = MOTORS[ARM_SOCKET]
     FINGER_MOTOR = MOTORS[FINGER_SOCKET]
+    VERTICAL_MOTOR = MOTORS[VERTICAL_SOCKET]
 
     # finger: 55 dps per 1500 sec
 
@@ -135,9 +121,6 @@ class Controller:
                  (2 * CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),  # Bottom level, right cell
                  (CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 300),    # Top level, left cell
                  (500 - BOOK_WIDTH - END_CELL_OFFSET, 300)]           # Top level, right cell
-    # This is wrong, probably not needed: CELL_SIZE = 249
-
-    TOLERABLE_OFFSET = 5
 
     MESSAGE_BOOK_NOT_ALIGNED = 'bookNotAligned'
     MESSAGE_BUSY = 'busy'
@@ -165,7 +148,7 @@ class Controller:
         self.camera = vision.activate_camera()
 
         # Stop all motors
-        self.stop_motor()
+        self.stop_motors()
 
         self.dist_sensor = ev3.UltrasonicSensor()
 
@@ -174,10 +157,10 @@ class Controller:
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
 
-        # Position arm at the beginning of first cell
+        # Move the robot at the beginning of first cell
         self.reach_cell(0)
 
-        # Create bluetooth server and start it listening on a new thread
+        # Create Bluetooth server and start it listening on a new thread
         self.server = ev3_server.BluetoothServer("ev3 dev", self.parse_message)
         self.server_thread = Thread(target=self.server.start_server)
         self.server_thread.start()
@@ -239,35 +222,31 @@ class Controller:
         It worked on most of the test, I think the success depends on how accurate the sensor gets the distance to the
         green wall. We MUST make a larger (both in width and height) target.
         """
-           
-        # Rough sketch of how function will work, not remotely accurate or even logically correct
-        # Assumes distance board is on right hand side, so that's why we subtract from the shelf length
-        if self.dist_sensor.connected:
-            sum_of_distances = 0
-            num_measurements = 10
-            for i in range(0, num_measurements):
-                time.sleep(0.25)
-                self.dist_sensor.mode = 'US-DIST-CM'
-                dist_now = self.dist_sensor.value()
-                print("measurement #" + str(i) + ": " + str(dist_now))
-                sum_of_distances += dist_now
-            dist_between_sensor_right_end_and_green_wall = int(sum_of_distances / num_measurements)
-            x_coordinate = self.RAILS_LENGTH + self.DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL\
-                           - (dist_between_sensor_right_end_and_green_wall + self.ROBOT_LENGTH)
-            print("The distance between the right end of the sensor and the green wall is: " + str(dist_between_sensor_right_end_and_green_wall))
-            print("My guess for the x_coordinate is: " + str(x_coordinate))
-            return x_coordinate
-        else:
+        if not self.dist_sensor.connected:
             print('Distance sensor not connected')
             return None
 
-    def reach_cell(self, cell, end_of_cell = False):
-        # offset_to_end is the distance to end of track calculated
-        # by the distance sensor. Temporarily disabled as distance sensor is
-        # very imprecise
-        # x_coordinate = self.get_pos()
-        # x_coordinate = self.state['x_pos']
+        sum_of_distances = 0
+        num_measurements = 10
+        for i in range(0, num_measurements):
+            time.sleep(0.25)
+            self.dist_sensor.mode = 'US-DIST-CM'
 
+            dist_now = self.dist_sensor.value()
+            print("measurement #" + str(i) + ": " + str(dist_now))
+
+            sum_of_distances += dist_now
+
+        dist_between_sensor_right_end_and_green_wall = int(sum_of_distances / num_measurements)
+        x_coordinate = self.RAILS_LENGTH + self.DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL\
+                       - (dist_between_sensor_right_end_and_green_wall + self.ROBOT_LENGTH)
+
+        print("The distance between the right end of the sensor and the green wall is: " + str(dist_between_sensor_right_end_and_green_wall))
+        print("My guess for the x_coordinate is: " + str(x_coordinate))
+
+        return x_coordinate
+
+    def reach_cell(self, cell, end_of_cell = False):
         # Get the target x coordinate (the place where we want to move the robot)
 
         if end_of_cell:
@@ -275,45 +254,45 @@ class Controller:
         else:
             target_x_coordinate = self.CELLS_START[cell][0]
 
-        # Compute the offset that will be moved by the robot
+        # Compute the offset with wich the robot will be moved
         x_offset = target_x_coordinate - self.current_x_coordinate
 
         print("Move the robot by " + str(x_offset))
-        self.move_motor_by_dist(
-            self.HORIZONTAL_MOTOR,
-            x_offset,
-            self.HORIZONTAL_SPEED
-        )
+        self.move_motor_by_dist(self.HORIZONTAL_MOTOR, x_offset, self.HORIZONTAL_SPEED)
 
         # Update the current x_coordinate to be the target coordinate as the robot is now there
         self.current_x_coordinate = target_x_coordinate
 
-        # TODO: implement vertical movement
-        print("[ReachCell]: waiting for motor to free")
-        # self.HORIZONTAL_MOTOR.wait_until_not_moving(timeout=5)
+        print("[reach_cell]: waiting for motor to free")
         self.wait_for_motor(self.HORIZONTAL_MOTOR)
-        print("[ReachCell]: action complete")
-        self.state['position'] = self.CELLS_START[cell]
+        print("[reach_cell]: action complete")
+
+        # TODO: implement vertical movement
 
     def scan_ISBN(self, ISBN):
-        # start horizontal movement needed to almost reach next cell
         print("Scanning for ISBN " + ISBN)
 
         decoded_ISBN = 0
+
+        # The mock attempts are needed because I (Mihai) believe that somehow the previous QR code is cached and
+        # the new one is not retrieved. TODO: check if this is really needed but there's definetly no harm in
+        # keeping it other than it makes the whole process a little bit longer.
         num_mock_attempts = 3
         for attempt in range(0, num_mock_attempts):
             time.sleep(0.1)
             decoded_ISBN, offset = vision.read_QR(self.camera)
-        print("Type of ISBN is " + str(type(ISBN)))
-        print("Type of decoded ISBN is " + str(type(decoded_ISBN)))
-        print("The decoded ISBN is " + str(decoded_ISBN))
 
+        # Now real scanning begins.
         num_attempts = 50
         found = False
+
+        # This variable will flip from negative to positive as long as the scanning continues. First time it is
+        # negative, which means the robot will start moving to the left.
         movement = -self.HORIZONTAL_MOVEMENT_FOR_SCANNING
         for attempt in range(0, num_attempts):
             time.sleep(0.1)
             decoded_ISBN, offset = vision.read_QR(self.camera)
+
             print("Attempt #" + str(attempt))
             print("The decoded ISBN is " + str(decoded_ISBN))
             if decoded_ISBN is not None:
@@ -332,52 +311,23 @@ class Controller:
                     print("Wiggle to right... :) ---> ")
                 else:
                     print("<--- Wiggle to left.... :)")
+                    # The wiggle sound is actually not needed, but to discuss whether we can add sounds to inform
+                    # the user about book title / finding of a book etc.
                     # ev3.Sound.speak("wiggle, wiggle, wiggle!")
-                self.move_motor_by_dist(
-                    self.HORIZONTAL_MOTOR,
-                    # self.CELL_SIZE,
-                    movement,
-                    self.HORIZONTAL_SPEED_FOR_SCANNING
-                )
+                self.move_motor_by_dist(self.HORIZONTAL_MOTOR, movement, self.HORIZONTAL_SPEED_FOR_SCANNING)
                 movement = -movement
 
+        # If the value of "movement" is positive, it means that last time we moved to the left and because we finished
+        # the loop (either because we found the book, or the number of attempts was exhausted), we have to return
+        # the robot in the original position from which it started to wiggle.
         if movement > 0:
-            time.sleep(4)
-            self.move_motor_by_dist(
-                self.HORIZONTAL_MOTOR,
-                # self.CELL_SIZE,
-                movement,
-                self.HORIZONTAL_SPEED_FOR_SCANNING
-            )
+            # Firstly, wait for the motor to finish if it is still doing the previous movement.
+            self.wait_for_motor(self.HORIZONTAL_MOTOR)
+            self.move_motor_by_dist(self.HORIZONTAL_MOTOR, movement, self.HORIZONTAL_SPEED_FOR_SCANNING)
 
         if not found:
             print("Number of attempts exhausted... return False :( book is definitely not here")
         return found
-
-        # This is either not needed or must be updated:
-        """
-        movement = 0
-        print("Start to move the motor by horizontal movement")
-        self.move_motor_by_dist(
-            self.HORIZONTAL_MOTOR,
-            # self.CELL_SIZE,
-            movement,
-            self.HORIZONTAL_SPEED
-        )
-        print("End moving the robot by horizontal movement")
-        """
-
-        # while not self.motor_ready(self.HORIZONTAL_MOTOR):
-        #     decoded_ISBN, offset = vision.read_QR(self.camera)
-        #     print("[ScanISBN], camera result: " + str(decoded_ISBN) + ", offset: " + str(offset))
-        #     if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
-        #         self.stop_motor()
-        #         return True
-        #     time.sleep(0.1)
-
-        # return False
-        print("Return True --> book found :)")
-        return True
 
     @primary_action
     @disruptive_action
@@ -387,12 +337,10 @@ class Controller:
         as an argument.
         '''
 
-
         print("The received ISBN is " + str(ISBN))
-        print("The ISBN for Wealth of Nations is " + str(WEALTH_OF_NATIONS_ISBN))
-        print("THE ISBN for The Castle is " + str(THE_CASTLE_ISBN))
 
-        # The received ISBN is a string so we make it an int:
+        # The received ISBN is a string so we make it an int
+        # TODO: this must be updated to properly retrieve the book's position from the database, not hardcoded.
         end_of_cell = False
         if int(ISBN) == WEALTH_OF_NATIONS_ISBN:
             print("The searched book is Wealth of Nations")
@@ -411,11 +359,6 @@ class Controller:
 
         print(cell)
 
-        if cell is None:
-            print('Book does not exist')
-            # TODO: RETURN missingBook
-            pass
-
         self.reach_cell(cell, end_of_cell)
 
         # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
@@ -432,40 +375,24 @@ class Controller:
         if self.state['alignedToBook'] == ISBN or True:
             # extend arm
             print("Move first motor")
-            self.move_motor(
-                [self.ARM_SOCKET],
-                self.ARM_EXTENSION_SPEED,
-                self.ARM_TIME
-            )
+            self.rotate_motor([self.ARM_SOCKET], self.ARM_EXTENSION_SPEED, self.ARM_TIME)
       
             print("wait 5 secs")
             time.sleep(5) # TODO: check times later
             print("move second motor")
             # extend finger
-            self.move_motor(
-                [self.FINGER_SOCKET],
-                self.FINGER_EXTENSION_SPEED,
-                self.FINGER_TIME
-            )
+            self.rotate_motor([self.FINGER_SOCKET], self.FINGER_EXTENSION_SPEED, self.FINGER_TIME)
 
             print("wait 5 secs again")
             time.sleep(5)
             print("move third motor")
             # retract arm
-            self.move_motor(
-                [self.ARM_SOCKET],
-                self.ARM_RETRACTION_SPEED,
-                self.ARM_TIME
-            )
+            self.rotate_motor([self.ARM_SOCKET], self.ARM_RETRACTION_SPEED, self.ARM_TIME)
 
             print("wait 5 secs for last time")
             time.sleep(5)
             print("move last motor")
-            self.move_motor(
-                [self.FINGER_SOCKET],
-                self.FINGER_RETRACTION_SPEED,
-                self.FINGER_TIME
-            )
+            self.rotate_motor([self.FINGER_SOCKET], self.FINGER_RETRACTION_SPEED, self.FINGER_TIME)
         else:
             self.send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
@@ -475,11 +402,11 @@ class Controller:
         # TODO: A LOT
         pass
 
-    # Move motor
+    # Rotate motor
     # @param string socket  Output socket string (0 / 1 / 2 / 3)
-    # @param int speed      Speed to move motor at (degrees/sec)
-    # @param int time       Time to move motor for (milliseconds)
-    def move_motor(self, sockets, speed, time):
+    # @param int speed      Speed to rotate motor at (degrees/sec)
+    # @param int time       Time to rotate motor for (milliseconds)
+    def rotate_motor(self, sockets, speed, time):
         for socket in sockets:
             motor = self.MOTORS[socket]
             if motor.connected:
@@ -494,7 +421,6 @@ class Controller:
     # @param float  dist       Distance to move motor in centimeters
     # @param int    speed      Speed to move motor at (degrees / sec)
     def move_motor_by_dist(self, motor, dist, speed):
-
         if motor.connected:
             # convert to cm and then to deg
             angle = int(cm_to_deg(float(dist)/10))
@@ -502,7 +428,7 @@ class Controller:
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 
-    def stop_motor(self, sockets=None):
+    def stop_motors(self, sockets=None):
         # Stop all the motors by default
         if sockets is None:
             sockets = [0, 1, 2, 3]
@@ -519,13 +445,13 @@ class Controller:
 
         if (command_type == 'move' and len(command_args) == 3 and
                 'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
-            self.move_motor(command_args['ports'], command_args['speed'], command_args['time'])
+            self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
 
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
-                self.stop_motor(command_args['ports'])
+                self.stop_motors(command_args['ports'])
             elif len(command_args) == 0:
-                self.stop_motor()
+                self.stop_motors()
             else:
                 raise ValueError('Invalid command')
 
@@ -562,7 +488,6 @@ class Controller:
             elif len(command_args) == 0:
                 print("[DBS in control.py]Give the book list of all books.")
                 query_result = self.query_DB()
-                # print("Query Result: " + str(query_result))
                 built_query = []
 
                 for i, book in enumerate(query_result):
@@ -583,10 +508,10 @@ class Controller:
         elif command_type == 'ping':
             socket.send('pong')
 
-        else:
-            raise ValueError('Invalid command')
+        raise ValueError('Invalid command')
 
     def send_message(self, socket, title, body=None):
+        # TODO: improve this and make it clearer
         if body is not None:
             message = {title: body}
         else:
