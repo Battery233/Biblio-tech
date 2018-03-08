@@ -6,6 +6,7 @@
 
     <color name="colorPrimary">#2e4874</color>
     <color name="colorPrimaryDark">#343635</color>
+    <color name="colorPrimaryTrans">#642e4874</color>
     <color name="colorAccent">#7eaba4</color>
 
     <color name="colorButtonBlue">#9c27b0</color>
