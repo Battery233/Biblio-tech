@@ -406,10 +406,7 @@ class MainController(Controller):
         # TODO: A LOT
         pass
 
-    # Rotate motor
-    # @param string socket  Output socket string (0 / 1 / 2 / 3)
-    # @param int speed      Speed to rotate motor at (degrees/sec)
-    # @param int time       Time to rotate motor for (milliseconds)
+
     def rotate_motor(self, sockets, speed, time):
         for socket in sockets:
             motor = self.MOTORS[socket]

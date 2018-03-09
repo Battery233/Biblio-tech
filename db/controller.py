@@ -16,3 +16,18 @@ class Controller:
         if (command_type == 'move' and len(command_args) == 3 and
                 'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
                 rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
+
+
+    # Rotate motor
+    # @param string socket  Output socket string (0 / 1 / 2 / 3)
+    # @param int speed      Speed to rotate motor at (degrees/sec)
+    # @param int time       Time to rotate motor for (milliseconds)
+    def rotate_motor(self, sockets, speed, time):
+        for socket in sockets:
+            motor = self.MOTORS[socket]
+            if motor.connected:
+                # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
+                if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
+                    motor.run_timed(speed_sp=speed, time_sp=time)
+            else:
+                print('[ERROR] No motor connected to ' + socket)
