@@ -11,17 +11,15 @@
         android:id="@+id/checkMoveMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:buttonTint="@color/colorWhite"
         android:fontFamily="@font/adam"
         android:text="@string/checkMoveMode"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editMessage"
@@ -126,14 +124,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/adam"
         android:text="@string/txtSetDuration"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkMoveMode" />
+        app:layout_constraintTop_toBottomOf="@+id/boxA" />
 
     <SeekBar
         android:id="@+id/seekBarDuration"
@@ -220,7 +218,7 @@
         android:id="@+id/txtDurationValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:fontFamily="@font/adam"
@@ -231,7 +229,7 @@
         android:textColor="@color/colorBluetoothConnected"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/txtSetSpeed"
-        app:layout_constraintTop_toBottomOf="@+id/checkMoveMode" />
+        app:layout_constraintTop_toBottomOf="@+id/boxA" />
 
     <ImageButton
         android:id="@+id/btnReconnect"
@@ -251,7 +249,68 @@
         android:layout_height="23dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/boxB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="4dp"
+        android:buttonTint="@color/colorWhite"
+        android:fontFamily="@font/adam"
+        android:text="@string/socketB"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/boxA"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+
+    <CheckBox
+        android:id="@+id/boxC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="52dp"
+        android:layout_marginTop="4dp"
+        android:buttonTint="@color/colorWhite"
+        android:fontFamily="@font/adam"
+        android:text="@string/socketC"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/boxD"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+
+    <CheckBox
+        android:id="@+id/boxD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="4dp"
+        android:buttonTint="@color/colorWhite"
+        android:fontFamily="@font/adam"
+        android:text="@string/socketD"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
+
+    <CheckBox
+        android:id="@+id/boxA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        android:buttonTint="@color/colorWhite"
+        android:fontFamily="@font/adam"
+        android:text="@string/socketA"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarSpeed" />
 
 </android.support.constraint.ConstraintLayout>

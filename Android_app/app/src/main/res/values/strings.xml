@@ -44,10 +44,15 @@
         <item>D</item>
     </string-array>
 
+    <string name="socketA">A</string>
+    <string name="socketB">B</string>
+    <string name="socketC">C</string>
+    <string name="socketD">D</string>
+
     <string name="btnForward">Forward</string>
     <string name="btnBackward">Backward</string>
     <string name="btnStop">STOP</string>
-    <string name="checkMoveMode">Move by distance</string>
+    <string name="checkMoveMode">Dist</string>
 
     <string name="txtSettingsMacTitle">MAC Address</string>
     <string name="btnSettingsLoadEV33">Load EV33</string>
