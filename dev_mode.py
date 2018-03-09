@@ -46,7 +46,7 @@ def move_motor(socket, speed, time):
     if motor.connected:
         # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
         if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
-            motor.run_timed(speed_sp=speed, time_sp=time)
+            motor.run_timed(speed_sp=speed, time_sp=time, stop_action='hold')
     else:
         print('[ERROR] No motor connected to ' + str(motor))
 
@@ -61,7 +61,7 @@ def move_motor_by_dist(socket, dist, speed):
 
     if motor.connected:
         angle = cm_to_deg(dist)
-        motor.run_to_rel_pos(position_sp=angle, speed_sp=int(speed))
+        motor.run_to_rel_pos(position_sp=angle, speed_sp=int(speed), stop_action='hold')
     else:
         print('[ERROR] No motor connected to ' + str(motor))
 
