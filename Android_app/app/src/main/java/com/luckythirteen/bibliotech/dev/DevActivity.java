@@ -36,6 +36,7 @@ import com.luckythirteen.bibliotech.brickapi.obj.OutputPort;
 import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
@@ -60,6 +61,7 @@ public class DevActivity extends AppCompatActivity {
     private SeekBar speedBar, durationBar;
     private Spinner outputSocketSpinner;
     private CheckBox distanceModeCheckBox;
+    private CheckBox boxA, boxB, boxC, boxD;
 
     // BluetoothController object for creating a connection to the EV3
     private static BluetoothController bluetoothController;
@@ -184,6 +186,11 @@ public class DevActivity extends AppCompatActivity {
         speedBar.setMax(MAX_SPEED);
         durationBar = findViewById(R.id.seekBarDuration);
         durationBar.setMax(MAX_DURATION);
+
+        boxA = findViewById(R.id.boxA);
+        boxB = findViewById(R.id.boxB);
+        boxC = findViewById(R.id.boxC);
+        boxD = findViewById(R.id.boxD);
         // *********************************************************
         // *********************************************************
 
@@ -367,55 +374,63 @@ public class DevActivity extends AppCompatActivity {
         // Set direction multiplier to 1 if forward = true, -1 otherwise (we're going backwards)
         int directionMultiplier = forward ? 1 : -1;
 
-        OutputPort outputPort = getSelectedPort();
+        OutputPort[] outputPorts = getSelectedPorts();
 
-        // Store speed and duration values as ints
-        int speedValue = Integer.valueOf(speedText.getText().toString());
-        int durationValue = Integer.valueOf(durationText.getText().toString());
+        if(outputPorts.length > 0)
+        {
+            // Store speed and duration values as ints
+            int speedValue = Integer.valueOf(speedText.getText().toString());
+            int durationValue = Integer.valueOf(durationText.getText().toString());
 
 
-        if (!distanceModeCheckBox.isChecked()) {
-            // Only send message to EV3 if speed and duration values are valid ("safe")
-            if (speedValue > 0 && speedValue <= MAX_SPEED) {
-                if (durationValue > 0 && durationValue <= MAX_DURATION) {
-                    messageSender.sendCommand(new Move(speedValue * directionMultiplier, durationValue, new OutputPort[]{outputPort}));
+            if (!distanceModeCheckBox.isChecked()) {
+                // Only send message to EV3 if speed and duration values are valid ("safe")
+                if (speedValue > 0 && speedValue <= MAX_SPEED) {
+                    if (durationValue > 0 && durationValue <= MAX_DURATION) {
+                        messageSender.sendCommand(new Move(speedValue * directionMultiplier, durationValue, outputPorts));
+                    } else {
+                        Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Duration must be > 0 and less than " + MAX_DURATION + "ms", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Only send message to EV3 if speed and distance values are valid ("safe")
-            if (speedValue > 0 && speedValue <= MAX_DISTANCE) {
-                if (durationValue > 0 && durationValue <= MAX_DURATION) {
-                    messageSender.sendCommand(new MoveDist(outputPort, (float) durationValue / 10 * directionMultiplier, speedValue));
+                // Only send message to EV3 if speed and distance values are valid ("safe")
+                if (speedValue > 0 && speedValue <= MAX_SPEED) {
+                    if (durationValue > 0 && durationValue <= MAX_DURATION) {
+                        messageSender.sendCommand(new MoveDist(outputPorts, (float) durationValue / 10 * directionMultiplier, speedValue));
+                    } else {
+                        Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Distance must be > 0 and less than " + MAX_DISTANCE + "cm", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Distance must be > 0 and less than " + MAX_DISTANCE + "cm", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
             }
         }
+        else
+        {
+            Toast.makeText(this.getApplicationContext(), "Select at least one output port", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
-    private OutputPort getSelectedPort() {
-        String selectedSocket = outputSocketSpinner.getSelectedItem().toString();
-        Log.d(TAG, selectedSocket);
+    private OutputPort[] getSelectedPorts()
+    {
+        ArrayList<OutputPort> ports = new ArrayList<>();
 
-        switch (selectedSocket) {
-            case "A":
-                return OutputPort.A;
-            case "B":
-                return OutputPort.B;
-            case "C":
-                return OutputPort.C;
-            case "D":
-                return OutputPort.D;
-            default:
-                return OutputPort.A;
-        }
+        if(boxA.isChecked())
+            ports.add(OutputPort.A);
 
+        if(boxB.isChecked())
+            ports.add(OutputPort.B);
+
+        if(boxC.isChecked())
+            ports.add(OutputPort.C);
+
+        if(boxD.isChecked())
+            ports.add(OutputPort.D);
+
+        return ports.toArray(new OutputPort[]{});
     }
 
     /**

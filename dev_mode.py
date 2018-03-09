@@ -26,11 +26,22 @@ MOTORS = [
 DEG_PER_CM = 29.0323
 
 
+def detect_motors():
+    global MOTORS
+    MOTORS = [
+        ev3.Motor('outA'),
+        ev3.Motor('outB'),
+        ev3.Motor('outC'),
+        ev3.Motor('outD')
+    ]
+
+
 # Move motor
 # @param string socket  Output socket string (outA / outB / outC / outD)
 # @param int speed      Speed to move motor at (degrees/sec)
 # @param int time       Time to move motor for (milliseconds)
 def move_motor(socket, speed, time):
+    detect_motors()
     motor = MOTORS[socket]
     if motor.connected:
         # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
@@ -45,6 +56,7 @@ def move_motor(socket, speed, time):
 # @param float  dist       Distance to move motor in centimeters
 # @param int    speed      Speed to move motor at (degrees / sec)
 def move_motor_by_dist(socket, dist, speed):
+    detect_motors()
     motor = MOTORS[socket]
 
     if motor.connected:
@@ -69,6 +81,7 @@ def letter_to_int(letter):
 
 # Stops all connected motors
 def stop_motor():
+    detect_motors()
     print("stop motors")
     for socket in ['outA', 'outB', 'outC', 'outD']:
         m = ev3.Motor(socket)
@@ -100,7 +113,9 @@ def parse_message(data, socket):
             stop_motor()
 
         if command_type == 'moveDist' and len(command_args) == 3:
-            move_motor_by_dist(letter_to_int(command_args['port']), command_args['dist'], command_args['speed'])
+            for port in command_args['ports']:
+                motorPort = letter_to_int(port)
+                move_motor_by_dist(motorPort, command_args['dist'], command_args['speed'])
 
     elif data == 'ping':
         socket.send('pong')
@@ -108,7 +123,7 @@ def parse_message(data, socket):
     elif data == 'status':
         server.send_to_device("hello", Device.OTHER_EV3)
 
-    elif command_type == 'close':
+    elif data == 'close':
         server.close_server()
         server_thread.join()
         sys.exit(0)

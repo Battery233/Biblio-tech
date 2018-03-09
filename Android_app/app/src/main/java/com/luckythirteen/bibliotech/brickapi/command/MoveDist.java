@@ -7,19 +7,19 @@ import com.luckythirteen.bibliotech.brickapi.obj.OutputPort;
  */
 
 public class MoveDist extends Command {
-    private OutputPort port;
+    private OutputPort[] ports;
     private float dist;
     private int speed;
 
     /**
      * Moves motor by a specified distance (cm) and speed (degrees/cm)
      *
-     * @param port  Port to send command to
+     * @param ports  Ports to send command to
      * @param dist  Distance to move motor in centimetres
      * @param speed Speed to move motor (degrees/cm)
      */
-    public MoveDist(OutputPort port, float dist, int speed) {
-        this.port = port;
+    public MoveDist(OutputPort[] ports, float dist, int speed) {
+        this.ports = ports;
         this.dist = dist;
         this.speed = speed;
         this.commandType = CommandType.moveDist;
