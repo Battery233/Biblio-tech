@@ -6,7 +6,6 @@ from threading import Thread
 import ev3dev.ev3 as ev3
 
 import db.main as db
-import controller.py
 import vision.main as vision
 from ev3bt import ev3_server
 
@@ -67,7 +66,7 @@ def disruptive_action(action):
     return break_get_book_flow
 
 
-class MainController(Controller):
+class Controller:
     # TODO: change assumption that robot is initially positioned at the end of
     # the track
     INITIAL_STATE = {'alignedToBook': None, 'busy': False}
@@ -128,10 +127,7 @@ class MainController(Controller):
     MESSAGE_MISSING_BOOK = 'missingBook'
     MESSAGE_FOUND_BOOK = 'foundBook'
 
-    def __init__(self, server_name):
-        # Initialize server
-        super(server_name).__init__()
-
+    def __init__(self):
         # Create sample production.db in root folder
         db.flush_db(DB_FILE)
         db.create_book_table(DB_FILE)
@@ -545,4 +541,4 @@ class MainController(Controller):
 
 if __name__ == '__main__':
     # Initialize robot, starts listening for commands
-    robot = MainController('ev3')
+    robot = Controller()
