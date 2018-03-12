@@ -118,10 +118,6 @@ def query_DB(self, title=None):
 
 def send_message(self, socket, title, body=None):
         if body is not None:
-            if body is "coordinate":
-                # for the app to test the location of robot
-                message = {title: self.current_x_coordinate}
-            else:
                 message = {title: body}
         else:
             message = {'message': {"content": title}}

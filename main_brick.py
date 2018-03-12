@@ -72,12 +72,7 @@ def disruptive_action(action):
 def send_message(self, socket, title, body=None):
     # generate message and send json file
     if body is not None:
-        if body is "coordinate":
-            # for the app to test the location of robot
-            message = {title: self.current_x_coordinate}
-        else:
             message = {title: body}
-
     else:
         message = {'message': {"content": title}}
 
@@ -514,6 +509,9 @@ class MainController(control.Controller):
 
         elif command_type == 'ping':
             socket.send('pong')
+
+        elif command_type == 'coordinate':
+            socket.send(socket, 'coordinate', self.current_x_coordinate)
 
         raise ValueError('Invalid command')
 
