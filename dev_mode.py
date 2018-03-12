@@ -26,6 +26,9 @@ MOTORS = [
     ev3.Motor('outD')
 ]
 
+# Initialize robot's x_coordinate to 0:
+current_x_coordinate = 0
+
 DEG_PER_CM = 29.0323
 
 
@@ -65,6 +68,7 @@ def move_motor_by_dist(socket, dist, speed):
     if motor.connected:
         angle = cm_to_deg(dist)
         motor.run_to_rel_pos(position_sp=angle, speed_sp=int(speed), stop_action='hold')
+
     else:
         print('[ERROR] No motor connected to ' + str(motor))
 
@@ -114,7 +118,11 @@ def query_DB(self, title=None):
 
 def send_message(self, socket, title, body=None):
         if body is not None:
-            message = {title: body}
+            if body is "coordinate":
+                # for the app to test the location of robot
+                message = {title: self.current_x_coordinate}
+            else:
+                message = {title: body}
         else:
             message = {'message': {"content": title}}
 

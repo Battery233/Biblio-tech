@@ -12,5 +12,6 @@ public enum CommandType {
     takeBook,
     queryDB,
     fullScan,
-    moveDist
+    moveDist,
+    coordinate
 }
