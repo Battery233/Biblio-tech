@@ -1,5 +1,6 @@
 package com.luckythirteen.bibliotech.demo;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,8 @@ import com.luckythirteen.bibliotech.brickapi.obj.Book;
 import com.luckythirteen.bibliotech.brickapi.obj.BookList;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -64,6 +68,9 @@ public class FetchActivity extends AppCompatActivity {
     private TextView helperText;
     private ImageView helperArrow;
     private Animation arrowAnim;
+
+    private TextView progressText;
+    private ProgressBar progressBar;
 
 
     private Book chosenBook;
@@ -195,6 +202,9 @@ public class FetchActivity extends AppCompatActivity {
         arrowAnim = AnimationUtils.loadAnimation(this.getApplicationContext(), R.anim.hover);
         helperArrow.startAnimation(arrowAnim);
 
+        progressBar = findViewById(R.id.progressBar);
+        progressText = findViewById(R.id.txtProgress);
+
         btnSelectBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,8 +233,14 @@ public class FetchActivity extends AppCompatActivity {
      */
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
+
+
         if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
+            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
+            {
+                progressBar.setVisibility(View.VISIBLE);
+            }
         } else if(books != null) {
             showBookList(this.books);
         }
@@ -272,6 +288,13 @@ public class FetchActivity extends AppCompatActivity {
                 FindBook reachBook = new FindBook(chosenBook.getISBN());
                 //set busy status to true, disable back button
                 busy = true;
+
+                progressBar.setVisibility(View.VISIBLE);
+                progressText.setText(R.string.progressFindingBook);
+                progressText.setVisibility(View.VISIBLE);
+
+
+
                 // Send message
                 sendMessageWithFeedback(reachBook);
 
@@ -367,6 +390,8 @@ public class FetchActivity extends AppCompatActivity {
     private void performAction(MessageType type, String json) {
         if (type == MessageType.bookList) {
             BookList books = MessageParser.getBookListFromJson(json);
+            progressBar.setVisibility(View.INVISIBLE);
+            progressText.setVisibility(View.INVISIBLE);
 
             if (books != null) {
                 showBookList(books.getBooks());
@@ -411,6 +436,9 @@ public class FetchActivity extends AppCompatActivity {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 messageSender.sendCommand(new FullScan(chosenBook.getISBN()));
+                                progressBar.setVisibility(View.VISIBLE);
+                                progressText.setText(R.string.progressScanningShelf);
+                                progressText.setVisibility(View.VISIBLE);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -420,6 +448,8 @@ public class FetchActivity extends AppCompatActivity {
                     }
                 };
 
+                progressBar.setVisibility(View.INVISIBLE);
+                progressText.setVisibility(View.INVISIBLE);
                 busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -458,6 +488,8 @@ public class FetchActivity extends AppCompatActivity {
                     }
                 };
 
+                progressBar.setVisibility(View.INVISIBLE);
+                progressText.setVisibility(View.INVISIBLE);
                 busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
