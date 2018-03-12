@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +45,6 @@ import co.lujun.lmbluetoothsdk.base.State;
  * and is therefore the primary activity of the whole application.
  */
 
-//TODO: WHOLE CLASS NEEDS SOME HANDLING FOR WHEN ROBOT IS BUSY
-
 public class FetchActivity extends AppCompatActivity {
 
     /**
@@ -56,14 +55,16 @@ public class FetchActivity extends AppCompatActivity {
 
     private ArrayList<Book> books;
 
-    // UI Elements
-    private Button btnSelectBook, btnGetBook;
+    private Button btnGetBook;
     private TextView authorLabel, titleLabel, bluetoothStatus;
     private TextView titleTextView, authorTextView;
     private ImageButton reconnectButton;
     private TextView helperText;
     private ImageView helperArrow;
     private Animation arrowAnim;
+
+    private TextView progressText;
+    private ProgressBar progressBar;
 
 
     private Book chosenBook;
@@ -87,7 +88,6 @@ public class FetchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_new);
         setupUI();
-
 
        // books = getBooks();
 
@@ -182,7 +182,7 @@ public class FetchActivity extends AppCompatActivity {
         bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
         reconnectButton = findViewById(R.id.btnReconnect);
 
-        btnSelectBook = findViewById(R.id.btnViewBooks);
+        Button btnSelectBook = findViewById(R.id.btnViewBooks);
         btnGetBook = findViewById(R.id.btnGet);
         helperArrow = findViewById(R.id.imgArrow);
         helperText = findViewById(R.id.txtSelectHelp);
@@ -194,6 +194,9 @@ public class FetchActivity extends AppCompatActivity {
 
         arrowAnim = AnimationUtils.loadAnimation(this.getApplicationContext(), R.anim.hover);
         helperArrow.startAnimation(arrowAnim);
+
+        progressBar = findViewById(R.id.progressBar);
+        progressText = findViewById(R.id.txtProgress);
 
         btnSelectBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,8 +226,14 @@ public class FetchActivity extends AppCompatActivity {
      */
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
+
+
         if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
+            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
+            {
+                progressBar.setVisibility(View.VISIBLE);
+            }
         } else if(books != null) {
             showBookList(this.books);
         }
@@ -272,6 +281,13 @@ public class FetchActivity extends AppCompatActivity {
                 FindBook reachBook = new FindBook(chosenBook.getISBN());
                 //set busy status to true, disable back button
                 busy = true;
+
+                progressBar.setVisibility(View.VISIBLE);
+                progressText.setText(R.string.progressFindingBook);
+                progressText.setVisibility(View.VISIBLE);
+
+
+
                 // Send message
                 sendMessageWithFeedback(reachBook);
 
@@ -367,6 +383,8 @@ public class FetchActivity extends AppCompatActivity {
     private void performAction(MessageType type, String json) {
         if (type == MessageType.bookList) {
             BookList books = MessageParser.getBookListFromJson(json);
+            progressBar.setVisibility(View.INVISIBLE);
+            progressText.setVisibility(View.INVISIBLE);
 
             if (books != null) {
                 showBookList(books.getBooks());
@@ -411,6 +429,9 @@ public class FetchActivity extends AppCompatActivity {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 messageSender.sendCommand(new FullScan(chosenBook.getISBN()));
+                                progressBar.setVisibility(View.VISIBLE);
+                                progressText.setText(R.string.progressScanningShelf);
+                                progressText.setVisibility(View.VISIBLE);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -420,6 +441,8 @@ public class FetchActivity extends AppCompatActivity {
                     }
                 };
 
+                progressBar.setVisibility(View.INVISIBLE);
+                progressText.setVisibility(View.INVISIBLE);
                 busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -458,6 +481,8 @@ public class FetchActivity extends AppCompatActivity {
                     }
                 };
 
+                progressBar.setVisibility(View.INVISIBLE);
+                progressText.setVisibility(View.INVISIBLE);
                 busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

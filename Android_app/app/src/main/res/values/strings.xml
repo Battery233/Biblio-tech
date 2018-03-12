@@ -19,6 +19,8 @@
     <string name="fetchButtonFindLabel">FIND BOOK</string>
     <string name="fetchButtonGetLabel">GET!</string>
 
+    <string name="progressFindingBook">Looking for book…</string>
+    <string name="progressScanningShelf">Scanning shelf…</string>
 
     <string name="txtMessage">Message:</string>
     <string name="editTextPlaceholder">&lt;message&gt;</string>
