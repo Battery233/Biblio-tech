@@ -26,9 +26,6 @@ MOTORS = [
     ev3.Motor('outD')
 ]
 
-# Initialize robot's x_coordinate to 0:
-current_x_coordinate = 0
-
 DEG_PER_CM = 29.0323
 
 
@@ -117,13 +114,13 @@ def query_DB(self, title=None):
 
 
 def send_message(self, socket, title, body=None):
-        if body is not None:
-                message = {title: body}
-        else:
-            message = {'message': {"content": title}}
+    if body is not None:
+        message = {title: body}
+    else:
+        message = {'message': {"content": title}}
 
-        print("sending message: " + json.dumps(message))
-        socket.send(json.dumps(message))
+    print("sending message: " + json.dumps(message))
+    socket.send(json.dumps(message))
 
 
 def parse_message(data, socket):

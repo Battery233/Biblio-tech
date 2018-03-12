@@ -4,7 +4,6 @@ package com.luckythirteen.bibliotech.dev;
  */
 
 import android.bluetooth.BluetoothDevice;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
@@ -25,7 +24,6 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
 
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
@@ -33,10 +31,10 @@ import com.luckythirteen.bibliotech.brickapi.command.Move;
 import com.luckythirteen.bibliotech.brickapi.command.MoveDist;
 import com.luckythirteen.bibliotech.brickapi.command.Stop;
 import com.luckythirteen.bibliotech.brickapi.obj.OutputPort;
-import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
@@ -107,7 +105,21 @@ public class DevActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    if (Objects.equals(msg, "pong"))
+                        Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    else {
+                        try {
+                            int location = Integer.valueOf(msg);
+                            if (location < 99999 && location > -99999) {
+                                Toast.makeText(DevActivity.super.getApplicationContext(), "current location:" + location, Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             });
 
@@ -376,8 +388,7 @@ public class DevActivity extends AppCompatActivity {
 
         OutputPort[] outputPorts = getSelectedPorts();
 
-        if(outputPorts.length > 0)
-        {
+        if (outputPorts.length > 0) {
             // Store speed and duration values as ints
             int speedValue = Integer.valueOf(speedText.getText().toString());
             int durationValue = Integer.valueOf(durationText.getText().toString());
@@ -406,28 +417,25 @@ public class DevActivity extends AppCompatActivity {
                     Toast.makeText(DevActivity.super.getApplicationContext(), "ERROR: Speed must be > 0 and less than " + MAX_SPEED, Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(this.getApplicationContext(), "Select at least one output port", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private OutputPort[] getSelectedPorts()
-    {
+    private OutputPort[] getSelectedPorts() {
         ArrayList<OutputPort> ports = new ArrayList<>();
 
-        if(boxA.isChecked())
+        if (boxA.isChecked())
             ports.add(OutputPort.A);
 
-        if(boxB.isChecked())
+        if (boxB.isChecked())
             ports.add(OutputPort.B);
 
-        if(boxC.isChecked())
+        if (boxC.isChecked())
             ports.add(OutputPort.C);
 
-        if(boxD.isChecked())
+        if (boxD.isChecked())
             ports.add(OutputPort.D);
 
         return ports.toArray(new OutputPort[]{});

@@ -511,7 +511,10 @@ class MainController(control.Controller):
             socket.send('pong')
 
         elif command_type == 'coordinate':
-            socket.send(socket, 'coordinate', self.current_x_coordinate)
+            socket.send(str(self.current_x_coordinate))
+
+        elif command_type == 'clean':
+            self.current_x_coordinate = 0
 
         raise ValueError('Invalid command')
 
