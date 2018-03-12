@@ -87,6 +87,8 @@ class MainController(control.Controller):
     FINGER_MOTOR = MOTORS[FINGER_SOCKET]
     VERTICAL_MOTOR = MOTORS[VERTICAL_SOCKET]
 
+    TOUCH_SENSOR = ev3.TouchSensor()
+
     # finger: 55 dps per 1500 sec
 
     HORIZONTAL_SPEED = 360
@@ -150,6 +152,9 @@ class MainController(control.Controller):
             print("Distance sensor not connected")
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
+
+        if not TOUCH_SENSOR.connected:
+            print("Unsafe! Touch sensor not connected")
 
         # Move the robot at the beginning of first cell
         self.reach_cell(0)
@@ -402,6 +407,11 @@ class MainController(control.Controller):
             # convert to cm and then to deg
             angle = int(cm_to_deg(float(dist)/10))
             motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+
+            while not self.motor_ready(motor):
+                if TOUCH_SENSOR.connected and TOUCH_SENSOR.is_pressed():
+                    self.stop_motors(HORIZONTAL_SOCKET)
+                time.sleep(0.1)
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 
