@@ -5,6 +5,7 @@ from threading import Thread
 
 import ev3dev.ev3 as ev3
 
+import control
 import db.main as db
 import vision.main as vision
 from ev3bt import ev3_server
@@ -66,17 +67,10 @@ def disruptive_action(action):
     return break_get_book_flow
 
 
-class Controller:
+class MainController(control.Controller):
     # TODO: change assumption that robot is initially positioned at the end of
     # the track
     INITIAL_STATE = {'alignedToBook': None, 'busy': False}
-
-    MOTORS = [
-        ev3.Motor('outA'),
-        ev3.Motor('outB'),
-        ev3.Motor('outC'),
-        ev3.Motor('outD')
-    ]
 
     # Socket A -> horizontal movement
     # Socket B -> arm movement
@@ -127,7 +121,7 @@ class Controller:
     MESSAGE_MISSING_BOOK = 'missingBook'
     MESSAGE_FOUND_BOOK = 'foundBook'
 
-    def __init__(self):
+    def __init__(self, server_name):
         # Create sample production.db in root folder
         db.flush_db(DB_FILE)
         db.create_book_table(DB_FILE)
@@ -160,10 +154,7 @@ class Controller:
         # Move the robot at the beginning of first cell
         self.reach_cell(0)
 
-        # Create Bluetooth server and start it listening on a new thread
-        self.server = ev3_server.BluetoothServer("ev3dev", self.parse_message)
-        self.server_thread = Thread(target=self.server.start_server)
-        self.server_thread.start()
+        super().__init__(server_name);
 
     def state_wait(self):
         if self.state['busy']:
@@ -402,20 +393,6 @@ class Controller:
         # TODO: A LOT
         pass
 
-    # Rotate motor
-    # @param string socket  Output socket string (0 / 1 / 2 / 3)
-    # @param int speed      Speed to rotate motor at (degrees/sec)
-    # @param int time       Time to rotate motor for (milliseconds)
-    def rotate_motor(self, sockets, speed, time):
-        for socket in sockets:
-            motor = self.MOTORS[socket]
-            if motor.connected:
-                # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
-                if -1000 < int(speed) <= 1000 and 0 < int(time) <= 10000:
-                    motor.run_timed(speed_sp=speed, time_sp=time)
-            else:
-                print('[ERROR] No motor connected to ' + socket)
-
     # Moves motor by specified distance at a certain speed and direction
     # @param int    socket     Socket index in MOTORS to use
     # @param float  dist       Distance to move motor in centimeters
@@ -541,4 +518,4 @@ class Controller:
 
 if __name__ == '__main__':
     # Initialize robot, starts listening for commands
-    robot = Controller()
+    robot = MainController('ev3_main')
