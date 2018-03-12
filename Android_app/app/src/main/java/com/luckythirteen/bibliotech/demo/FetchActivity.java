@@ -1,6 +1,5 @@
 package com.luckythirteen.bibliotech.demo;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,8 +34,6 @@ import com.luckythirteen.bibliotech.brickapi.obj.BookList;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
@@ -48,8 +45,6 @@ import co.lujun.lmbluetoothsdk.base.State;
  * and is therefore the primary activity of the whole application.
  */
 
-//TODO: WHOLE CLASS NEEDS SOME HANDLING FOR WHEN ROBOT IS BUSY
-
 public class FetchActivity extends AppCompatActivity {
 
     /**
@@ -60,8 +55,7 @@ public class FetchActivity extends AppCompatActivity {
 
     private ArrayList<Book> books;
 
-    // UI Elements
-    private Button btnSelectBook, btnGetBook;
+    private Button btnGetBook;
     private TextView authorLabel, titleLabel, bluetoothStatus;
     private TextView titleTextView, authorTextView;
     private ImageButton reconnectButton;
@@ -94,7 +88,6 @@ public class FetchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_new);
         setupUI();
-
 
        // books = getBooks();
 
@@ -189,7 +182,7 @@ public class FetchActivity extends AppCompatActivity {
         bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
         reconnectButton = findViewById(R.id.btnReconnect);
 
-        btnSelectBook = findViewById(R.id.btnViewBooks);
+        Button btnSelectBook = findViewById(R.id.btnViewBooks);
         btnGetBook = findViewById(R.id.btnGet);
         helperArrow = findViewById(R.id.imgArrow);
         helperText = findViewById(R.id.txtSelectHelp);
