@@ -2,6 +2,7 @@
 
 import control
 import time
+from ev3bt import ev3_server
 
 
 if __name__ == '__main__':
