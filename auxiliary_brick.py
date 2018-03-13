@@ -91,4 +91,4 @@ class AuxController(control.Controller):
 
 if __name__ == '__main__':
     # Initialize auxiliary brick, starts listening for commands
-    brick = AuxController('ev3_aux')
+    brick = AuxController()
