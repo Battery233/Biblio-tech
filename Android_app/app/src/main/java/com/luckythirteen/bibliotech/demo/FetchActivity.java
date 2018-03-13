@@ -1,5 +1,6 @@
 package com.luckythirteen.bibliotech.demo;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +28,7 @@ import com.luckythirteen.bibliotech.brickapi.command.Command;
 import com.luckythirteen.bibliotech.brickapi.command.FindBook;
 import com.luckythirteen.bibliotech.brickapi.command.FullScan;
 import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
+import com.luckythirteen.bibliotech.brickapi.command.Stop;
 import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
 import com.luckythirteen.bibliotech.brickapi.messages.MessageType;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
@@ -56,6 +58,7 @@ public class FetchActivity extends AppCompatActivity {
     private ArrayList<Book> books;
 
     private Button btnGetBook;
+    private Button buttonStop;
     private TextView authorLabel, titleLabel, bluetoothStatus;
     private TextView titleTextView, authorTextView;
     private ImageButton reconnectButton;
@@ -175,7 +178,7 @@ public class FetchActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean(DEMO_ACTIVE_KEY, false);
-        ed.commit();
+        ed.apply();
     }
 
     private void setupUI() {
@@ -183,6 +186,7 @@ public class FetchActivity extends AppCompatActivity {
         reconnectButton = findViewById(R.id.btnReconnect);
 
         Button btnSelectBook = findViewById(R.id.btnViewBooks);
+        buttonStop = findViewById(R.id.buttonStop);
         btnGetBook = findViewById(R.id.btnGet);
         helperArrow = findViewById(R.id.imgArrow);
         helperText = findViewById(R.id.txtSelectHelp);
@@ -204,10 +208,18 @@ public class FetchActivity extends AppCompatActivity {
                 onSelectBookButton();
             }
         });
+
         btnGetBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onGetButton();
+            }
+        });
+
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messageSender.sendCommand(new Stop(null));
             }
         });
 
@@ -227,7 +239,6 @@ public class FetchActivity extends AppCompatActivity {
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
 
-
         if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
             if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
@@ -238,7 +249,6 @@ public class FetchActivity extends AppCompatActivity {
             showBookList(this.books);
         }
     }
-
 
     /**
      * Called back from the BookListArrayAdapter when the user selects a book
@@ -285,8 +295,7 @@ public class FetchActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 progressText.setText(R.string.progressFindingBook);
                 progressText.setVisibility(View.VISIBLE);
-
-
+                buttonStop.setVisibility(View.VISIBLE);
 
                 // Send message
                 sendMessageWithFeedback(reachBook);
@@ -321,7 +330,7 @@ public class FetchActivity extends AppCompatActivity {
             public void run() {
                 // Inflate dialog
                 LayoutInflater layoutInflater = LayoutInflater.from(FetchActivity.this);
-                View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
+                @SuppressLint("InflateParams") View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
                 AlertDialog.Builder promptBuilder = new AlertDialog.Builder(FetchActivity.this, R.style.AlertDialogTheme);
                 promptBuilder.setView(wordsPrompt);
 
@@ -385,6 +394,8 @@ public class FetchActivity extends AppCompatActivity {
             BookList books = MessageParser.getBookListFromJson(json);
             progressBar.setVisibility(View.INVISIBLE);
             progressText.setVisibility(View.INVISIBLE);
+            buttonStop.setVisibility(View.INVISIBLE);
+
 
             if (books != null) {
                 showBookList(books.getBooks());
@@ -432,6 +443,7 @@ public class FetchActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.VISIBLE);
                                 progressText.setText(R.string.progressScanningShelf);
                                 progressText.setVisibility(View.VISIBLE);
+                                buttonStop.setVisibility(View.VISIBLE);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -443,6 +455,7 @@ public class FetchActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.INVISIBLE);
                 progressText.setVisibility(View.INVISIBLE);
+                buttonStop.setVisibility(View.INVISIBLE);
                 busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

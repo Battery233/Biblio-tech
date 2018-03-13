@@ -7,6 +7,7 @@ import os
 import sys
 from threading import Thread
 
+import db.main as db
 import ev3dev.ev3 as ev3
 
 from ev3bt import ev3_server
@@ -15,6 +16,8 @@ from ev3bt.ev3_server import Device
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+DB_FILE = db.PRODUCTION_DB
 
 MOTORS = [
     ev3.Motor('outA'),
@@ -62,6 +65,7 @@ def move_motor_by_dist(socket, dist, speed):
     if motor.connected:
         angle = cm_to_deg(dist)
         motor.run_to_rel_pos(position_sp=angle, speed_sp=int(speed), stop_action='hold')
+
     else:
         print('[ERROR] No motor connected to ' + str(motor))
 
@@ -93,6 +97,32 @@ def cm_to_deg(cm):
     return int(DEG_PER_CM * int(cm))
 
 
+def query_DB(self, title=None):
+    """
+        If title is None, return a list of `(title, position)` for all the books
+        in the database. Otherwise return a tuple of the form `(title, position)`
+        for the title received as argument, or `None` if it is unavailable in the
+        database.
+        """
+
+    if title is None:
+        print("[query_DB], tittle is none")
+        return db.get_books(DB_FILE)
+    else:
+        print("[query_DB], tittle is not none")
+        return db.get_position_by_title(DB_FILE, title)
+
+
+def send_message(self, socket, title, body=None):
+    if body is not None:
+        message = {title: body}
+    else:
+        message = {'message': {"content": title}}
+
+    print("sending message: " + json.dumps(message))
+    socket.send(json.dumps(message))
+
+
 def parse_message(data, socket):
     valid_json = True
 
@@ -116,6 +146,42 @@ def parse_message(data, socket):
             for port in command_args['ports']:
                 motorPort = letter_to_int(port)
                 move_motor_by_dist(motorPort, command_args['dist'], command_args['speed'])
+
+        elif command_type == 'queryDB':
+            '''
+            The user might ask for the list of all books or for a specific book.
+
+            If only a book is asked, then its position is searched in the database
+            using the title. The message sent back to the app in this case is
+            `bookItem` containing a tuple of `(title, position)` if the book is
+            found or `None` otherwise.
+
+            If all the books are requested, then the database is queried for all
+            the books and their positions. The message sent back to the app in
+            this case is `bookList` containing a list of `(title, position)`
+            with all the books available.
+            '''
+            if len(command_args) == 1 and 'title' in command_args.keys():
+                query_result = query_DB(command_args['title'])
+                if query_result is not None:
+                    args = (command_args['title'], query_result)
+                else:
+                    args = None
+                send_message(socket, 'bookItem', args)
+            elif len(command_args) == 0:
+                print("[DBS in control.py]Give the book list of all books.")
+                query_result = query_DB()
+                built_query = []
+
+                for i, book in enumerate(query_result):
+                    book_dict = {'ISBN': query_result[i][0], 'title': query_result[i][1], 'author': query_result[i][2],
+                                 'pos': int(query_result[i][3]), 'avail': query_result[i][4]}
+                    built_query.append(book_dict)
+
+                print(built_query)
+                send_message(socket, 'bookList', built_query)
+            else:
+                raise ValueError('Invalid arguments for queryDB')
 
     elif data == 'ping':
         socket.send('pong')

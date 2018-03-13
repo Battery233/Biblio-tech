@@ -5,6 +5,7 @@ import ev3dev.ev3 as ev3
 
 from ev3bt import ev3_server
 
+
 class Controller:
     MOTORS = [
         ev3.Motor('outA'),

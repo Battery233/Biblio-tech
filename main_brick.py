@@ -21,8 +21,10 @@ DEG_PER_CM = 29.0323
 
 DB_FILE = db.PRODUCTION_DB
 
+
 def cm_to_deg(cm):
     return DEG_PER_CM * cm
+
 
 # just a test
 
@@ -67,6 +69,17 @@ def disruptive_action(action):
     return break_get_book_flow
 
 
+def send_message(self, socket, title, body=None):
+    # generate message and send json file
+    if body is not None:
+            message = {title: body}
+    else:
+        message = {'message': {"content": title}}
+
+    print("sending message: " + json.dumps(message))
+    socket.send(json.dumps(message))
+
+
 class MainController(control.Controller):
     # TODO: change assumption that robot is initially positioned at the end of
     # the track
@@ -87,6 +100,8 @@ class MainController(control.Controller):
     FINGER_MOTOR = MOTORS[FINGER_SOCKET]
     VERTICAL_MOTOR = MOTORS[VERTICAL_SOCKET]
 
+    TOUCH_SENSOR = ev3.TouchSensor()
+
     # finger: 55 dps per 1500 sec
 
     HORIZONTAL_SPEED = 360
@@ -102,19 +117,19 @@ class MainController(control.Controller):
     FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
     # TODO: Finalise distance sensor offset
-    DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL = 70 # TODO: compute this again
-    ROBOT_LENGTH = 170 # TODO: compute this again
-    RAILS_LENGTH = 705 # TODO: compute this again
+    DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL = 70  # TODO: compute this again
+    ROBOT_LENGTH = 170  # TODO: compute this again
+    RAILS_LENGTH = 705  # TODO: compute this again
 
     BOOK_WIDTH = 80
     CELL_WIDTH = 270
     END_CELL_OFFSET = 10
-    CELLS_START = [(0, 0), (CELL_WIDTH, 0),      # Bottom level, left to right
+    CELLS_START = [(0, 0), (CELL_WIDTH, 0),  # Bottom level, left to right
                    (0, 300), (CELL_WIDTH, 300)]  # Top level, left to right
-    CELLS_END = [(CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),      # Bottom level, left cell
+    CELLS_END = [(CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),  # Bottom level, left cell
                  (2 * CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),  # Bottom level, right cell
-                 (CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 300),    # Top level, left cell
-                 (500 - BOOK_WIDTH - END_CELL_OFFSET, 300)]           # Top level, right cell
+                 (CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 300),  # Top level, left cell
+                 (500 - BOOK_WIDTH - END_CELL_OFFSET, 300)]  # Top level, right cell
 
     MESSAGE_BOOK_NOT_ALIGNED = 'bookNotAligned'
     MESSAGE_BUSY = 'busy'
@@ -151,6 +166,9 @@ class MainController(control.Controller):
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
 
+        if not TOUCH_SENSOR.connected:
+            print("Unsafe! Touch sensor not connected")
+
         # Move the robot at the beginning of first cell
         self.reach_cell(0)
 
@@ -175,7 +193,7 @@ class MainController(control.Controller):
     def wait_for_motor(self, motor):
         # Make sure that motor has time to start
         time.sleep(0.1)
-        while motor.state==["running"]:
+        while motor.state == ["running"]:
             print('Motor is still running')
             time.sleep(0.1)
 
@@ -229,15 +247,16 @@ class MainController(control.Controller):
             sum_of_distances += dist_now
 
         dist_between_sensor_right_end_and_green_wall = int(sum_of_distances / num_measurements)
-        x_coordinate = self.RAILS_LENGTH + self.DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL\
+        x_coordinate = self.RAILS_LENGTH + self.DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL \
                        - (dist_between_sensor_right_end_and_green_wall + self.ROBOT_LENGTH)
 
-        print("The distance between the right end of the sensor and the green wall is: " + str(dist_between_sensor_right_end_and_green_wall))
+        print("The distance between the right end of the sensor and the green wall is: " + str(
+            dist_between_sensor_right_end_and_green_wall))
         print("My guess for the x_coordinate is: " + str(x_coordinate))
 
         return x_coordinate
 
-    def reach_cell(self, cell, end_of_cell = False):
+    def reach_cell(self, cell, end_of_cell=False):
         # Get the target x coordinate (the place where we want to move the robot)
 
         if end_of_cell:
@@ -356,9 +375,9 @@ class MainController(control.Controller):
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
             self.state['alignedToBook'] = ISBN
             print("[FindBook] sending message: book found")
-            self.send_message(socket, self.MESSAGE_FOUND_BOOK)
+            send_message(socket, self.MESSAGE_FOUND_BOOK)
         else:
-            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
+            send_message(socket, self.MESSAGE_MISSING_BOOK)
 
     @primary_action
     def take_book(self, socket, ISBN):
@@ -369,7 +388,7 @@ class MainController(control.Controller):
             self.rotate_motor([self.ARM_SOCKET], self.ARM_EXTENSION_SPEED, self.ARM_TIME)
 
             print("wait 5 secs")
-            time.sleep(5) # TODO: check times later
+            time.sleep(5)  # TODO: check times later
             print("move second motor")
             # extend finger
             self.rotate_motor([self.FINGER_SOCKET], self.FINGER_EXTENSION_SPEED, self.FINGER_TIME)
@@ -385,7 +404,7 @@ class MainController(control.Controller):
             print("move last motor")
             self.rotate_motor([self.FINGER_SOCKET], self.FINGER_RETRACTION_SPEED, self.FINGER_TIME)
         else:
-            self.send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
+            send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
     @primary_action
     @disruptive_action
@@ -400,8 +419,14 @@ class MainController(control.Controller):
     def move_motor_by_dist(self, motor, dist, speed):
         if motor.connected:
             # convert to cm and then to deg
-            angle = int(cm_to_deg(float(dist)/10))
+            angle = int(cm_to_deg(float(dist) / 10))
             motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+
+            while not self.motor_ready(motor):
+                if TOUCH_SENSOR.connected and TOUCH_SENSOR.is_pressed():
+                    self.stop_motors(HORIZONTAL_SOCKET)
+                time.sleep(0.1)
+                print('motor stop ' + str(motor) + 'current location' + str(self.current_x_coordinate))
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 
@@ -461,7 +486,7 @@ class MainController(control.Controller):
                     args = (command_args['title'], query_result)
                 else:
                     args = None
-                self.send_message(socket, 'bookItem', args)
+                send_message(socket, 'bookItem', args)
             elif len(command_args) == 0:
                 print("[DBS in control.py]Give the book list of all books.")
                 query_result = self.query_DB()
@@ -473,7 +498,7 @@ class MainController(control.Controller):
                     built_query.append(book_dict)
 
                 print(built_query)
-                self.send_message(socket, 'bookList', built_query)
+                send_message(socket, 'bookList', built_query)
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
@@ -485,20 +510,16 @@ class MainController(control.Controller):
         elif command_type == 'ping':
             socket.send('pong')
 
+        elif command_type == 'coordinate':
+            socket.send(str(self.current_x_coordinate))
+
+        elif command_type == 'clean':
+            self.current_x_coordinate = 0
+
         raise ValueError('Invalid command')
 
-    def send_message(self, socket, title, body=None):
-        # TODO: improve this and make it clearer
-        if body is not None:
-            message = {title: body}
-        else:
-            message = {'message': {"content": title}}
-
-        print("sending message: " + json.dumps(message))
-        socket.send(json.dumps(message))
-
     def send_busy_message(self, socket):
-        self.send_message(socket, self.MESSAGE_BUSY)
+        send_message(socket, self.MESSAGE_BUSY)
 
     def query_DB(self, title=None):
         """
