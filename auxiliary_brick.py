@@ -16,7 +16,7 @@ class AuxController(control.Controller):
     VERTICAL_SPEED = 45
 
     def __init__(self, server_name):
-        self.client = ev3_client.BluetoothClient(Device.OTHER_EV3, parse_message)
+        self.client = ev3_client.BluetoothClient(Device.OTHER_EV3, self.parse_message)
         client_thread = Thread()
         client_thread.start()
 

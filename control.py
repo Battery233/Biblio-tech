@@ -21,7 +21,7 @@ class Controller:
 
         if len(server_name) > 0:
             self.server = ev3_server.BluetoothServer(server_name, self.parse_message)
-            self.server_thread = Thread(target=server.start_server)
+            self.server_thread = Thread(target=self.server.start_server)
             self.server_thread.start()
 
     def parse_message(self, data, socket):
