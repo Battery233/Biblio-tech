@@ -110,4 +110,11 @@ All arguments are optional.
     }
 }
 
+// AUXILLIARY EV3 -> MAIN EV3
+
+// position: int (x-coordinate of robot)
+{
+   "position": 0
+}
+
 ```
