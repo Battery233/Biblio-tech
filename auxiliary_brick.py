@@ -8,13 +8,25 @@ from ev3bt.ev3_server import Device
 
 class AuxController(control.Controller):
     VERTICAL_SOCKET_1 = 0
-    VERTICAL_MOTOR_1 = control.Controller.MOTORS[VERTICAL_SOCKET_1]
-
     VERTICAL_SOCKET_2 = 1
+    FINGER_SOCKET = 2
+    ARM_SOCKET = 3
+
+    VERTICAL_MOTOR_1 = control.Controller.MOTORS[VERTICAL_SOCKET_1]
     VERTICAL_MOTOR_2 = control.Controller.MOTORS[VERTICAL_SOCKET_2]
+    ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
+    FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
 
     VERTICAL_MOVEMENT = 180
     VERTICAL_SPEED = 45
+
+    ARM_TIME = 2500
+    ARM_EXTENSION_SPEED = -100
+    ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
+
+    FINGER_TIME = 1500
+    FINGER_EXTENSION_SPEED = 90
+    FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
     def __init__(self):
         self.client = ev3_client.BluetoothClient(Device.OTHER_EV3, self.parse_message)
@@ -42,6 +54,8 @@ class AuxController(control.Controller):
                 self.send_message(socket, "vertical_success")
             else:
                 self.send_message(socket, "vertical_failure")
+        elif command_type == 'takeBook' and len(command_args) == 1:
+            self.take_book(socket, command_args['ISBN'])
         else:
             raise ValueError('Invalid command')
 
@@ -87,6 +101,30 @@ class AuxController(control.Controller):
         while motor.state == ["running"]:
             print('Motor is still running')
             time.sleep(0.1)
+
+    # TODO: maybe this must be @primary_action
+    def take_book(self, socket, ISBN):
+        print("Enter in take_book")
+        # extend arm
+        print("Move first motor")
+        self.rotate_motor([self.ARM_SOCKET], self.ARM_EXTENSION_SPEED, self.ARM_TIME)
+
+        print("wait 5 secs")
+        time.sleep(5)  # TODO: check times later
+        print("move second motor")
+        # extend finger
+        self.rotate_motor([self.FINGER_SOCKET], self.FINGER_EXTENSION_SPEED, self.FINGER_TIME)
+
+        print("wait 5 secs again")
+        time.sleep(5)
+        print("move third motor")
+        # retract arm
+        self.rotate_motor([self.ARM_SOCKET], self.ARM_RETRACTION_SPEED, self.ARM_TIME)
+
+        print("wait 5 secs for last time")
+        time.sleep(5)
+        print("move last motor")
+        self.rotate_motor([self.FINGER_SOCKET], self.FINGER_RETRACTION_SPEED, self.FINGER_TIME)
 
 
 if __name__ == '__main__':

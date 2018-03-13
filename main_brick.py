@@ -89,12 +89,8 @@ class MainController(control.Controller):
 
     HORIZONTAL_SOCKET = 0
     ARM_SOCKET = 1
-    FINGER_SOCKET = 2
-    VERTICAL_SOCKET = 3
 
     HORIZONTAL_MOTOR = control.Controller.MOTORS[HORIZONTAL_SOCKET]
-    ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
-    FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
     VERTICAL_MOTOR = control.Controller.MOTORS[VERTICAL_SOCKET]
 
     TOUCH_SENSOR = ev3.TouchSensor()
@@ -104,14 +100,6 @@ class MainController(control.Controller):
     HORIZONTAL_SPEED = 360
     HORIZONTAL_SPEED_FOR_SCANNING = int(HORIZONTAL_SPEED / 4)
     HORIZONTAL_MOVEMENT_FOR_SCANNING = 55
-
-    ARM_TIME = 1500
-    ARM_EXTENSION_SPEED = -280
-    ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
-
-    FINGER_TIME = 1000
-    FINGER_EXTENSION_SPEED = 218
-    FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
     # TODO: Finalise distance sensor offset
     DIST_BETWEEN_RIGHT_END_OF_RAILS_AND_GREEN_WALL = 70  # TODO: compute this again
@@ -373,33 +361,6 @@ class MainController(control.Controller):
             send_message(socket, self.MESSAGE_MISSING_BOOK)
 
     @primary_action
-    def take_book(self, socket, ISBN):
-        print("Enter in take_book")
-        if self.state['alignedToBook'] == ISBN or True:
-            # extend arm
-            print("Move first motor")
-            self.rotate_motor([self.ARM_SOCKET], self.ARM_EXTENSION_SPEED, self.ARM_TIME)
-
-            print("wait 5 secs")
-            time.sleep(5)  # TODO: check times later
-            print("move second motor")
-            # extend finger
-            self.rotate_motor([self.FINGER_SOCKET], self.FINGER_EXTENSION_SPEED, self.FINGER_TIME)
-
-            print("wait 5 secs again")
-            time.sleep(5)
-            print("move third motor")
-            # retract arm
-            self.rotate_motor([self.ARM_SOCKET], self.ARM_RETRACTION_SPEED, self.ARM_TIME)
-
-            print("wait 5 secs for last time")
-            time.sleep(5)
-            print("move last motor")
-            self.rotate_motor([self.FINGER_SOCKET], self.FINGER_RETRACTION_SPEED, self.FINGER_TIME)
-        else:
-            send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
-
-    @primary_action
     @disruptive_action
     def full_scan(self, socket, ISBN):
         # TODO: A LOT
@@ -457,7 +418,11 @@ class MainController(control.Controller):
             self.full_scan(socket, command_args['ISBN'])
 
         elif command_type == 'takeBook' and len(command_args) == 1:
-            self.take_book(socket, command_args['ISBN'])
+            ISBN = command_args['ISBN']
+            if self.state['alignedToBook'] == ISBN:
+                self.server.send_to_device("takeBook", ev3_server.Device.OTHER_EV3)
+            else:
+                send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
         elif command_type == 'queryDB':
             '''
