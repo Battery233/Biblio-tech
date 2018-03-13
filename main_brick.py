@@ -68,7 +68,6 @@ def disruptive_action(action):
 
     return break_get_book_flow
 
-
 def send_message(self, socket, title, body=None):
     # generate message and send json file
     if body is not None:
@@ -150,6 +149,9 @@ class MainController(control.Controller):
         # Initialize robot's x_coordinate to 0:
         self.current_x_coordinate = 0
 
+        # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
+        self.bottom_row = True
+
         # Initialize robot's internal model
         self.state = self.INITIAL_STATE
 
@@ -184,18 +186,6 @@ class MainController(control.Controller):
     def state_signal(self):
         self.state['busy'] = False
         print('Ending action, freeing robot')
-
-    def motor_ready(self, motor):
-        # Make sure that motor has time to start
-        time.sleep(0.1)
-        return motor.state != ['running']
-
-    def wait_for_motor(self, motor):
-        # Make sure that motor has time to start
-        time.sleep(0.1)
-        while motor.state == ["running"]:
-            print('Motor is still running')
-            time.sleep(0.1)
 
     def get_pos(self):
         """
@@ -278,6 +268,11 @@ class MainController(control.Controller):
         print("[reach_cell]: action complete")
 
         # TODO: implement vertical movement
+        if cell > 1 and self.bottom_row == True:
+            # If the index is in the second half, this cell is on the upper row...:)
+            self.server.send_to_device("up")
+        elif cell < 1 and not self.bottom_row:
+            self.server.send_to_device("down")
 
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
@@ -426,7 +421,7 @@ class MainController(control.Controller):
                 if self.TOUCH_SENSOR.connected and self.TOUCH_SENSOR.is_pressed():
                     self.stop_motors([self.HORIZONTAL_SOCKET])
                 time.sleep(0.1)
-                print('motor stop ' + str(motor) + 'current location' + str(self.current_x_coordinate))
+            print('motor stop ' + str(motor) + 'current location' + str(self.current_x_coordinate))
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 
@@ -515,6 +510,12 @@ class MainController(control.Controller):
 
         elif command_type == 'clean':
             self.current_x_coordinate = 0
+
+        elif command_type == 'vertical_success':
+            pass
+
+        elif command_type == 'vertical_failure':
+            print("Error happened when trying to move vertically")
 
         raise ValueError('Invalid command')
 
