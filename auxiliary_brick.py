@@ -68,8 +68,8 @@ class AuxController(control.Controller):
                 return False
             movement = self.VERTICAL_MOVEMENT
 
-        self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED)
-        self.move_motor_by_dist(self.VERTICAL_MOTOR_2, movement, self.VERTICAL_SPEED)
+        self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED, hold=True)
+        self.move_motor_by_dist(self.VERTICAL_MOTOR_2, movement, self.VERTICAL_SPEED, hold=True)
 
         self.wait_for_motor(self.VERTICAL_MOTOR_1)
         self.wait_for_motor(self.VERTICAL_MOTOR_2)

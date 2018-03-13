@@ -52,11 +52,14 @@ class Controller:
     # @param int    socket     Socket index in MOTORS to use
     # @param float  dist       Distance to move motor in centimeters
     # @param int    speed      Speed to move motor at (degrees / sec)
-    def move_motor_by_dist(self, motor, dist, speed):
+    def move_motor_by_dist(self, motor, dist, speed, hold=False):
         if motor.connected:
             # convert to cm and then to deg
             angle = int(cm_to_deg(float(dist) / 10))
-            motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+            if hold:
+                motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action='hold')
+            else:
+                motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
 
             while not self.motor_ready(motor):
                 time.sleep(0.1)
