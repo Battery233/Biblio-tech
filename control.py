@@ -3,6 +3,7 @@ import time
 
 from threading import Thread
 
+
 import ev3dev.ev3 as ev3
 
 from ev3bt import ev3_server
@@ -55,7 +56,7 @@ class Controller:
     def move_motor_by_dist(self, motor, dist, speed, hold=False):
         if motor.connected:
             # convert to cm and then to deg
-            angle = int(cm_to_deg(float(dist) / 10))
+            angle = int(self.cm_to_deg(float(dist) / 10))
             if hold:
                 motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action='hold')
             else:
@@ -70,3 +71,8 @@ class Controller:
         # Make sure that motor has time to start
         time.sleep(0.1)
         return motor.state != ['running']
+
+
+    def cm_to_deg(cm):
+        DEG_PER_CM = 29.0323
+        return DEG_PER_CM * cm

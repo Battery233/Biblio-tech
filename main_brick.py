@@ -17,13 +17,11 @@ IGNORE_QR_CODE = False
 WEALTH_OF_NATIONS_ISBN = 9781840226881
 THE_CASTLE_ISBN = 9780241197806
 
-DEG_PER_CM = 29.0323
 
 DB_FILE = db.PRODUCTION_DB
 
 
-def cm_to_deg(cm):
-    return DEG_PER_CM * cm
+
 
 
 # just a test
@@ -414,7 +412,7 @@ class MainController(control.Controller):
     def move_motor_by_dist(self, motor, dist, speed):
         if motor.connected:
             # convert to cm and then to deg
-            angle = int(cm_to_deg(float(dist) / 10))
+            angle = int(self.cm_to_deg(float(dist) / 10))
             motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
 
             while not self.motor_ready(motor):
