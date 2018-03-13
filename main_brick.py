@@ -416,7 +416,7 @@ class MainController(control.Controller):
             motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
 
             while not self.motor_ready(motor):
-                if self.TOUCH_SENSOR.connected and self.TOUCH_SENSOR.is_pressed():
+                if self.TOUCH_SENSOR.connected and self.TOUCH_SENSOR.is_pressed:
                     self.stop_motors([self.HORIZONTAL_SOCKET])
                 time.sleep(0.1)
             print('motor stop ' + str(motor) + 'current location' + str(self.current_x_coordinate))
