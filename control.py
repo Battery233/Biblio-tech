@@ -20,7 +20,7 @@ class Controller:
         server_thread = Thread(target=server.start_server)
         server_thread.start()
 
-    def parse_message(data, socket):
+    def parse_message(self, data, socket):
         json_command = json.loads(data)
 
         command_type = list(json_command.keys())[0]
@@ -28,8 +28,7 @@ class Controller:
 
         if (command_type == 'move' and len(command_args) == 3 and
                 'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
-                self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
-
+            self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
 
     # Rotate motor
     # @param string socket  Output socket string (0 / 1 / 2 / 3)

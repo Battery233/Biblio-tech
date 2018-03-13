@@ -166,7 +166,7 @@ class MainController(control.Controller):
         else:
             self.dist_sensor.mode = 'US-DIST-CM'
 
-        if not TOUCH_SENSOR.connected:
+        if not self.TOUCH_SENSOR.connected:
             print("Unsafe! Touch sensor not connected")
 
         # Move the robot at the beginning of first cell
@@ -423,8 +423,8 @@ class MainController(control.Controller):
             motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
 
             while not self.motor_ready(motor):
-                if TOUCH_SENSOR.connected and TOUCH_SENSOR.is_pressed():
-                    self.stop_motors(HORIZONTAL_SOCKET)
+                if self.TOUCH_SENSOR.connected and self.TOUCH_SENSOR.is_pressed():
+                    self.stop_motors([self.HORIZONTAL_SOCKET])
                 time.sleep(0.1)
                 print('motor stop ' + str(motor) + 'current location' + str(self.current_x_coordinate))
         else:
