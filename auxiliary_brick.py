@@ -54,8 +54,8 @@ class AuxController(control.Controller):
                 self.send_message(socket, "vertical_success")
             else:
                 self.send_message(socket, "vertical_failure")
-        elif command_type == 'takeBook' and len(command_args) == 1:
-            self.take_book(socket, command_args['ISBN'])
+        elif command_type == 'takeBook' and len(command_args) == 0:
+            self.take_book(socket)
         else:
             raise ValueError('Invalid command')
 
@@ -103,7 +103,7 @@ class AuxController(control.Controller):
             time.sleep(0.1)
 
     # TODO: maybe this must be @primary_action
-    def take_book(self, socket, ISBN):
+    def take_book(self):
         print("Enter in take_book")
         # extend arm
         print("Move first motor")
