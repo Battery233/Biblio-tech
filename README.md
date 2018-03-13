@@ -76,6 +76,16 @@ All arguments are optional.
     }
 }
 
+//get the positions of all motors
+//return value: location(float)
+//location<0 motor run backwards, >0, forwards
+{
+    "coordinateA":{}
+    "coordinateB":{}
+    "coordinateC":{}
+    "coordinateD":{}
+}
+
 // EV3 TO APP
 
 // Send list of books
