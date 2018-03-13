@@ -56,16 +56,17 @@ class AuxController(control.Controller):
         socket.send(json.dumps(message))
 
     def move_vertically(self, up):
+        # "movement" has to be negative if moving up, positive if moving down
         if up:
             if not self.bottomRow:
                 print("Can't go up, we're already there")
                 return False
-            movement = self.VERTICAL_MOVEMENT
+            movement = -self.VERTICAL_MOVEMENT
         else:
             if self.bottomRow:
                 print("Can't go down, we're already there")
                 return False
-            movement = -self.VERTICAL_MOVEMENT
+            movement = self.VERTICAL_MOVEMENT
 
         self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED)
         self.move_motor_by_dist(self.VERTICAL_MOTOR_2, movement, self.VERTICAL_SPEED)
