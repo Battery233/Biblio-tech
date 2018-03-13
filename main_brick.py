@@ -268,9 +268,9 @@ class MainController(control.Controller):
         # TODO: implement vertical movement
         if cell > 1 and self.bottom_row == True:
             # If the index is in the second half, this cell is on the upper row...:)
-            self.server.send_to_device("up")
+            self.server.send_to_device("up", ev3_server.Device.OTHER_EV3)
         elif cell < 1 and not self.bottom_row:
-            self.server.send_to_device("down")
+            self.server.send_to_device("down", ev3_server.Device.OTHER_EV3)
 
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
