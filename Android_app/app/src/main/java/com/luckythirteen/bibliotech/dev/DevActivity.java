@@ -105,20 +105,11 @@ public class DevActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (Objects.equals(msg, "pong"))
+                    try {
+                        float location = Float.valueOf(msg) * (float) 1;
+                        Toast.makeText(DevActivity.super.getApplicationContext(), "current location:" + location, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
                         Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                    else {
-                        try {
-                            int location = Integer.valueOf(msg);
-                            if (location < 99999 && location > -99999) {
-                                Toast.makeText(DevActivity.super.getApplicationContext(), "current location:" + location, Toast.LENGTH_LONG).show();
-                            }
-                            else{
-                                Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                        }
                     }
                 }
             });
