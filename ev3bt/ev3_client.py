@@ -30,11 +30,13 @@ class BluetoothClient:
             self.name = self.first_match['name']
             self.host = self.first_match['host']
 
-            print("connecting to \"%s\" on %s" % (self.name, self.host))
+            print("Connecting to \"%s\" on %s" % (self.name, self.host))
 
             # Create the client socket
             self.sock = BluetoothSocket(RFCOMM)
             self.sock.connect((self.host, self.port))
+
+            print("Connected successfully!")
 
             self.recv_loop = Thread(target=self.receive_loop, args=(self.sock,))
             self.recv_loop.start()
@@ -45,12 +47,15 @@ class BluetoothClient:
     #
     # @return string    Mac address of other EV3
     def get_addr(self, device):
+        local_mac = str(self.__get_local_mac()).strip()
 
         if device == Device.OTHER_EV3:
-            if EV3_33_MAC != self.__get_local_mac():
-                return EV3_33_MAC
-            else:
+            if EV3_33_MAC == local_mac:
                 return EV3_13_MAC
+            else:
+                return EV3_33_MAC
+        else:
+            return EV3_13_MAC
 
     # Gets bluetooth MAC of the local device (brick we're running on)
     #
