@@ -42,8 +42,8 @@ class AuxController(control.Controller):
                 self.send_message(socket, "vertical_success")
             else:
                 self.send_message(socket, "vertical_failure")
-
-        raise ValueError('Invalid command')
+        else:
+            raise ValueError('Invalid command')
 
     def send_message(self, socket, title, body=None):
         # TODO: extract this method and put it into the parent class (remove it from main_brick.py as well)
