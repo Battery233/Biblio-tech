@@ -60,13 +60,13 @@ def move_motor(socket, speed, time):
             global current_x_coordinateB
             global current_x_coordinateC
             global current_x_coordinateD
-            if socket == 1:
+            if socket == 0:
                 current_x_coordinateA += float(speed * time / 1000.0) / DEG_PER_CM
-            elif socket == 2:
+            elif socket == 1:
                 current_x_coordinateB += float(speed * time / 1000.0) / DEG_PER_CM
-            elif socket == 3:
+            elif socket == 2:
                 current_x_coordinateC += float(speed * time / 1000.0) / DEG_PER_CM
-            elif socket == 4:
+            elif socket == 3:
                 current_x_coordinateD += float(speed * time / 1000.0) / DEG_PER_CM
     else:
         print('[ERROR] No motor connected to ' + str(motor))
@@ -87,13 +87,13 @@ def move_motor_by_dist(socket, dist, speed):
         global current_x_coordinateB
         global current_x_coordinateC
         global current_x_coordinateD
-        if socket == 1:
+        if socket == 0:
             current_x_coordinateA += dist
-        elif socket == 2:
+        elif socket == 1:
             current_x_coordinateB += dist
-        elif socket == 3:
+        elif socket == 2:
             current_x_coordinateC += dist
-        elif socket == 4:
+        elif socket == 3:
             current_x_coordinateD += dist
 
     else:
