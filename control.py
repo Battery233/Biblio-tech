@@ -73,6 +73,6 @@ class Controller:
         return motor.state != ['running']
 
 
-    def cm_to_deg(cm):
+    def cm_to_deg(self, cm):
         DEG_PER_CM = 29.0323
         return DEG_PER_CM * cm
