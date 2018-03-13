@@ -16,7 +16,7 @@ class AuxController(control.Controller):
     VERTICAL_MOVEMENT = 180
     VERTICAL_SPEED = 45
 
-    def __init__(self, server_name):
+    def __init__(self):
         self.client = ev3_client.BluetoothClient(Device.OTHER_EV3, self.parse_message)
         client_thread = Thread()
         client_thread.start()
@@ -24,7 +24,7 @@ class AuxController(control.Controller):
         # Check if it is okay to assume that we always start from 0
         self.bottomRow = True
 
-        super().__init__(server_name)
+        super().__init__()
 
     def parse_message(self, data, socket):
         json_command = json.loads(data)
