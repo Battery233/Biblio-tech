@@ -503,12 +503,6 @@ class MainController(control.Controller):
         elif command_type == 'ping':
             socket.send('pong')
 
-        elif command_type == 'coordinate':
-            socket.send(str(self.current_x_coordinate))
-
-        elif command_type == 'clean':
-            self.current_x_coordinate = 0
-
         elif command_type == 'vertical_success':
             pass
 
