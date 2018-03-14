@@ -83,9 +83,12 @@ class MainController(control.Controller):
     INITIAL_STATE = {'alignedToBook': None, 'busy': False}
 
     # Socket A -> horizontal movement
-    # Socket B -> arm movement
-    # Socket C -> finger movement
     # Socket D -> vertical movement
+
+    MOTORS = [
+        ev3.Motor('outA'),
+        ev3.Motor('outD')
+    ]
 
     HORIZONTAL_SOCKET = 0
     ARM_SOCKET = 1
@@ -119,6 +122,7 @@ class MainController(control.Controller):
     MESSAGE_BUSY = 'busy'
     MESSAGE_MISSING_BOOK = 'missingBook'
     MESSAGE_FOUND_BOOK = 'foundBook'
+
 
     def __init__(self, server_name):
         # Create sample production.db in root folder

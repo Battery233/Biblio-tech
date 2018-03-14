@@ -7,6 +7,13 @@ from ev3bt.ev3_server import Device
 
 
 class AuxController(control.Controller):
+    MOTORS = [
+        ev3.Motor('outA'),
+        ev3.Motor('outB'),
+        ev3.Motor('outC'),
+        ev3.Motor('outD')
+    ]
+
     VERTICAL_SOCKET_1 = 0
     VERTICAL_SOCKET_2 = 1
     FINGER_SOCKET = 2
