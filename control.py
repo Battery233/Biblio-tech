@@ -76,3 +76,11 @@ class Controller:
     def cm_to_deg(self, cm):
         DEG_PER_CM = 29.0323
         return DEG_PER_CM * cm
+
+    def wait_for_motor(self, motor):
+        # Make sure that motor has time to start
+        time.sleep(0.1)
+        while motor.state == ["running"]:
+            print('Motor is still running')
+            time.sleep(0.1)
+

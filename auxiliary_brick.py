@@ -95,13 +95,6 @@ class AuxController(control.Controller):
         print("Movement successfully completed, return True")
         return True
 
-    def wait_for_motor(self, motor):
-        # Make sure that motor has time to start
-        time.sleep(0.1)
-        while motor.state == ["running"]:
-            print('Motor is still running')
-            time.sleep(0.1)
-
     # TODO: maybe this must be @primary_action
     def take_book(self):
         print("Enter in take_book")
