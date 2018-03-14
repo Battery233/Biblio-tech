@@ -20,10 +20,6 @@ THE_CASTLE_ISBN = 9780241197806
 
 DB_FILE = db.PRODUCTION_DB
 
-
-
-
-
 # just a test
 
 def primary_action(action):
@@ -109,15 +105,14 @@ class MainController(control.Controller):
     ROBOT_LENGTH = 170  # TODO: compute this again
     RAILS_LENGTH = 705  # TODO: compute this again
 
-    BOOK_WIDTH = 80
-    CELL_WIDTH = 270
+    BOOK_WIDTH = 60
+    CELL_WIDTH = 210
     END_CELL_OFFSET = 10
-    CELLS_START = [(0, 0), (CELL_WIDTH, 0),  # Bottom level, left to right
-                   (0, 300), (CELL_WIDTH, 300)]  # Top level, left to right
-    CELLS_END = [(CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),  # Bottom level, left cell
-                 (2 * CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 0),  # Bottom level, right cell
-                 (CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET, 300),  # Top level, left cell
-                 (500 - BOOK_WIDTH - END_CELL_OFFSET, 300)]  # Top level, right cell
+    CELLS_START = [0, CELL_WIDTH, 0, CELL_WIDTH]  # Bottom level, left to right, top level, left to right
+    CELLS_END = [CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Bottom level, left cell
+                 2 * CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Bottom level, right cell
+                 CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Top level, left cell
+                 500 - BOOK_WIDTH - END_CELL_OFFSET, 300]  # Top level, right cell
 
     MESSAGE_BOOK_NOT_ALIGNED = 'bookNotAligned'
     MESSAGE_BUSY = 'busy'
@@ -240,12 +235,13 @@ class MainController(control.Controller):
         # Get the target x coordinate (the place where we want to move the robot)
 
         if end_of_cell:
-            target_x_coordinate = self.CELLS_END[cell][0]
+            target_x_coordinate = self.CELLS_END[cell]
         else:
-            target_x_coordinate = self.CELLS_START[cell][0]
+            target_x_coordinate = self.CELLS_START[cell]
 
         # Compute the offset with wich the robot will be moved
-        x_offset = target_x_coordinate - self.current_x_coordinate
+        # x_offset = target_x_coordinate - self.current_x_coordinate
+        x_offset = self.current_x_coordinate - target_x_coordinate
 
         print("Move the robot by " + str(x_offset))
         self.move_motor_by_dist(self.HORIZONTAL_MOTOR, x_offset, self.HORIZONTAL_SPEED)
@@ -262,9 +258,11 @@ class MainController(control.Controller):
             # If the index is in the second half, this cell is on the upper row...:)
             message = '{"up":{}}'
             self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
-        elif cell < 1 and not self.bottom_row:
+            self.bottom_row = False
+        elif cell <= 1 and not self.bottom_row:
             message = '{"down":{}}'
             self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
+            self.bottom_row = True
 
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
@@ -284,8 +282,8 @@ class MainController(control.Controller):
         found = False
 
         # This variable will flip from negative to positive as long as the scanning continues. First time it is
-        # negative, which means the robot will start moving to the left.
-        movement = -self.HORIZONTAL_MOVEMENT_FOR_SCANNING
+        # positive, which means the robot will start moving to the left.
+        movement = self.HORIZONTAL_MOVEMENT_FOR_SCANNING
         for attempt in range(0, num_attempts):
             time.sleep(0.1)
             decoded_ISBN, offset = vision.read_QR(self.camera)
@@ -314,10 +312,10 @@ class MainController(control.Controller):
                 self.move_motor_by_dist(self.HORIZONTAL_MOTOR, movement, self.HORIZONTAL_SPEED_FOR_SCANNING)
                 movement = -movement
 
-        # If the value of "movement" is positive, it means that last time we moved to the left and because we finished
+        # If the value of "movement" is negative, it means that last time we moved to the left and because we finished
         # the loop (either because we found the book, or the number of attempts was exhausted), we have to return
         # the robot in the original position from which it started to wiggle.
-        if movement > 0:
+        if movement < 0:
             # Firstly, wait for the motor to finish if it is still doing the previous movement.
             self.wait_for_motor(self.HORIZONTAL_MOTOR)
             self.move_motor_by_dist(self.HORIZONTAL_MOTOR, movement, self.HORIZONTAL_SPEED_FOR_SCANNING)
@@ -343,16 +341,16 @@ class MainController(control.Controller):
             print("The searched book is Wealth of Nations")
             # Need to reach the end of cell 0 (so the beginning of cell 1)
             cell = 0
-            end_of_cell = True
+            end_of_cell = False
         elif int(ISBN) == THE_CASTLE_ISBN:
             print("The searched book is The Castle")
             # Need to reach the end of cell 1 (so the beginning of cell 2 - actually the end of the rails)
             cell = 1
-            end_of_cell = True
+            end_of_cell = False
 
         else:
             cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
-            end_of_cell = True
+            end_of_cell = False
 
         print(cell)
 
