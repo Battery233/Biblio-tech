@@ -90,6 +90,8 @@ class MainController(control.Controller):
         ev3.Motor('outD')
     ]
 
+    SOCKETS = [0, 3]
+
     ARM_SOCKET = 1
 
     TOUCH_SENSOR = ev3.TouchSensor()
@@ -387,7 +389,7 @@ class MainController(control.Controller):
     def stop_motors(self, sockets=None):
         # Stop all the motors by default
         if sockets is None:
-            sockets = [0, 1, 2, 3]
+            sockets = self.SOCKETS
         for socket in sockets:
             m = self.MOTORS[socket]
             if m.connected:
