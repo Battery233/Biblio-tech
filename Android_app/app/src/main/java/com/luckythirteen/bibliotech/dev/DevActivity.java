@@ -34,7 +34,6 @@ import com.luckythirteen.bibliotech.brickapi.obj.OutputPort;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
@@ -106,8 +105,17 @@ public class DevActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
+                        //see if the message send back is the location string
                         float location = Float.valueOf(msg) * (float) 1;
-                        Toast.makeText(DevActivity.super.getApplicationContext(), "current location:" + location, Toast.LENGTH_SHORT).show();
+                        if (location < 60000 && location > -60000) {
+                            if (location < 0.01 && location > -0.01) {
+                                location = (float) 0.0;
+                            }
+                            Toast.makeText(DevActivity.super.getApplicationContext(), "current location:" + location, Toast.LENGTH_SHORT).show();
+                            System.out.print(">>>" + TAG + "get location feedback");
+                        } else {
+                            Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                        }
                     } catch (Exception e) {
                         Toast.makeText(DevActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                     }

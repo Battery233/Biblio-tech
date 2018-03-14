@@ -14,7 +14,7 @@ public class MoveDist extends Command {
     /**
      * Moves motor by a specified distance (cm) and speed (degrees/cm)
      *
-     * @param ports  Ports to send command to
+     * @param ports Ports to send command to
      * @param dist  Distance to move motor in centimetres
      * @param speed Speed to move motor (degrees/cm)
      */

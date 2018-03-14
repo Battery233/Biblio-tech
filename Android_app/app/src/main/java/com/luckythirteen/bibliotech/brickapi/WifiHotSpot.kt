@@ -5,12 +5,11 @@ package com.luckythirteen.bibliotech.brickapi
  * Try to fix the wifi hotspot bug
  */
 
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-
 import android.content.Context
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 
 class WifiHotUtil(context: Context) {
 
@@ -56,7 +55,7 @@ class WifiHotUtil(context: Context) {
         val method1: Method?
         try {
             method1 = mWifiManager!!.javaClass.getMethod("setWifiApEnabled",
-                    WifiConfiguration::class.java,Boolean::class.javaPrimitiveType)
+                    WifiConfiguration::class.java, Boolean::class.javaPrimitiveType)
             val netConfig = WifiConfiguration()
 
             netConfig.SSID = mSSID

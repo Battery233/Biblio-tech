@@ -41,12 +41,9 @@ public class MessageParser {
     }
 
     private static MessageType getType(JsonObject object) {
-        if (object.has(MessageType.bookList.name()))
-        {
+        if (object.has(MessageType.bookList.name())) {
             return MessageType.bookList;
-        }
-        else if (object.has(MessageType.message.name()))
-        {
+        } else if (object.has(MessageType.message.name())) {
             try {
                 JsonObject messageObj = object.getAsJsonObject(MessageType.message.name());
                 String messageContent = messageObj.get("content").getAsString();
@@ -60,16 +57,12 @@ public class MessageParser {
                 } else {
                     return MessageType.undefined;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return MessageType.malformedjson;
             }
 
-        }
-        else
-        {
+        } else {
             return MessageType.undefined;
         }
     }

@@ -92,7 +92,7 @@ public class FetchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo_new);
         setupUI();
 
-       // books = getBooks();
+        // books = getBooks();
 
         // Use stored MAC address
         targetMac = new UserPrefsManager(this.getApplicationContext()).getMacAddress();
@@ -241,11 +241,10 @@ public class FetchActivity extends AppCompatActivity {
 
         if (!queriedDatabase) {
             sendMessageWithFeedback(new QueryDB(null));
-            if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
-            {
+            if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
                 progressBar.setVisibility(View.VISIBLE);
             }
-        } else if(books != null) {
+        } else if (books != null) {
             showBookList(this.books);
         }
     }
