@@ -83,20 +83,22 @@ class MainController(control.Controller):
     INITIAL_STATE = {'alignedToBook': None, 'busy': False}
 
     # Socket A -> horizontal movement
-    # Socket D -> vertical movement
 
+    SOCKETS = [0, 3]
     MOTORS = [
         ev3.Motor('outA'),
+        ev3.Motor('outB'),
+        ev3.Motor('outC'),
         ev3.Motor('outD')
     ]
 
-    SOCKETS = [0, 3]
-
-    ARM_SOCKET = 1
 
     TOUCH_SENSOR = ev3.TouchSensor()
 
     # finger: 55 dps per 1500 sec
+
+    HORIZONTAL_SOCKET = 0
+    HORIZONTAL_MOTOR = control.Controller.MOTORS[HORIZONTAL_SOCKET]
 
     HORIZONTAL_SPEED = 360
     HORIZONTAL_SPEED_FOR_SCANNING = int(HORIZONTAL_SPEED / 4)
@@ -350,7 +352,7 @@ class MainController(control.Controller):
 
         else:
             cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
-            end_of_cell = False
+            end_of_cell = True
 
         print(cell)
 

@@ -10,6 +10,12 @@ from ev3bt import ev3_server
 
 
 class Controller:
+    MOTORS = [
+        ev3.Motor('outA'),
+        ev3.Motor('outB'),
+        ev3.Motor('outC'),
+        ev3.Motor('outD')
+    ]
     def __init__(self, server_name=""):
         # Create bluetooth server and start it listening on a new thread
 
