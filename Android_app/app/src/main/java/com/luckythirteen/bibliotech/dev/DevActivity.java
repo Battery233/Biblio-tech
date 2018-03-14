@@ -53,7 +53,7 @@ public class DevActivity extends AppCompatActivity {
     // UI elements
     private TextView bluetoothStatus, speedLabel, spinDurationLabel;
     private EditText messageText, speedText, durationText;
-    private Button sendButton, forwardButton, backwardButton, stopButton, bookDatabase;
+    private Button sendButton, forwardButton, backwardButton;
     private ImageButton reconnectButton;
     private SeekBar speedBar, durationBar;
     private Spinner outputSocketSpinner;
@@ -186,7 +186,6 @@ public class DevActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.btnSendMessage);
         forwardButton = findViewById(R.id.btnForward);
         backwardButton = findViewById(R.id.btnBackward);
-        stopButton = findViewById(R.id.btnStop);
         distanceModeCheckBox = findViewById(R.id.checkMoveMode);
         speedLabel = findViewById(R.id.txtSetSpeed);
         spinDurationLabel = findViewById(R.id.txtSetDuration);
@@ -278,13 +277,6 @@ public class DevActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendMoveCommand(false);
-            }
-        });
-
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messageSender.sendCommand(new Stop(null));
             }
         });
 

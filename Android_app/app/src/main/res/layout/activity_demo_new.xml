@@ -39,7 +39,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_popup_sync" />
 
-
     <TextView
         android:id="@+id/fetch"
         android:layout_width="wrap_content"
@@ -198,14 +197,12 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorWhite"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/txtSelectHelp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fetch" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txtProgress"
@@ -222,25 +219,6 @@
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorBluetoothDisconnected"
-        android:elevation="12dp"
-        android:fontFamily="@font/adam"
-        android:text="@string/btnStop"
-        android:textColor="@color/colorWhite"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
 
 </android.support.constraint.ConstraintLayout>
