@@ -28,7 +28,6 @@ import com.luckythirteen.bibliotech.brickapi.command.Command;
 import com.luckythirteen.bibliotech.brickapi.command.FindBook;
 import com.luckythirteen.bibliotech.brickapi.command.FullScan;
 import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
-import com.luckythirteen.bibliotech.brickapi.command.Stop;
 import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
 import com.luckythirteen.bibliotech.brickapi.messages.MessageType;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
@@ -54,9 +53,7 @@ public class FetchActivity extends AppCompatActivity {
      */
     private static final String TAG = "FetchActivity";
 
-
     private ArrayList<Book> books;
-
     private Button btnGetBook;
     private TextView authorLabel, titleLabel, bluetoothStatus;
     private TextView titleTextView, authorTextView;
@@ -64,23 +61,15 @@ public class FetchActivity extends AppCompatActivity {
     private TextView helperText;
     private ImageView helperArrow;
     private Animation arrowAnim;
-
     private TextView progressText;
     private ProgressBar progressBar;
-
-
     private Book chosenBook;
-
     private MessageSender messageSender;
-
     private BluetoothController bluetoothController;
     private static String targetMac;
-
     private final static String SHARED_PREFS_KEY = "APP_INFO";
     private final static String DEMO_ACTIVE_KEY = "demo_active";
-
     private boolean queriedDatabase = false;
-
     private boolean busy = false;          //flag for avoiding busy status
 
 
