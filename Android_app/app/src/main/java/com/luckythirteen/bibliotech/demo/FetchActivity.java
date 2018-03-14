@@ -119,6 +119,7 @@ public class FetchActivity extends AppCompatActivity {
                 stringResId = R.string.txtBluetoothDisconnected;
                 Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
+                busy = false;
                 reconnectButtonVisibility = View.VISIBLE;
                 resetDataAndUI();
                 break;
@@ -132,6 +133,7 @@ public class FetchActivity extends AppCompatActivity {
                 stringResId = R.string.txtBluetoothDisconnected;
                 Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
+                busy = false;
                 reconnectButtonVisibility = View.VISIBLE;
         }
 
