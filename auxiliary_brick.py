@@ -17,10 +17,10 @@ class AuxController(control.Controller):
     ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
     FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
 
-    VERTICAL_MOVEMENT = 250
-    VERTICAL_SPEED = 45
+    VERTICAL_MOVEMENT = 420
+    VERTICAL_SPEED = 250
 
-    ARM_TIME = 2500
+    ARM_TIME = 3200
     ARM_EXTENSION_SPEED = -100
     ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
 
@@ -57,7 +57,7 @@ class AuxController(control.Controller):
             else:
                 self.send_message(socket, "vertical_failure")
         elif command_type == "down" and len(command_args) == 0:
-            if self.move_vertically():
+            if self.move_vertically(up=False):
                 self.send_message(socket, "vertical_success")
             else:
                 self.send_message(socket, "vertical_failure")
