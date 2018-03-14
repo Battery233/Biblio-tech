@@ -7,24 +7,17 @@ from ev3bt.ev3_server import Device
 
 
 class AuxController(control.Controller):
-    MOTORS = [
-        ev3.Motor('outA'),
-        ev3.Motor('outB'),
-        ev3.Motor('outC'),
-        ev3.Motor('outD')
-    ]
-
     VERTICAL_SOCKET_1 = 0
-    VERTICAL_SOCKET_2 = 1
-    FINGER_SOCKET = 2
-    ARM_SOCKET = 3
+    FINGER_SOCKET = 1
+    ARM_SOCKET = 2
+    VERTICAL_SOCKET_2 = 3
 
-    VERTICAL_MOTOR_1 = self.MOTORS[VERTICAL_SOCKET_1]
-    VERTICAL_MOTOR_2 = self.MOTORS[VERTICAL_SOCKET_2]
-    ARM_MOTOR = self.MOTORS[ARM_SOCKET]
-    FINGER_MOTOR = self.MOTORS[FINGER_SOCKET]
+    VERTICAL_MOTOR_1 = control.Controller.MOTORS[VERTICAL_SOCKET_1]
+    VERTICAL_MOTOR_2 = control.Controller.MOTORS[VERTICAL_SOCKET_2]
+    ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
+    FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
 
-    VERTICAL_MOVEMENT = 180
+    VERTICAL_MOVEMENT = 250
     VERTICAL_SPEED = 45
 
     ARM_TIME = 2500
@@ -40,12 +33,19 @@ class AuxController(control.Controller):
         client_thread = Thread()
         client_thread.start()
 
-        # Check if it is okay to assume that we always start from 0
-        self.bottomRow = True
-
         super().__init__()
+        
+        print('Vertical motor 1 is: ' + str(self.VERTICAL_MOTOR_1))
+        print('Vertical motor 2 is: ' + str(self.VERTICAL_MOTOR_2))
+        print('Arm motor is: ' + str(self.ARM_MOTOR))
+        print('Finger motor is: ' + str(self.FINGER_MOTOR))
+        print('Vertical motor 1 is connected?: ' + str(self.VERTICAL_MOTOR_1.connected))
+        print('Vertical motor 2 is connected?: ' + str(self.VERTICAL_MOTOR_2.connected))
+        print('Arm motor is connected?: ' + str(self.ARM_MOTOR.connected))
+        print('Finger motor is connected?: ' + str(self.FINGER_MOTOR.connected))
 
     def parse_message(self, data, socket):
+        print("Parse message: " + data)
         json_command = json.loads(data)
 
         command_type = list(json_command.keys())[0]
@@ -62,7 +62,7 @@ class AuxController(control.Controller):
             else:
                 self.send_message(socket, "vertical_failure")
         elif command_type == 'takeBook' and len(command_args) == 0:
-            self.take_book(socket)
+            self.take_book()
         else:
             raise ValueError('Invalid command')
 
@@ -80,24 +80,16 @@ class AuxController(control.Controller):
     def move_vertically(self, up):
         # "movement" has to be negative if moving up, positive if moving down
         if up:
-            if not self.bottomRow:
-                print("Can't go up, we're already there")
-                return False
-            movement = -self.VERTICAL_MOVEMENT
-        else:
-            if self.bottomRow:
-                print("Can't go down, we're already there")
-                return False
             movement = self.VERTICAL_MOVEMENT
-
+        else:
+            movement = -self.VERTICAL_MOVEMENT
+        
+        print('Move by ' + str(movement))
         self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED, hold=True)
         self.move_motor_by_dist(self.VERTICAL_MOTOR_2, movement, self.VERTICAL_SPEED, hold=True)
 
         self.wait_for_motor(self.VERTICAL_MOTOR_1)
         self.wait_for_motor(self.VERTICAL_MOTOR_2)
-
-        # update position
-        self.bottomRow = not self.bottomRow
 
         print("Movement successfully completed, return True")
         return True
