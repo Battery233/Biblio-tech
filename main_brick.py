@@ -12,7 +12,7 @@ from ev3bt import ev3_server
 
 # FOR HARCODE:
 
-IGNORE_QR_CODE = False
+IGNORE_QR_CODE = True
 
 WEALTH_OF_NATIONS_ISBN = 9781840226881
 THE_CASTLE_ISBN = 9780241197806
@@ -66,7 +66,7 @@ def disruptive_action(action):
 
     return break_get_book_flow
 
-def send_message(self, socket, title, body=None):
+def send_message(socket, title, body=None):
     # generate message and send json file
     if body is not None:
             message = {title: body}
@@ -255,9 +255,11 @@ class MainController(control.Controller):
         # TODO: implement vertical movement
         if cell > 1 and self.bottom_row == True:
             # If the index is in the second half, this cell is on the upper row...:)
-            self.server.send_to_device("up", ev3_server.Device.OTHER_EV3)
+            message = '{"up":{}}'
+            self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
         elif cell < 1 and not self.bottom_row:
-            self.server.send_to_device("down", ev3_server.Device.OTHER_EV3)
+            message = '{"down":{}}'
+            self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
 
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
@@ -419,7 +421,8 @@ class MainController(control.Controller):
         elif command_type == 'takeBook' and len(command_args) == 1:
             ISBN = command_args['ISBN']
             if self.state['alignedToBook'] == ISBN:
-                self.server.send_to_device("takeBook", ev3_server.Device.OTHER_EV3)
+                message = '{"takeBook":{}}'
+                self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
             else:
                 send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
@@ -472,8 +475,6 @@ class MainController(control.Controller):
 
         elif command_type == 'vertical_failure':
             print("Error happened when trying to move vertically")
-
-        raise ValueError('Invalid command')
 
     def send_busy_message(self, socket):
         send_message(socket, self.MESSAGE_BUSY)

@@ -49,7 +49,7 @@ def add_sample_books(db):
     c.execute(
         "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives', 'Brian Clegg', '0'," + STATUS_AVAILABLE + ")")
     c.execute(
-        "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '0',"
+        "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '2',"
         + STATUS_AVAILABLE + ")")
     c.execute("INSERT INTO books VALUES (9780241197806, 'The Castle', 'Franz Kafka', '1'," + STATUS_AVAILABLE + ")")
     c.execute(
