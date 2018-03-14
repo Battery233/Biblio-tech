@@ -83,14 +83,16 @@ class MainController(control.Controller):
     INITIAL_STATE = {'alignedToBook': None, 'busy': False}
 
     # Socket A -> horizontal movement
-    # Socket B -> arm movement
-    # Socket C -> finger movement
     # Socket D -> vertical movement
 
-    HORIZONTAL_SOCKET = 0
-    ARM_SOCKET = 1
+    MOTORS = [
+        ev3.Motor('outA'),
+        ev3.Motor('outD')
+    ]
 
-    HORIZONTAL_MOTOR = control.Controller.MOTORS[HORIZONTAL_SOCKET]
+    SOCKETS = [0, 3]
+
+    ARM_SOCKET = 1
 
     TOUCH_SENSOR = ev3.TouchSensor()
 
@@ -119,6 +121,7 @@ class MainController(control.Controller):
     MESSAGE_BUSY = 'busy'
     MESSAGE_MISSING_BOOK = 'missingBook'
     MESSAGE_FOUND_BOOK = 'foundBook'
+
 
     def __init__(self, server_name):
         # Create sample production.db in root folder
@@ -388,7 +391,7 @@ class MainController(control.Controller):
     def stop_motors(self, sockets=None):
         # Stop all the motors by default
         if sockets is None:
-            sockets = [0, 1, 2, 3]
+            sockets = self.SOCKETS
         for socket in sockets:
             m = self.MOTORS[socket]
             if m.connected:

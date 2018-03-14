@@ -53,7 +53,7 @@ public class DevActivity extends AppCompatActivity {
     // UI elements
     private TextView bluetoothStatus, speedLabel, spinDurationLabel;
     private EditText messageText, speedText, durationText;
-    private Button sendButton, forwardButton, backwardButton, stopButton, bookDatabase;
+    private Button sendButton, forwardButton, backwardButton, stopButton;
     private ImageButton reconnectButton;
     private SeekBar speedBar, durationBar;
     private Spinner outputSocketSpinner;

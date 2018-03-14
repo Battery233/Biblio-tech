@@ -28,7 +28,6 @@ import com.luckythirteen.bibliotech.brickapi.command.Command;
 import com.luckythirteen.bibliotech.brickapi.command.FindBook;
 import com.luckythirteen.bibliotech.brickapi.command.FullScan;
 import com.luckythirteen.bibliotech.brickapi.command.QueryDB;
-import com.luckythirteen.bibliotech.brickapi.command.Stop;
 import com.luckythirteen.bibliotech.brickapi.command.TakeBook;
 import com.luckythirteen.bibliotech.brickapi.messages.MessageType;
 import com.luckythirteen.bibliotech.brickapi.obj.Book;
@@ -54,34 +53,23 @@ public class FetchActivity extends AppCompatActivity {
      */
     private static final String TAG = "FetchActivity";
 
-
     private ArrayList<Book> books;
-
     private Button btnGetBook;
-    private Button buttonStop;
     private TextView authorLabel, titleLabel, bluetoothStatus;
     private TextView titleTextView, authorTextView;
     private ImageButton reconnectButton;
     private TextView helperText;
     private ImageView helperArrow;
     private Animation arrowAnim;
-
     private TextView progressText;
     private ProgressBar progressBar;
-
-
     private Book chosenBook;
-
     private MessageSender messageSender;
-
     private BluetoothController bluetoothController;
     private static String targetMac;
-
     private final static String SHARED_PREFS_KEY = "APP_INFO";
     private final static String DEMO_ACTIVE_KEY = "demo_active";
-
     private boolean queriedDatabase = false;
-
     private boolean busy = false;          //flag for avoiding busy status
 
 
@@ -131,6 +119,7 @@ public class FetchActivity extends AppCompatActivity {
                 stringResId = R.string.txtBluetoothDisconnected;
                 Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
+                busy = false;
                 reconnectButtonVisibility = View.VISIBLE;
                 resetDataAndUI();
                 break;
@@ -144,6 +133,7 @@ public class FetchActivity extends AppCompatActivity {
                 stringResId = R.string.txtBluetoothDisconnected;
                 Log.d(TAG, "Disconnected");
                 colorResId = R.color.colorBluetoothDisconnected;
+                busy = false;
                 reconnectButtonVisibility = View.VISIBLE;
         }
 
@@ -186,7 +176,6 @@ public class FetchActivity extends AppCompatActivity {
         reconnectButton = findViewById(R.id.btnReconnect);
 
         Button btnSelectBook = findViewById(R.id.btnViewBooks);
-        buttonStop = findViewById(R.id.buttonStop);
         btnGetBook = findViewById(R.id.btnGet);
         helperArrow = findViewById(R.id.imgArrow);
         helperText = findViewById(R.id.txtSelectHelp);
@@ -213,13 +202,6 @@ public class FetchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onGetButton();
-            }
-        });
-
-        buttonStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messageSender.sendCommand(new Stop(null));
             }
         });
 
@@ -294,7 +276,6 @@ public class FetchActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 progressText.setText(R.string.progressFindingBook);
                 progressText.setVisibility(View.VISIBLE);
-                buttonStop.setVisibility(View.VISIBLE);
 
                 // Send message
                 sendMessageWithFeedback(reachBook);
@@ -393,8 +374,6 @@ public class FetchActivity extends AppCompatActivity {
             BookList books = MessageParser.getBookListFromJson(json);
             progressBar.setVisibility(View.INVISIBLE);
             progressText.setVisibility(View.INVISIBLE);
-            buttonStop.setVisibility(View.INVISIBLE);
-
 
             if (books != null) {
                 showBookList(books.getBooks());
@@ -442,7 +421,6 @@ public class FetchActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.VISIBLE);
                                 progressText.setText(R.string.progressScanningShelf);
                                 progressText.setVisibility(View.VISIBLE);
-                                buttonStop.setVisibility(View.VISIBLE);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -454,7 +432,6 @@ public class FetchActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.INVISIBLE);
                 progressText.setVisibility(View.INVISIBLE);
-                buttonStop.setVisibility(View.INVISIBLE);
                 busy = false;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

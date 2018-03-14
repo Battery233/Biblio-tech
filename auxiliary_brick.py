@@ -7,15 +7,22 @@ from ev3bt.ev3_server import Device
 
 
 class AuxController(control.Controller):
+    MOTORS = [
+        ev3.Motor('outA'),
+        ev3.Motor('outB'),
+        ev3.Motor('outC'),
+        ev3.Motor('outD')
+    ]
+
     VERTICAL_SOCKET_1 = 0
     VERTICAL_SOCKET_2 = 1
     FINGER_SOCKET = 2
     ARM_SOCKET = 3
 
-    VERTICAL_MOTOR_1 = control.Controller.MOTORS[VERTICAL_SOCKET_1]
-    VERTICAL_MOTOR_2 = control.Controller.MOTORS[VERTICAL_SOCKET_2]
-    ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
-    FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
+    VERTICAL_MOTOR_1 = self.MOTORS[VERTICAL_SOCKET_1]
+    VERTICAL_MOTOR_2 = self.MOTORS[VERTICAL_SOCKET_2]
+    ARM_MOTOR = self.MOTORS[ARM_SOCKET]
+    FINGER_MOTOR = self.MOTORS[FINGER_SOCKET]
 
     VERTICAL_MOVEMENT = 180
     VERTICAL_SPEED = 45
