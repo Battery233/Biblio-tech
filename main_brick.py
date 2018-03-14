@@ -90,10 +90,7 @@ class MainController(control.Controller):
         ev3.Motor('outD')
     ]
 
-    HORIZONTAL_SOCKET = 0
     ARM_SOCKET = 1
-
-    HORIZONTAL_MOTOR = control.Controller.MOTORS[HORIZONTAL_SOCKET]
 
     TOUCH_SENSOR = ev3.TouchSensor()
 
