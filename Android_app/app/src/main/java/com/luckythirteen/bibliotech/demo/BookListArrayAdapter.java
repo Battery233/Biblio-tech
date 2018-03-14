@@ -1,7 +1,6 @@
 package com.luckythirteen.bibliotech.demo;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;

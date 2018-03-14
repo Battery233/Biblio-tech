@@ -1,7 +1,6 @@
 package com.luckythirteen.bibliotech.brickapi.command;
 
-public class TakeBook extends Command
-{
+public class TakeBook extends Command {
     private String ISBN;
 
     public TakeBook(String ISBN) {

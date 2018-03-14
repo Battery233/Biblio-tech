@@ -13,5 +13,4 @@ public enum CommandType {
     queryDB,
     fullScan,
     moveDist,
-    coordinate
 }

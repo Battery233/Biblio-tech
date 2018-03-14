@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".demo.FetchActivity"
+        <activity
+            android:name=".demo.FetchActivity"
             android:label="Demo mode" />
         <activity android:name=".SplashActivity">
             <intent-filter>
@@ -27,8 +28,8 @@
         </activity>
         <activity
             android:name=".dev.DevActivity"
-            android:screenOrientation="portrait"
-            android:label="Dev mode"/>
+            android:label="Dev mode"
+            android:screenOrientation="portrait" />
         <activity android:name=".SettingsActivity" />
     </application>
 

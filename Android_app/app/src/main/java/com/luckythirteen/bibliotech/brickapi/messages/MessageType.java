@@ -12,6 +12,5 @@ public enum MessageType {
     foundBook,
     message,
     busy,
-    coordinate,
     malformedjson;
 }
