@@ -60,9 +60,6 @@ class Controller:
                 motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action='hold')
             else:
                 motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
-
-            while not self.motor_ready(motor):
-                time.sleep(0.1)
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 

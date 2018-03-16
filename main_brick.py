@@ -12,13 +12,13 @@ from ev3bt import ev3_server
 
 # FOR HARCODE:
 
-IGNORE_QR_CODE = True
+IGNORE_QR_CODE = False
 
 WEALTH_OF_NATIONS_ISBN = 9781840226881
 THE_CASTLE_ISBN = 9780241197806
 
-
 DB_FILE = db.PRODUCTION_DB
+
 
 # just a test
 
@@ -62,10 +62,11 @@ def disruptive_action(action):
 
     return break_get_book_flow
 
+
 def send_message(socket, title, body=None):
     # generate message and send json file
     if body is not None:
-            message = {title: body}
+        message = {title: body}
     else:
         message = {'message': {"content": title}}
 
@@ -87,7 +88,6 @@ class MainController(control.Controller):
         ev3.Motor('outC'),
         ev3.Motor('outD')
     ]
-
 
     TOUCH_SENSOR = ev3.TouchSensor()
 
@@ -118,7 +118,6 @@ class MainController(control.Controller):
     MESSAGE_BUSY = 'busy'
     MESSAGE_MISSING_BOOK = 'missingBook'
     MESSAGE_FOUND_BOOK = 'foundBook'
-
 
     def __init__(self, server_name):
         # Create sample production.db in root folder
@@ -239,9 +238,21 @@ class MainController(control.Controller):
         else:
             target_x_coordinate = self.CELLS_START[cell]
 
-        # Compute the offset with wich the robot will be moved
+        # Compute the offset with which the robot will be moved
         # x_offset = target_x_coordinate - self.current_x_coordinate
         x_offset = self.current_x_coordinate - target_x_coordinate
+
+        if cell > 1 and self.bottom_row:
+            # If the index is in the second half, this cell is on the upper row...:)
+            message = '{"up":{}}'
+            self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
+            time.sleep(8)
+            self.bottom_row = False
+        elif cell <= 1 and not self.bottom_row:
+            message = '{"down":{}}'
+            self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
+            time.sleep(8)
+            self.bottom_row = True
 
         print("Move the robot by " + str(x_offset))
         self.move_motor_by_dist(self.HORIZONTAL_MOTOR, x_offset, self.HORIZONTAL_SPEED)
@@ -252,17 +263,6 @@ class MainController(control.Controller):
         print("[reach_cell]: waiting for motor to free")
         self.wait_for_motor(self.HORIZONTAL_MOTOR)
         print("[reach_cell]: action complete")
-
-        # TODO: implement vertical movement
-        if cell > 1 and self.bottom_row == True:
-            # If the index is in the second half, this cell is on the upper row...:)
-            message = '{"up":{}}'
-            self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
-            self.bottom_row = False
-        elif cell <= 1 and not self.bottom_row:
-            message = '{"down":{}}'
-            self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
-            self.bottom_row = True
 
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
@@ -356,6 +356,13 @@ class MainController(control.Controller):
 
         self.reach_cell(cell, end_of_cell)
 
+        # TODO: current ignore wiggling and qr recognize on top shelf
+        global IGNORE_QR_CODE
+        if self.bottom_row:
+            IGNORE_QR_CODE = False
+        else:
+            IGNORE_QR_CODE = True
+        print("Ignore QR code? : " + str(IGNORE_QR_CODE))
         # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
             self.state['alignedToBook'] = ISBN
@@ -426,6 +433,8 @@ class MainController(control.Controller):
             if self.state['alignedToBook'] == ISBN:
                 message = '{"takeBook":{}}'
                 self.server.send_to_device(message, ev3_server.Device.OTHER_EV3)
+                time.sleep(23)
+                self.reach_cell(0)
             else:
                 send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 

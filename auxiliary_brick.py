@@ -17,7 +17,7 @@ class AuxController(control.Controller):
     ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
     FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
 
-    VERTICAL_MOVEMENT = 420
+    VERTICAL_MOVEMENT = 450
     VERTICAL_SPEED = 250
 
     ARM_TIME = 3200

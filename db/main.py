@@ -47,7 +47,7 @@ def add_sample_books(db):
 
     # Insert sample data
     c.execute(
-        "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives', 'Brian Clegg', '0'," + STATUS_AVAILABLE + ")")
+        "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives', 'Brian Clegg', '2'," + STATUS_AVAILABLE + ")")
     c.execute(
         "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '2',"
         + STATUS_AVAILABLE + ")")
@@ -55,7 +55,7 @@ def add_sample_books(db):
     c.execute(
         "INSERT INTO books VALUES (9781840226881, 'Wealth of Nations', 'Adam Smith', '0'," + STATUS_AVAILABLE + ")")
     c.execute(
-        "INSERT INTO books VALUES (9780349140438, 'Steve Jobs', 'Walter Isaacson', '1'," + STATUS_AVAILABLE + ")")
+        "INSERT INTO books VALUES (9780349140438, 'Steve Jobs', 'Walter Isaacson', '3'," + STATUS_AVAILABLE + ")")
     c.execute(
         "INSERT INTO books VALUES (9780140441185, 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', '2'," +
         STATUS_UNAVAILABLE + ")")

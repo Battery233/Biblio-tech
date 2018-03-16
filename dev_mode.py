@@ -163,6 +163,10 @@ def parse_message(data, socket):
     except:
         valid_json = False
 
+    global current_x_coordinateA
+    global current_x_coordinateB
+    global current_x_coordinateC
+    global current_x_coordinateD
     if valid_json:
         if command_type == 'move' and len(command_args) == 3:
             for port in command_args['ports']:
@@ -220,30 +224,22 @@ def parse_message(data, socket):
         server.send_to_device("hello", Device.OTHER_EV3)
 
     elif data == 'coordinateA':
-        global current_x_coordinateA
         print(current_x_coordinateA)
         socket.send(str(current_x_coordinateA))
 
     elif data == 'coordinateB':
-        global current_x_coordinateB
         print(current_x_coordinateB)
         socket.send(str(current_x_coordinateB))
 
     elif data == 'coordinateC':
-        global current_x_coordinateC
         print(current_x_coordinateC)
         socket.send(str(current_x_coordinateC))
 
     elif data == 'coordinateD':
-        global current_x_coordinateD
         print(current_x_coordinateD)
         socket.send(str(current_x_coordinateD))
 
     elif data == 'clean':
-        global current_x_coordinateA
-        global current_x_coordinateB
-        global current_x_coordinateC
-        global current_x_coordinateD
         current_x_coordinateA = 0
         current_x_coordinateB = 0
         current_x_coordinateC = 0
