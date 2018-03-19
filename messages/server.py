@@ -166,6 +166,10 @@ class BluetoothServer:
         for mac, client in self.clients.items():
             client.close()
 
+    # @return True if both bricks connected to server, false otherwise
+    def bricks_connected(self):
+        return EV3_13_MAC in self.clients.keys() and EV3_33_MAC in self.clients.keys()
+
     # Close the server and clients
     def close_server(self):
         print('BLUETOOTH SERVER CLOSING')

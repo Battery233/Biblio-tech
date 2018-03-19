@@ -83,6 +83,12 @@ class Robot():
         self.server_thread = Thread(target=self.server.start_server)
         self.server_thread.start()
 
+        while not self.server.bricks_connected():
+            time.sleep(5)
+            print('Waiting for bricks to be connected')
+        
+
+
         # Initialize robot's x_coordinate to 0 (TODO: get rid of this assumption?):
         self.current_x_coordinate = 0
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
