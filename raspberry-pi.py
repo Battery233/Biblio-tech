@@ -12,7 +12,6 @@ BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
 BRICK_HORIZONTAL_MOVEMENT = Device.BRICK_13
 BRICK_BOOK_FETCHING = Device.BRICK_33
 
-
 # FOR HARCODE:
 IGNORE_QR_CODE = False
 
@@ -43,6 +42,7 @@ def primary_action(action):
         self.signal()
 
     return safety_wrapper
+
 
 def disruptive_action(action):
     def break_get_book_flow(self, socket, *args, **kwargs):
@@ -86,8 +86,6 @@ class Robot():
         while not self.server.bricks_connected():
             time.sleep(5)
             print('Waiting for bricks to be connected')
-        
-
 
         # Initialize robot's x_coordinate to 0 (TODO: get rid of this assumption?):
         self.current_x_coordinate = 0
@@ -140,10 +138,10 @@ class Robot():
                 distance = abs(x_offset)
             args = {'move': distance}
 
-            message = server.make_message(action, distance=distance)
+            message = self.server.make_message(action, distance=distance)
             self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
 
-            self.server.send_to_device(server.make_message('up'), BRICK_VERTICAL_MOVEMENT)
+            self.server.send_to_device(self.server.make_message('up'), BRICK_VERTICAL_MOVEMENT)
             time.sleep(8)
             self.bottom_row = False
 
@@ -162,25 +160,26 @@ class Robot():
                 distance = abs(x_offset)
             args = {'move': distance}
 
-            message = server.make_message(action, distance=distance)
+            message = self.server.make_message(action, distance=distance)
             self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
 
         # Update the current x_coordinate to be the target coordinate as the robot is now there
         self.current_x_coordinate = target_x_coordinate
 
         print("[reach_cell]: waiting for motor to free")
-        # TODO: Change this to wait for the brick's response instead of harcoded sleeping
+        # TODO: Change this to wait for the brick's response instead of hardcoded sleeping
         time.sleep(10)
         # self.wait_for_motor(self.HORIZONTAL_MOTOR)
         print("[reach_cell]: action complete")
 
+    # TODO: Interface motor ready and stop message with brick
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
 
         while not self.motor_ready(self.HORIZONTAL_MOTOR):
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
-                self.stop_motor()
+                self.stop_motors()
                 return True
 
         return False
@@ -228,9 +227,9 @@ class Robot():
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
             self.aligned_to_book = ISBN
             print("[FindBook] sending message: book found")
-            self.send_message(socket, self.MESSAGE_FOUND_BOOK)
+            socket.send(self.MESSAGE_FOUND_BOOK)
         else:
-            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
+            socket.send(self.MESSAGE_MISSING_BOOK)
 
     @primary_action
     @disruptive_action
@@ -241,9 +240,8 @@ class Robot():
     def stop_motors(self, ports=None):
         # Currrently, ignores the 'ports' argument for simplicity
         message = self.server.make_message('stop')
-        for device in Device:
-            self.server.send_to_device(message, device)
-
+        self.server.send_to_device(message, Device.BRICK_33)
+        self.server.send_to_device(message, Device.BRICK_13)
 
     def parse_message(self, data, socket):
         json_command = json.loads(data)
@@ -251,6 +249,7 @@ class Robot():
         command_type = list(json_command.keys())[0]
         command_args = json_command[command_type]
 
+        # TODO: Fix this, could simply relay the message to the bricks but need to add brick number param
         if (command_type == 'move' and len(command_args) == 3 and
                 'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
             self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
@@ -277,7 +276,7 @@ class Robot():
                 time.sleep(23)
                 self.reach_cell(0)
             else:
-                self.send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
+                socket.send(self.MESSAGE_BOOK_NOT_ALIGNED)
 
         elif command_type == 'queryDB':
             '''
@@ -308,7 +307,7 @@ class Robot():
                     built_query.append(book_dict)
 
                 print(built_query)
-                self.send_message(socket, 'bookList', items=built_query)
+                socket.send('bookList', items=built_query)
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
@@ -327,7 +326,7 @@ class Robot():
             print('Could not perform vertical movement: already up or already down')
 
     def send_busy_message(self, socket):
-        self.send_message(socket, self.MESSAGE_BUSY)
+        socket.send(self.MESSAGE_BUSY)
 
     def query_DB(self, title=None):
         """
@@ -343,7 +342,6 @@ class Robot():
         else:
             print("[query_DB], tittle is not none")
             return db.get_position_by_title(DB_FILE, title)
-
 
 
 if __name__ == '__main__':

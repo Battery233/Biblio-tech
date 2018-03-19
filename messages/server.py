@@ -4,12 +4,12 @@
 
 # Code adapted from: https://github.com/karulis/pybluez/blob/master/examples/simple/rfcomm-server.py
 
+import json
 import subprocess
 from enum import Enum
 from threading import Thread
 
 from bluetooth import *
-import json
 
 # MAC addresses of EV3 bricks
 EV3_33_MAC = "B0:B4:48:76:E7:86"
@@ -18,11 +18,13 @@ EV3_13_MAC = "B0:B4:48:76:A2:C9"
 # Message size (bytes)
 MESSAGE_SIZE = 1024
 
+
 class Device(Enum):
     RPI = 0
     BRICK_13 = 1
     BRICK_33 = 2
     APP = 3
+
 
 # Class representing a bluetooth server, only ONE instance should be created
 # as it can handle multiple connections
@@ -103,16 +105,17 @@ class BluetoothServer:
     def __get_targets(self, device_type):
         targets = []
 
-        if device_type == Device.BRICK_13:
-            if EV3_13_MAC in self.clients.keys():
-                targets.append(self.clients[EV3_13_MAC])
-        elif device_type == Device.BRICK_33:
-            if EV3_33_MAC in self.clients.keys():
-                targets.append(self.clients[EV3_33_MAC])
-        else:
+        if device_type == Device.BRICK_13 and EV3_13_MAC in self.clients.keys():
+            targets.append(self.clients[EV3_13_MAC])
+        elif device_type == Device.BRICK_33 and EV3_33_MAC in self.clients.keys():
+            targets.append(self.clients[EV3_33_MAC])
+
+        # This branch adds all of the connected app clients to the targets list - not useful currently
+        # but it'll allow us in the future to send a message to all currently connected
+        # app clients if needed
+        elif device_type == Device.APP:
             for mac, client_socket in self.clients.items():
-                # Only get clients that are not either of the two EV3 bricks
-                # TODO????? WHAT'S GOING ON HERE?
+                # Add client only if it's not one of the bricks
                 if mac != EV3_13_MAC and mac != EV3_33_MAC:
                     targets.append(client_socket)
 
@@ -120,7 +123,7 @@ class BluetoothServer:
 
     # Prepare data to be sent to devices according to API
     def make_message(self, header, items=None, **kwargs):
-        if (items is not None) > 0 and len (kwargs) > 0:
+        if (items is not None) > 0 and len(kwargs) > 0:
             raise ValueError('Cannot make a message with both a json array and a json object as body')
 
         if items is None:
@@ -128,7 +131,7 @@ class BluetoothServer:
         else:
             return json.dumps({header: items})
 
-    # Send data to client (Android app or other EV3 brick)
+    # Send data to client
     # @param string data         Message to send
     # @param Device device_type  Type of client to send message to (Device enum defined above)
     def send_to_device(self, data, device_type):

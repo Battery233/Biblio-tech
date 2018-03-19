@@ -1,15 +1,16 @@
-import messages
-from messages.server import Device
-
 import json
 import time
 from threading import Thread
 
 import ev3dev.ev3 as ev3
 
+from messages import client
+from messages.server import Device
+
 BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
 BRICK_HORIZONTAL_MOVEMENT = Device.BRICK_13
 BRICK_BOOK_FETCHING = Device.BRICK_33
+
 
 class Brick:
     MOTORS = [
@@ -21,7 +22,7 @@ class Brick:
 
     def __init__(self, brick_id):
         self.stop_action = 'brake'
-        self.client = messages.client.messagesClient(brick_id, self.parse_message)
+        self.client = client.BluetoothClient(brick_id, self.parse_message)
         client_thread = Thread()
         client_thread.start()
 
@@ -81,12 +82,11 @@ class Brick:
     def stop_motors(self, sockets=None):
         # Stop all the motors by default
         if sockets is None:
-            sockets = self.SOCKETS
+            sockets = [0, 1, 2, 3]
         for socket in sockets:
             m = self.MOTORS[socket]
             if m.connected:
                 m.stop(stop_action=self.stop_action)
-
 
     def cm_to_deg(self, cm):
         DEG_PER_CM = 29.0323

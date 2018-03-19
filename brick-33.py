@@ -1,7 +1,7 @@
-import control
-
 import json
 import time
+
+import control
 
 VERTICAL_SOCKET_1 = 0
 FINGER_SOCKET = 1
@@ -18,6 +18,7 @@ ARM_RETRACTION_SPEED = -ARM_EXTENSION_SPEED
 FINGER_TIME = 1500
 FINGER_EXTENSION_SPEED = 90
 FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
+
 
 class Brick33(control.Brick):
 
@@ -71,24 +72,24 @@ class Brick33(control.Brick):
             elif len(command_args) == 0:
                 self.stop_motors()
             else:
-                raise ValueError('Invalid command')
-                
+                raise ValueError('Invalid stop command')
+
         else:
             raise ValueError('Invalid command')
 
     def move_vertically(self, up):
         # "movement" has to be negative if moving up, positive if moving down
         if up:
-            movement = self.VERTICAL_MOVEMENT
+            movement = VERTICAL_MOVEMENT
         else:
-            movement = -self.VERTICAL_MOVEMENT
+            movement = -VERTICAL_MOVEMENT
 
         print('Move by ' + str(movement))
-        self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED, hold=True)
-        self.move_motor_by_dist(self.VERTICAL_MOTOR_2, movement, self.VERTICAL_SPEED, hold=True)
+        self.move_motor_by_dist(self.vertical_motor_1, movement, VERTICAL_SPEED)
+        self.move_motor_by_dist(self.vertical_motor_2, movement, VERTICAL_SPEED)
 
-        self.wait_for_motor(self.VERTICAL_MOTOR_1)
-        self.wait_for_motor(self.VERTICAL_MOTOR_2)
+        self.wait_for_motor(self.vertical_motor_1)
+        self.wait_for_motor(self.vertical_motor_2)
 
         print("Movement successfully completed, return True")
         return True
@@ -97,26 +98,26 @@ class Brick33(control.Brick):
         print("Enter in take_book")
         # extend arm
         print("Move first motor")
-        self.rotate_motor([self.ARM_SOCKET], self.ARM_EXTENSION_SPEED, self.ARM_TIME)
+        self.rotate_motor([ARM_SOCKET], ARM_EXTENSION_SPEED, ARM_TIME)
 
         print("wait 5 secs")
         time.sleep(5)  # TODO: check times later
         print("move second motor")
         # extend finger
-        self.rotate_motor([self.FINGER_SOCKET], self.FINGER_EXTENSION_SPEED, self.FINGER_TIME)
+        self.rotate_motor([FINGER_SOCKET], FINGER_EXTENSION_SPEED, FINGER_TIME)
 
         print("wait 5 secs again")
         time.sleep(5)
         print("move third motor")
         # retract arm
-        self.rotate_motor([self.ARM_SOCKET], self.ARM_RETRACTION_SPEED, self.ARM_TIME)
+        self.rotate_motor([ARM_SOCKET], ARM_RETRACTION_SPEED, ARM_TIME)
 
         print("wait 5 secs for last time")
         time.sleep(5)
         print("move last motor")
-        self.rotate_motor([self.FINGER_SOCKET], self.FINGER_RETRACTION_SPEED, self.FINGER_TIME)
+        self.rotate_motor([FINGER_SOCKET], FINGER_RETRACTION_SPEED, FINGER_TIME)
 
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick33(control.BRICK_33)
+    brick = Brick33("brick 33")
