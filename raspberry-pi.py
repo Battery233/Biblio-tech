@@ -17,6 +17,38 @@ THE_CASTLE_ISBN = 9780241197806
 DB_FILE = db.PRODUCTION_DB
 
 
+def primary_action(action):
+    """
+    Method decorator to check whether robot is busy with some other operation
+    before having it start a new action, and to prevent other actions from
+    starting
+    """
+
+    def safety_wrapper(self, socket, *args, **kwargs):
+        # If state is already busy trying to change it will return False
+        if not self.wait():
+            self.send_busy_message(socket)
+            print('Robot was busy and was not able to perform action')
+            return
+
+        # Perform the action described by the method
+        action(self, socket, *args, **kwargs)
+
+        # Free the robot
+        self.signal()
+
+    return safety_wrapper
+
+def disruptive_action(action):
+    def break_get_book_flow(self, socket, *args, **kwargs):
+        # Break the flow of findBook - takeBook. Sorry user, too slow
+        self.state['alignedToBook'] = None
+
+        action(self, socket, *args, **kwargs)
+
+    return break_get_book_flow
+
+
 class Robot():
     ROBOT_LENGTH = 170  # TODO: compute this again
     RAILS_LENGTH = 705  # TODO: compute this again
@@ -65,7 +97,6 @@ class Robot():
         self.server_thread = Thread(target=self.server.start_server)
         self.server_thread.start()
 
-
     def wait(self):
         if self.is_busy:
             return False
@@ -77,7 +108,6 @@ class Robot():
     def signal(self):
         self.is_busy = False
         print('Ending action, freeing robot')
-
 
     def reach_cell(self, cell, end_of_cell=False):
         # Get the target x coordinate (the place where we want to move the robot)
@@ -178,9 +208,9 @@ class Robot():
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
             self.aligned_to_book = ISBN
             print("[FindBook] sending message: book found")
-            send_message(socket, self.MESSAGE_FOUND_BOOK)
+            self.send_message(socket, self.MESSAGE_FOUND_BOOK)
         else:
-            send_message(socket, self.MESSAGE_MISSING_BOOK)
+            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
 
     @primary_action
     @disruptive_action
@@ -227,7 +257,7 @@ class Robot():
                 time.sleep(23)
                 self.reach_cell(0)
             else:
-                send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
+                self.send_message(socket, self.MESSAGE_BOOK_NOT_ALIGNED)
 
         elif command_type == 'queryDB':
             '''
@@ -243,7 +273,7 @@ class Robot():
             this case is `bookList` containing a list of `(title, position)`
             with all the books available.
             '''
-            elif len(command_args) == 0:
+            if len(command_args) == 0:
                 query_result = self.query_DB()
                 built_query = []
 
@@ -258,7 +288,7 @@ class Robot():
                     built_query.append(book_dict)
 
                 print(built_query)
-                send_message(socket, 'bookList', items=built_query)
+                self.send_message(socket, 'bookList', items=built_query)
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
@@ -277,7 +307,7 @@ class Robot():
             print('Could not perform vertical movement: already up or already down')
 
     def send_busy_message(self, socket):
-        send_message(socket, self.MESSAGE_BUSY)
+        self.send_message(socket, self.MESSAGE_BUSY)
 
     def query_DB(self, title=None):
         """
@@ -294,47 +324,6 @@ class Robot():
             print("[query_DB], tittle is not none")
             return db.get_position_by_title(DB_FILE, title)
 
-    def primary_action(action):
-        """
-        Method decorator to check whether robot is busy with some other operation
-        before having it start a new action, and to prevent other actions from
-        starting
-        """
-
-        def safety_wrapper(self, socket, *args, **kwargs):
-            # If state is already busy trying to change it will return False
-            if not self.wait():
-                self.send_busy_message(socket)
-                print('Robot was busy and was not able to perform action')
-                return
-
-            # Perform the action described by the method
-            action(self, socket, *args, **kwargs)
-
-            # Free the robot
-            self.signal()
-
-        return safety_wrapper
-
-
-    def disruptive_action(action):
-        def break_get_book_flow(self, socket, *args, **kwargs):
-            # Break the flow of findBook - takeBook. Sorry user, too slow
-            self.aligned_to_book = None
-
-            action(self, socket, *args, **kwargs)
-
-        return break_get_book_flow
-
-
-    def send_message(socket, header, items=None, **kwargs):
-        if len(kwargs) > 0 or (items is not None):
-            message = messages.make_message(header, items, **kwargs)
-        else:
-            message = messages.make_message('message', content=title)
-
-        print("sending message: " + message)
-        socket.send(json.dumps(message))
 
 
 if __name__ == '__main__':

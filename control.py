@@ -62,14 +62,14 @@ class Brick:
     # @param int    socket     Socket index in MOTORS to use
     # @param float  dist       Distance to move motor in centimeters
     # @param int    speed      Speed to move motor at (degrees / sec)
-    def move_motor_by_dist(self, motor, dist, speed, hold=False):
+    def move_motor_by_dist(self, motor, dist, speed):
         if motor.connected:
             # convert to cm and then to deg
             angle = int(self.cm_to_deg(float(dist) / 10))
-            if hold:
-                motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action=self.stop_action)
-            else:
-                motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+            motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action=self.stop_action)
+
+            self.wait_for_motor(motor)
+
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 
