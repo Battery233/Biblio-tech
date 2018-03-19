@@ -1,130 +1,73 @@
-# SDP-group13
-[![Build Status](https://travis-ci.com/leo-mazz/sdp-group13.svg?token=JG5WwdVmCAWrpHY3Wcdp&branch=master)](https://travis-ci.com/leo-mazz/sdp-group13)
+import control
+import json
+from threading import Thread
+import time
+from ev3bt import ev3_client
+from ev3bt.ev3_server import Device
 
-## API
-The following is the interface for the communication between the app and the
-EV3 brick. They exchange JSON messages over Bluetooth. The first element is the
-message title (representing the command or the type of information it's being
-sent) and the second is either a list of argument or the content of the message.
-All arguments are optional.
 
-```javascript
-// APP TO EV3
+class AuxController(control.Controller):
+    VERTICAL_SOCKET_1 = 0
+    VERTICAL_MOTOR_1 = control.Controller.MOTORS[VERTICAL_SOCKET_1]
 
-// For testing, simple move command to engines
+    VERTICAL_SOCKET_2 = 1
+    VERTICAL_MOTOR_2 = control.Controller.MOTORS[VERTICAL_SOCKET_2]
 
-// Speed: int (deg / sec)
-// Time: int (ms)
-// Ports: "A", "B", "C", "D"
-{
-   "move": {
-      "speed": 219,
-      "time": 2851,
-      "ports": [
-         "A",
-         "B",
-         "C",
-         "D"
-      ]
-   }
-}
+    VERTICAL_MOVEMENT = 180
+    VERTICAL_SPEED = 45
 
-// For testing, simple stop command to engines
-// Ports: "A", "B", "C", "D"
-// Default is all ports
-{
-    "stop": {
-        "ports": [
-            "A",
-            "B"
-        ]
-    }
-}
+    def __init__(self, server_name):
+        self.client = ev3_client.BluetoothClient(Device.BRICK_33, self.parse_message)
+        client_thread = Thread()
+        client_thread.start()
 
-// Command arm to reach position of a given book
-// ISBN: string
+        # Check if it is okay to assume that we always start from 0
+        self.bottomRow = True
 
-{
-    "findBook": {
-        "ISBN": "9780241197806"
-    }
-}
+        super().__init__(server_name)
 
-// Command arm to do a full scan to look for a book
-// ISBN: string
+    def parse_message(self, data, socket):
+        json_command = json.loads(data)
 
-{
-    "fullScan": {
-        "ISBN": "9780241197806"
-    }
-}
+        command_type = list(json_command.keys())[0]
+        command_args = json_command[command_type]
 
-// Command robot to take the book at its current position and bring it to the
-// pick-up point
-// ISBN: string
-{
-    "takeBook": {
-        "ISBN": "9780241197806"
-    }
-}
+        if command_type == "up" and len(command_args) == 0:
+            if self.move_vertically(up=True):
+                self.send_message(socket, "vertical_success")
+            else:
+                self.send_message(socket, "vertical_failure")
+        elif command_type == "down" and len(command_args) == 0:
+            if self.move_vertically():
+                self.send_message(socket, "vertical_success")
+            else:
+                self.send_message(socket, "vertical_failure")
 
-// Retrieve list of books
-// If no title is provided, fetch all the books
-{
-    "queryDB":{
-        "title": "The castle"
-    }
-}
+        raise ValueError('Invalid command')
 
-//get the positions of all motors
-//return value: location(float)
-//location<0 motor run backwards, >0, forwards
-{
-    "coordinateA":{}
-    "coordinateB":{}
-    "coordinateC":{}
-    "coordinateD":{}
-}
+    def send_message(self, socket, title, body=None):
+        # TODO: extract this method and put it into the parent class (remove it from main_brick.py as well)
+        # generate message and send json file
+        if body is not None:
+            message = {title: body}
+        else:
+            message = {'message': {"content": title}}
 
-// EV3 TO APP
+        print("sending message: " + json.dumps(message))
+        socket.send(json.dumps(message))
 
-// Send list of books
-// ISBN: string
-// title: string
-// author: string
-// avail: int (bool) Whether book is there or not
-{
-    "booklist":[
-        {
-            "ISBN": "9780241197806",
-            "title": "The Castle",
-            "author": "Franz Kafka",
-            "avail": 0,
-            "pos": "1,2"
-        },
-        {
-            "ISBN": "9781840226881",
-            "title": "Wealth of Nations",
-            "author": "Adam Smith",
-            "avail": 1,
-            "pos": "2,3"
-        }
-    ]
-}
+    def move_vertically(self, up):
+        # "movement" has to be negative if moving up, positive if moving down
+        if up:
+            if not self.bottomRow:
+                print("Can't go up, we're already there")
+                return False
+            movement = -self.VERTICAL_MOVEMENT
+        else:
+            if self.bottomRow:
+                print("Can't go down, we're already there")
+                return False
+            movement = self.VERTICAL_MOVEMENT
 
-// Send message
-// content: string, message to send (busy/missingBook/foundBook/bookNotAligned)
-{
-    "message": {
-        "content": "busy"
-    }
-}
-
-// AUXILLIARY EV3 -> MAIN EV3
-
-// position: int (x-coordinate of robot)
-{
-   "position": 0
-}
-
-```
+        self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED, hold=True)
+        self.move_motor_by_dist(self.VERTICAL_MOTO

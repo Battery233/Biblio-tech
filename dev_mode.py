@@ -219,9 +219,6 @@ def parse_message(data, socket):
     elif data == 'ping':
         socket.send('pong')
 
-    elif data == 'status':
-        server.send_to_device("hello", Device.OTHER_EV3)
-
     elif data == 'coordinateA':
         print(current_x_coordinateA)
         socket.send(str(current_x_coordinateA))
@@ -254,6 +251,6 @@ def parse_message(data, socket):
 
 
 # Create bluetooth server and start it listening on a new thread
-server = ev3_server.BluetoothServer("ev3 dev", parse_message)
+server = server.BluetoothServer("ev3 dev", parse_message)
 server_thread = Thread(target=server.start_server)
 server_thread.start()

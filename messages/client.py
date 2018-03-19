@@ -1,15 +1,15 @@
-import subprocess
 from threading import Thread
 
 from bluetooth import *
 
-from ev3bt.ev3_server import Device
+from messages.server import Device
 
 MESSAGE_SIZE = 1024
 uuid = "00001101-0000-1000-8000-00805F9B34FB"
 EV3_33_MAC = "B0:B4:48:76:E7:86"
 EV3_13_MAC = "B0:B4:48:76:A2:C9"
 COLIN_MAC = "AC:FD:CE:2B:82:F1"
+RPI_MAC = "B8:27:EB:04:8B:94"
 
 
 class BluetoothClient:
@@ -47,26 +47,13 @@ class BluetoothClient:
     #
     # @return string    Mac address of other EV3
     def get_addr(self, device):
-        local_mac = str(self.__get_local_mac()).strip()
 
-        if device == Device.OTHER_EV3:
-            if EV3_33_MAC == local_mac:
-                return EV3_13_MAC
-            else:
-                return EV3_33_MAC
-        else:
+        if device == Device.BRICK_33:
+            return EV3_33_MAC
+        elif device == Device.BRICK_13:
             return EV3_13_MAC
-
-    # Gets bluetooth MAC of the local device (brick we're running on)
-    #
-    # @return string    MAC address of this device
-    def __get_local_mac(self):
-        # Run shell command that outputs info about local bluetooth device
-        cmd_output = subprocess.check_output(['hcitool', 'dev'])
-        # Decode byte array to string
-        cmd_output = cmd_output.decode('UTF-8')
-        # Extract the last 18 characters (the MAC address)
-        return cmd_output[-18:]
+        elif device == Device.RPI:
+            return RPI_MAC
 
     def receive_loop(self, sock):
         while self.should_run:

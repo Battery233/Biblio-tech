@@ -9,6 +9,7 @@ from enum import Enum
 from threading import Thread
 
 from bluetooth import *
+import json
 
 # MAC addresses of EV3 bricks
 EV3_33_MAC = "B0:B4:48:76:E7:86"
@@ -16,6 +17,12 @@ EV3_13_MAC = "B0:B4:48:76:A2:C9"
 
 # Message size (bytes)
 MESSAGE_SIZE = 1024
+
+class Device(Enum):
+    RPI = 0
+    BRICK_13 = 1
+    BRICK_33 = 2
+    APP = 3
 
 # Class representing a bluetooth server, only ONE instance should be created
 # as it can handle multiple connections
@@ -98,10 +105,10 @@ class BluetoothServer:
 
         if device_type == Device.BRICK_13:
             if EV3_13_MAC in self.client.keys():
-                target.append(self.client[EV3_13_MAC])
+                targets.append(self.client[EV3_13_MAC])
         elif device_type == Device.BRICK_33:
             if EV3_33_MAC in self.client.keys():
-                target.append(self.client[EV3_33_MAC])
+                targets.append(self.client[EV3_33_MAC])
         else:
             for mac, client_socket in self.clients.items():
                 # Only get clients that are not either of the two EV3 bricks
