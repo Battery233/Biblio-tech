@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6330549c-80d7-4f8c-be2c-3ff09755bfe8" name="Default" comment="Update">
-      <change beforePath="$PROJECT_DIR$/raspberry-pi.py" afterPath="$PROJECT_DIR$/raspberry-pi.py" />
+      <change beforePath="$PROJECT_DIR$/messages/server.py" afterPath="$PROJECT_DIR$/messages/server.py" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/httpRequests/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,7 +32,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="raspberry-pi.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="raspberry-pi.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/raspberry-pi.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="210">
@@ -119,11 +119,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/messages/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="173">
-              <caret line="121" column="12" lean-forward="false" selection-start-line="121" selection-start-column="8" selection-end-line="121" selection-end-column="12" />
+            <state relative-caret-position="248">
+              <caret line="114" column="33" lean-forward="false" selection-start-line="114" selection-start-column="33" selection-end-line="114" selection-end-column="33" />
               <folding>
                 <element signature="e#197#214#0" expanded="true" />
               </folding>
@@ -142,7 +142,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>query</find>
       <find>self</find>
       <find>import db.main as db</find>
       <find>query_DB()</find>
@@ -172,6 +171,7 @@
       <find>Device</find>
       <find>messages.</find>
       <find>make</find>
+      <find>.client</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -199,12 +199,12 @@
         <option value="$PROJECT_DIR$/auxiliary_brick.py" />
         <option value="$PROJECT_DIR$/brick-13.py" />
         <option value="$PROJECT_DIR$/brick-33.py" />
-        <option value="$PROJECT_DIR$/messages/server.py" />
         <option value="$PROJECT_DIR$/messages/client.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/dev_mode.py" />
         <option value="$PROJECT_DIR$/control.py" />
         <option value="$PROJECT_DIR$/raspberry-pi.py" />
+        <option value="$PROJECT_DIR$/messages/server.py" />
       </list>
     </option>
   </component>
@@ -698,22 +698,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/messages/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="121" column="12" lean-forward="false" selection-start-line="121" selection-start-column="8" selection-end-line="121" selection-end-column="12" />
-          <folding>
-            <element signature="e#197#214#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/raspberry-pi.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="83" column="34" lean-forward="false" selection-start-line="83" selection-start-column="34" selection-end-line="83" selection-end-column="34" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messages/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="114" column="33" lean-forward="false" selection-start-line="114" selection-start-column="33" selection-end-line="114" selection-end-column="33" />
+          <folding>
+            <element signature="e#197#214#0" expanded="true" />
           </folding>
         </state>
       </provider>

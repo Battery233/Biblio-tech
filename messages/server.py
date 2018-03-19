@@ -104,11 +104,11 @@ class BluetoothServer:
         targets = []
 
         if device_type == Device.BRICK_13:
-            if EV3_13_MAC in self.client.keys():
-                targets.append(self.client[EV3_13_MAC])
+            if EV3_13_MAC in self.clients.keys():
+                targets.append(self.clients[EV3_13_MAC])
         elif device_type == Device.BRICK_33:
-            if EV3_33_MAC in self.client.keys():
-                targets.append(self.client[EV3_33_MAC])
+            if EV3_33_MAC in self.clients.keys():
+                targets.append(self.clients[EV3_33_MAC])
         else:
             for mac, client_socket in self.clients.items():
                 # Only get clients that are not either of the two EV3 bricks
