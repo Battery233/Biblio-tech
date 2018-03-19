@@ -78,6 +78,11 @@ class Robot():
         db.create_book_table(DB_FILE)
         db.add_sample_books(DB_FILE)
 
+        # Create bluetooth server and start it listening on a new thread
+        self.server = server.BluetoothServer(server_name, self.parse_message)
+        self.server_thread = Thread(target=self.server.start_server)
+        self.server_thread.start()
+
         # Initialize robot's x_coordinate to 0 (TODO: get rid of this assumption?):
         self.current_x_coordinate = 0
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
@@ -96,11 +101,6 @@ class Robot():
 
         # Move the robot at the beginning of first cell
         self.reach_cell(0)
-
-        # Create bluetooth server and start it listening on a new thread
-        self.server = server.BluetoothServer(server_name, self.parse_message)
-        self.server_thread = Thread(target=self.server.start_server)
-        self.server_thread.start()
 
     def wait(self):
         if self.is_busy:
