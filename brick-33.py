@@ -1,21 +1,13 @@
 import control
+
 import json
-from threading import Thread
 import time
-from ev3bt import ev3_client
-from ev3bt.ev3_server import Device
 
-
-class AuxController(control.Controller):
+class Brick33(control.Brick):
     VERTICAL_SOCKET_1 = 0
     FINGER_SOCKET = 1
     ARM_SOCKET = 2
     VERTICAL_SOCKET_2 = 3
-
-    VERTICAL_MOTOR_1 = control.Controller.MOTORS[VERTICAL_SOCKET_1]
-    VERTICAL_MOTOR_2 = control.Controller.MOTORS[VERTICAL_SOCKET_2]
-    ARM_MOTOR = control.Controller.MOTORS[ARM_SOCKET]
-    FINGER_MOTOR = control.Controller.MOTORS[FINGER_SOCKET]
 
     VERTICAL_MOVEMENT = 450
     VERTICAL_SPEED = 250
@@ -28,24 +20,30 @@ class AuxController(control.Controller):
     FINGER_EXTENSION_SPEED = 90
     FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
-    def __init__(self):
-        self.client = ev3_client.BluetoothClient(Device.OTHER_EV3, self.parse_message)
-        client_thread = Thread()
-        client_thread.start()
+    def __init__(self, brick_id):
+        super().__init__(brick_id)
 
-        super().__init__()
-        
-        print('Vertical motor 1 is: ' + str(self.VERTICAL_MOTOR_1))
-        print('Vertical motor 2 is: ' + str(self.VERTICAL_MOTOR_2))
-        print('Arm motor is: ' + str(self.ARM_MOTOR))
-        print('Finger motor is: ' + str(self.FINGER_MOTOR))
-        print('Vertical motor 1 is connected?: ' + str(self.VERTICAL_MOTOR_1.connected))
-        print('Vertical motor 2 is connected?: ' + str(self.VERTICAL_MOTOR_2.connected))
-        print('Arm motor is connected?: ' + str(self.ARM_MOTOR.connected))
-        print('Finger motor is connected?: ' + str(self.FINGER_MOTOR.connected))
+        self.vertical_motor_1 = self.MOTORS[VERTICAL_SOCKET_1]
+        self.vertical_motor_2 = self.MOTORS[VERTICAL_SOCKET_2]
+        self.arm_motor = self.MOTORS.MOTORS[ARM_SOCKET]
+        self.finger_motor = self.MOTORS.MOTORS[FINGER_SOCKET]
+
+        self.stop_action = 'hold'
+
+        print('Vertical motor 1 is: ' + str(self.vertical_motor_1))
+        print('Vertical motor 2 is: ' + str(self.vertical_motor_2))
+        print('Arm motor is: ' + str(self.arm_motor))
+        print('Finger motor is: ' + str(self.finger_motor))
+        print('Vertical motor 1 is connected?: ' + str(self.vertical_motor_1.connected))
+        print('Vertical motor 2 is connected?: ' + str(self.vertical_motor_2.connected))
+        print('Arm motor is connected?: ' + str(self.arm_motor.connected))
+        print('Finger motor is connected?: ' + str(self.finger_motor.connected))
+
+        print('Stop action set to: ' + self.stop_action)
 
     def parse_message(self, data, socket):
         print("Parse message: " + data)
+
         json_command = json.loads(data)
 
         command_type = list(json_command.keys())[0]
@@ -56,26 +54,26 @@ class AuxController(control.Controller):
                 self.send_message(socket, "vertical_success")
             else:
                 self.send_message(socket, "vertical_failure")
+
         elif command_type == "down" and len(command_args) == 0:
             if self.move_vertically(up=False):
                 self.send_message(socket, "vertical_success")
             else:
                 self.send_message(socket, "vertical_failure")
+
         elif command_type == 'takeBook' and len(command_args) == 0:
             self.take_book()
+
+        elif command_type == 'stop':
+            if len(command_args) == 1 and ('stop' in command_args.keys()):
+                self.stop_motors(command_args['ports'])
+            elif len(command_args) == 0:
+                self.stop_motors()
+            else:
+                raise ValueError('Invalid command')
+                
         else:
             raise ValueError('Invalid command')
-
-    def send_message(self, socket, title, body=None):
-        # TODO: extract this method and put it into the parent class (remove it from main_brick.py as well)
-        # generate message and send json file
-        if body is not None:
-            message = {title: body}
-        else:
-            message = {'message': {"content": title}}
-
-        print("sending message: " + json.dumps(message))
-        socket.send(json.dumps(message))
 
     def move_vertically(self, up):
         # "movement" has to be negative if moving up, positive if moving down
@@ -83,7 +81,7 @@ class AuxController(control.Controller):
             movement = self.VERTICAL_MOVEMENT
         else:
             movement = -self.VERTICAL_MOVEMENT
-        
+
         print('Move by ' + str(movement))
         self.move_motor_by_dist(self.VERTICAL_MOTOR_1, movement, self.VERTICAL_SPEED, hold=True)
         self.move_motor_by_dist(self.VERTICAL_MOTOR_2, movement, self.VERTICAL_SPEED, hold=True)
@@ -94,7 +92,6 @@ class AuxController(control.Controller):
         print("Movement successfully completed, return True")
         return True
 
-    # TODO: maybe this must be @primary_action
     def take_book(self):
         print("Enter in take_book")
         # extend arm
@@ -120,5 +117,5 @@ class AuxController(control.Controller):
 
 
 if __name__ == '__main__':
-    # Initialize auxiliary brick, starts listening for commands
-    brick = AuxController()
+    # Initialize brick
+    brick = Brick33(control.BRICK_33)
