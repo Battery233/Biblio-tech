@@ -96,9 +96,6 @@ class Robot():
         # Stop all motors
         self.stop_motors()
 
-        if not self.TOUCH_SENSOR.connected:
-            print("Unsafe! Touch sensor not connected")
-
         # Move the robot at the beginning of first cell
         self.reach_cell(0)
 
