@@ -3,13 +3,9 @@ import messages
 import json
 import time
 from threading import Thread
-from enum import Enum
 
 import ev3dev.ev3 as ev3
 
-BRICK_VERTICAL_MOVEMENT = messages.Device.BRICK_33
-BRICK_HORIZONTAL_MOVEMENT = messages.Device.BRICK_13
-BRICK_BOOK_FETCHING = messages.Device.BRICK_33
 
 class Brick:
     MOTORS = [

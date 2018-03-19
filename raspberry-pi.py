@@ -3,10 +3,14 @@ import sys
 import time
 from threading import Thread
 
-import control
 import db.main as db
 import vision.main as vision
 import messages
+
+BRICK_VERTICAL_MOVEMENT = messages.Device.BRICK_33
+BRICK_HORIZONTAL_MOVEMENT = messages.Device.BRICK_13
+BRICK_BOOK_FETCHING = messages.Device.BRICK_33
+
 
 # FOR HARCODE:
 IGNORE_QR_CODE = False
@@ -133,15 +137,15 @@ class Robot():
             args = {'move': distance}
 
             message = messages.make_message(action, distance=distance)
-            self.server.send_to_device(message, control.BRICK_HORIZONTAL_MOVEMENT)
+            self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
 
-            self.server.send_to_device(messages.make_message('up'), control.BRICK_VERTICAL_MOVEMENT)
+            self.server.send_to_device(messages.make_message('up'), BRICK_VERTICAL_MOVEMENT)
             time.sleep(8)
             self.bottom_row = False
 
         elif cell <= 1 and not self.bottom_row:
             message = '{"down":{}}'
-            self.server.send_to_device(message, control.BRICK_VERTICAL_MOVEMENT)
+            self.server.send_to_device(message, BRICK_VERTICAL_MOVEMENT)
             time.sleep(8)
             self.bottom_row = True
 
@@ -155,7 +159,7 @@ class Robot():
             args = {'move': distance}
 
             message = messages.make_message(action, distance=distance)
-            self.server.send_to_device(message, control.BRICK_HORIZONTAL_MOVEMENT)
+            self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
 
         # Update the current x_coordinate to be the target coordinate as the robot is now there
         self.current_x_coordinate = target_x_coordinate
@@ -265,7 +269,7 @@ class Robot():
             ISBN = command_args['ISBN']
             if self.aligned_to_book == ISBN:
                 message = '{"takeBook":{}}'
-                self.server.send_to_device(message, control.BRICK_BOOK_FETCHING)
+                self.server.send_to_device(message, BRICK_BOOK_FETCHING)
                 time.sleep(23)
                 self.reach_cell(0)
             else:
