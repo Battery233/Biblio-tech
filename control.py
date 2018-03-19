@@ -1,4 +1,5 @@
 import messages
+from messages.server import Device
 
 import json
 import time
@@ -6,6 +7,9 @@ from threading import Thread
 
 import ev3dev.ev3 as ev3
 
+BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
+BRICK_HORIZONTAL_MOVEMENT = Device.BRICK_13
+BRICK_BOOK_FETCHING = Device.BRICK_33
 
 class Brick:
     MOTORS = [

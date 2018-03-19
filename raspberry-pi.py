@@ -5,9 +5,9 @@ from threading import Thread
 
 import db.main as db
 import vision.main as vision
-import messages
+from messages.server import Device
 
-BRICK_VERTICAL_MOVEMENT = messages.server.Device.BRICK_33
+BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
 BRICK_HORIZONTAL_MOVEMENT = messages.server.Device.BRICK_13
 BRICK_BOOK_FETCHING = messages.server.Device.BRICK_33
 
