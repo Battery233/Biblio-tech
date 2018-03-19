@@ -10,8 +10,7 @@ from threading import Thread
 import db.main as db
 import ev3dev.ev3 as ev3
 
-from ev3bt import ev3_server
-from ev3bt.ev3_server import Device
+from messages import server
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))

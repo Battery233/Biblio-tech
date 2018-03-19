@@ -1,28 +1,38 @@
+import messages
+
 import json
 import time
-
 from threading import Thread
-
+from enum import Enum
 
 import ev3dev.ev3 as ev3
 
-from ev3bt import ev3_server
+BRICK_VERTICAL_MOVEMENT = messages.Device.BRICK_33
+BRICK_HORIZONTAL_MOVEMENT = messages.Device.BRICK_13
+BRICK_BOOK_FETCHING = messages.Device.BRICK_33
 
-
-class Controller:
+class Brick:
     MOTORS = [
         ev3.Motor('outA'),
         ev3.Motor('outB'),
         ev3.Motor('outC'),
         ev3.Motor('outD')
     ]
-    def __init__(self, server_name=""):
-        # Create bluetooth server and start it listening on a new thread
 
-        if len(server_name) > 0:
-            self.server = ev3_server.BluetoothServer(server_name, self.parse_message)
-            self.server_thread = Thread(target=self.server.start_server)
-            self.server_thread.start()
+    def __init__(self, brick_id):
+        self.stop_action = 'brake'
+        self.client = messages.client.messagesClient(brick_id, self.parse_message)
+        client_thread = Thread()
+        client_thread.start()
+
+    def send_message(self, socket, title, body=None):
+        if body is not None:
+            message = {title: body}
+        else:
+            message = {'message': {"content": title}}
+
+        print("sending message: " + json.dumps(message))
+        socket.send(json.dumps(message))
 
     def parse_message(self, data, socket):
         json_command = json.loads(data)
@@ -52,14 +62,14 @@ class Controller:
     # @param int    socket     Socket index in MOTORS to use
     # @param float  dist       Distance to move motor in centimeters
     # @param int    speed      Speed to move motor at (degrees / sec)
-    def move_motor_by_dist(self, motor, dist, speed, hold=False):
+    def move_motor_by_dist(self, motor, dist, speed):
         if motor.connected:
             # convert to cm and then to deg
             angle = int(self.cm_to_deg(float(dist) / 10))
-            if hold:
-                motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action='hold')
-            else:
-                motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, )
+            motor.run_to_rel_pos(position_sp=angle, speed_sp=speed, stop_action=self.stop_action)
+
+            self.wait_for_motor(motor)
+
         else:
             print('[ERROR] No motor connected to ' + str(motor))
 
@@ -67,6 +77,15 @@ class Controller:
         # Make sure that motor has time to start
         time.sleep(0.1)
         return motor.state != ['running']
+
+    def stop_motors(self, sockets=None):
+        # Stop all the motors by default
+        if sockets is None:
+            sockets = self.SOCKETS
+        for socket in sockets:
+            m = self.MOTORS[socket]
+            if m.connected:
+                m.stop(stop_action=self.stop_action)
 
 
     def cm_to_deg(self, cm):
@@ -79,4 +98,3 @@ class Controller:
         while motor.state == ["running"]:
             print('Motor is still running')
             time.sleep(0.1)
-

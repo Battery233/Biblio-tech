@@ -17,13 +17,6 @@ EV3_13_MAC = "B0:B4:48:76:A2:C9"
 # Message size (bytes)
 MESSAGE_SIZE = 1024
 
-
-# Device enum used for picking a target client to send a message to
-class Device(Enum):
-    OTHER_EV3 = 0  # The other EV3 brick
-    APP = 1  # Only the clients connected via the app
-
-
 # Class representing a bluetooth server, only ONE instance should be created
 # as it can handle multiple connections
 class BluetoothServer:
@@ -101,23 +94,32 @@ class BluetoothServer:
     # Extracts from the list of connected clients those with the type
     # we want (type defined using the Device enum)
     def __get_targets(self, device_type):
-
         targets = []
 
-        if device_type == Device.OTHER_EV3:
-            for mac, client_socket in self.clients.items():
-                # Only get MAC address of other EV3 (first condition probably redundant since
-                # it shouldn't be possible for our own MAC address to be placed in the dictionary...
-                if self.__get_local_mac() != mac and (mac == EV3_33_MAC or mac == EV3_13_MAC):
-                    targets.append(client_socket)
-                    return targets
+        if device_type == Device.BRICK_13:
+            if EV3_13_MAC in self.client.keys():
+                target.append(self.client[EV3_13_MAC])
+        elif device_type == Device.BRICK_33:
+            if EV3_33_MAC in self.client.keys():
+                target.append(self.client[EV3_33_MAC])
         else:
             for mac, client_socket in self.clients.items():
                 # Only get clients that are not either of the two EV3 bricks
+                # TODO????? WHAT'S GOING ON HERE?
                 if mac != EV3_13_MAC and mac != EV3_33_MAC:
                     targets.append(client_socket)
 
         return targets
+
+    # Prepare data to be sent to devices according to API
+    def make_message(self, header, items=None, **kwargs):
+        if (items is not None) > 0 and len (kwargs) > 0:
+            raise ValueError('Cannot make a message with both a json array and a json object as body')
+
+        if items is None:
+            return json.dumps({header: kwargs})
+        else:
+            return json.dumps({header: items})
 
     # Send data to client (Android app or other EV3 brick)
     # @param string data         Message to send

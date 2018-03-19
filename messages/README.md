@@ -36,10 +36,10 @@ thread.start()
 You can send data to any connected clients using:
 ```py
 # Send message to the second EV3 Brick
-my_server.send_to_device("message", ev3_bluetooth.Device.OTHER_EV3)
+my_server.send_to_device("message", messages.Device.BRICK_13)
 
 # Send message to all connected app client(s)
-my_server.send_to_device("message", ev3_bluetooth.Device.APP)
+my_server.send_to_device("message", messages.Device.APP)
 ```
 
 You can close the server permanently using:
