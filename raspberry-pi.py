@@ -5,6 +5,7 @@ from threading import Thread
 
 import db.main as db
 import vision.main as vision
+from messages import server
 from messages.server import Device
 
 BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
@@ -97,7 +98,7 @@ class Robot():
         self.reach_cell(0)
 
         # Create bluetooth server and start it listening on a new thread
-        self.server = messages.server.BluetoothServer(server_name, self.parse_message)
+        self.server = server.BluetoothServer(server_name, self.parse_message)
         self.server_thread = Thread(target=self.server.start_server)
         self.server_thread.start()
 
@@ -136,10 +137,10 @@ class Robot():
                 distance = abs(x_offset)
             args = {'move': distance}
 
-            message = messages.make_message(action, distance=distance)
+            message = server.make_message(action, distance=distance)
             self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
 
-            self.server.send_to_device(messages.make_message('up'), BRICK_VERTICAL_MOVEMENT)
+            self.server.send_to_device(server.make_message('up'), BRICK_VERTICAL_MOVEMENT)
             time.sleep(8)
             self.bottom_row = False
 
@@ -158,7 +159,7 @@ class Robot():
                 distance = abs(x_offset)
             args = {'move': distance}
 
-            message = messages.make_message(action, distance=distance)
+            message = server.make_message(action, distance=distance)
             self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
 
         # Update the current x_coordinate to be the target coordinate as the robot is now there
