@@ -41,9 +41,10 @@ class Brick:
         command_type = list(json_command.keys())[0]
         command_args = json_command[command_type]
 
-        if (command_type == 'move' and len(command_args) == 3 and
-                'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
-            self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
+        # TODO: Add proper support for 'brick' param
+        if (command_type == 'move' and len(command_args) == 4 and
+                'ports' in command_args.keys() and 'speed'in command_args.keys() and 'brick' in command_args.keys() and 'time' in command_args.keys()):
+            self.rotate_motor(map(self.letter_to_int, command_args['ports']), command_args['speed'], command_args['time'])
 
     # Rotate motor
     # @param string socket  Output socket string (0 / 1 / 2 / 3)
@@ -91,6 +92,21 @@ class Brick:
     def cm_to_deg(self, cm):
         DEG_PER_CM = 29.0323
         return DEG_PER_CM * cm
+
+    def letter_to_int(self, letter):
+        if letter == 'A':
+            return 0
+        elif letter == 'B':
+            return 1
+        elif letter == 'C':
+            return 2
+        elif letter == 'D':
+            return 3
+        elif isinstance(letter, int):
+            return letter
+        else:
+            return 0
+
 
     def wait_for_motor(self, motor):
         # Make sure that motor has time to start

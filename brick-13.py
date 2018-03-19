@@ -75,8 +75,7 @@ class Brick13(control.Brick):
             elif len(command_args) == 0:
                 self.stop_motors()
             else:
-                raise ValueError('Invalid command')
-
+                raise ValueError('Invalid stop command')
         else:
             raise ValueError('Invalid command')
 

@@ -249,10 +249,21 @@ class Robot():
         command_type = list(json_command.keys())[0]
         command_args = json_command[command_type]
 
-        # TODO: Fix this, could simply relay the message to the bricks but need to add brick number param
-        if (command_type == 'move' and len(command_args) == 3 and
-                'ports' in command_args.keys() and 'speed' in command_args.keys() and 'time' in command_args.keys()):
-            self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
+        # TODO: Add code onto receiving end (control.py I think, not ideal so do whatever feels right)
+        if (command_type == 'move' and len(command_args) == 4 and 'ports' in command_args.keys()
+                and 'speed' in command_args.keys() and 'brick' in command_args.keys()
+                and 'time' in command_args.keys()):
+            if command_args['brick'] == '13':
+                # send to brick 13
+                self.server.send_to_device(data, device_type=Device.BRICK_13)
+                pass
+            elif command_args['brick'] == '33':
+                # send to brick 33
+                self.server.send_to_device(data, device_type=Device.BRICK_33)
+            else:
+                raise ValueError('Invalid "brick" parameter: %s for "move" command!' % command_args['brick'])
+
+            # self.rotate_motor(command_args['ports'], command_args['speed'], command_args['time'])
 
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
@@ -260,7 +271,7 @@ class Robot():
             elif len(command_args) == 0:
                 self.stop_motors()
             else:
-                raise ValueError('Invalid command')
+                raise ValueError('Invalid stop command')
 
         elif command_type == 'findBook' and len(command_args) == 1 and 'ISBN' in command_args.keys():
             self.find_book(socket, command_args['ISBN'])
