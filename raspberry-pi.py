@@ -8,8 +8,8 @@ import vision.main as vision
 from messages.server import Device
 
 BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
-BRICK_HORIZONTAL_MOVEMENT = messages.server.Device.BRICK_13
-BRICK_BOOK_FETCHING = messages.server.Device.BRICK_33
+BRICK_HORIZONTAL_MOVEMENT = Device.BRICK_13
+BRICK_BOOK_FETCHING = Device.BRICK_33
 
 
 # FOR HARCODE:
@@ -237,7 +237,7 @@ class Robot():
     def stop_motors(self, ports=None):
         # Currrently, ignores the 'ports' argument for simplicity
         message = self.server.make_message('stop')
-        for device in messages.Device:
+        for device in Device:
             self.server.send_to_device(message, device)
 
 
