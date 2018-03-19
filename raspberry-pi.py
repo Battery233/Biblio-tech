@@ -123,27 +123,39 @@ class Robot():
 
         if cell > 1 and self.bottom_row:
             # If the index is in the second half, this cell is on the upper row...:)
-            message = '{"up":{}}'
-            self.server.send_to_device(message, control.BRICK_VERTICAL_MOVEMENT)
+            print("Move the robot by " + str(x_offset))
+            if x_offset >= 0:
+                action = 'right'
+                distance = x_offset
+            else:
+                action = 'left'
+                distance = abs(x_offset)
+            args = {'move': distance}
+
+            message = messages.make_message(action, distance=distance)
+            self.server.send_to_device(message, control.BRICK_HORIZONTAL_MOVEMENT)
+
+            self.server.send_to_device(messages.make_message('up'), control.BRICK_VERTICAL_MOVEMENT)
             time.sleep(8)
             self.bottom_row = False
+
         elif cell <= 1 and not self.bottom_row:
             message = '{"down":{}}'
             self.server.send_to_device(message, control.BRICK_VERTICAL_MOVEMENT)
             time.sleep(8)
             self.bottom_row = True
 
-        print("Move the robot by " + str(x_offset))
-        if x_offset >= 0:
-            action = 'right'
-            distance = x_offset
-        else:
-            action = 'left'
-            distance = abs(x_offset)
-        args = {'move': distance}
+            print("Move the robot by " + str(x_offset))
+            if x_offset >= 0:
+                action = 'right'
+                distance = x_offset
+            else:
+                action = 'left'
+                distance = abs(x_offset)
+            args = {'move': distance}
 
-        message = messages.make_message(action, distance=distance)
-        messages.server.send_to_device(message, control.BRICK_HORIZONTAL_MOVEMENT)
+            message = messages.make_message(action, distance=distance)
+            self.server.send_to_device(message, control.BRICK_HORIZONTAL_MOVEMENT)
 
         # Update the current x_coordinate to be the target coordinate as the robot is now there
         self.current_x_coordinate = target_x_coordinate
