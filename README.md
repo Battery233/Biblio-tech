@@ -15,11 +15,13 @@ All arguments are optional.
 
 // Speed: int (deg / sec)
 // Time: int (ms)
+// Brick: "13" or "33"
 // Ports: "A", "B", "C", "D"
 {
    "move": {
       "speed": 219,
       "time": 2851,
+      "brick": "13"
       "ports": [
          "A",
          "B",
