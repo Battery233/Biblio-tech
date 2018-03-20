@@ -35,11 +35,11 @@ private fun parseJSONWithJSONObject(jsonData: String) {
             val title = jsonObject.getString("title")
             val isbn = jsonObject.getString("ISBN")
 
-            Log.d("parseJSONWithJSONObject", "pos " + pos)
-            Log.d("parseJSONWithJSONObject", "avail " + avail)
-            Log.d("parseJSONWithJSONObject", "ISBN " + isbn)
-            Log.d("parseJSONWithJSONObject", "author " + author)
-            Log.d("parseJSONWithJSONObject", "title: " + title)
+            Log.d("parseJSONWithJSONObject", "pos $pos")
+            Log.d("parseJSONWithJSONObject", "avail $avail")
+            Log.d("parseJSONWithJSONObject", "ISBN $isbn")
+            Log.d("parseJSONWithJSONObject", "author $author")
+            Log.d("parseJSONWithJSONObject", "title: $title")
 
             val target = "{[\"pos \" $pos],[\"avail \" + $avail],[\"isbn \" + $isbn],[\"author\" + $author],[\"title\" + $title]}"
             print(target)

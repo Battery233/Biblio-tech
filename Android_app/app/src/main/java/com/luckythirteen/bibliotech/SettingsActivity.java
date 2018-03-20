@@ -18,9 +18,9 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText textMacAddress;
 
     //public static final String EV33_MAC = "AC:FD:CE:2B:82:F1"; // COLIN'S
-    public static final String EV33_MAC = "B0:B4:48:76:E7:86";
-    public static final String EV13_MAC = "B0:B4:48:76:A2:C9";
-    public static final String RPI_MAC = "B8:27:EB:04:8B:94";
+    private static final String EV33_MAC = "B0:B4:48:76:E7:86";
+    private static final String EV13_MAC = "B0:B4:48:76:A2:C9";
+    private static final String RPI_MAC = "B8:27:EB:04:8B:94";
 
 
     @Override
@@ -92,5 +92,11 @@ public class SettingsActivity extends AppCompatActivity {
             Log.d("settings", "vibrate error");
         }
         onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

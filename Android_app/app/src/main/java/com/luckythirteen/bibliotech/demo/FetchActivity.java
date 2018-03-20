@@ -316,7 +316,7 @@ public class FetchActivity extends AppCompatActivity {
 
                 final AlertDialog ad = promptBuilder.show();
                 Log.w(TAG, "populateListView() - updating found words view");
-                BookListArrayAdapter listAdapter = new BookListArrayAdapter(context, R.layout.list_books_row, books, ad, fetchActivity);
+                BookListArrayAdapter listAdapter = new BookListArrayAdapter(context, books, ad, fetchActivity);
                 ListView listView = wordsPrompt.findViewById(R.id.lstBooks);
 
                 // Set ListView to use updated listAdapter
@@ -577,6 +577,7 @@ public class FetchActivity extends AppCompatActivity {
             Toast.makeText(context, "Still trying to find the book", Toast.LENGTH_SHORT).show();
         } else {
             super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
     }
 
@@ -591,9 +592,7 @@ public class FetchActivity extends AppCompatActivity {
             if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
                 bluetoothController.disconnect();
             }
-
             bluetoothController.release();
         }
     }
-
 }

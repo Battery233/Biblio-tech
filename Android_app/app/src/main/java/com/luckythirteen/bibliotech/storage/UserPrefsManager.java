@@ -12,7 +12,7 @@ public class UserPrefsManager {
 
     private static final String DEFAULT_MAC = "B8:27:EB:04:8B:94"; // RPI
 
-    private SharedPreferences sharedPrefs;
+    private final SharedPreferences sharedPrefs;
 
     public UserPrefsManager(Context context) {
         this.sharedPrefs = context.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE);

@@ -2,11 +2,11 @@ package com.luckythirteen.bibliotech.brickapi.obj;
 
 
 public class Book {
-    private String ISBN;
-    private String title;
-    private String author;
-    private String pos;
-    private boolean available;
+    private final String ISBN;
+    private final String title;
+    private final String author;
+    private final String pos;
+    private final boolean available;
 
     public Book(String ISBN, String title, String author, String pos, boolean available) {
         this.ISBN = ISBN;

@@ -52,7 +52,7 @@ public class MessageParser {
                     return MessageType.foundBook;
                 } else if (messageContent.equals(MessageType.missingBook.name())) {
                     return MessageType.missingBook;
-                } else if (messageContent.equals(MessageType.busy)) {
+                } else if (MessageType.busy.equals(messageContent)) {
                     return MessageType.busy;
                 } else {
                     return MessageType.undefined;

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
                     Intent intent = new Intent(MainActivity.super.getApplicationContext(), FetchActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
 
             }
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
                         Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "Cannot run dev_mode on RPI\nGo settings and change MAC address", Toast.LENGTH_SHORT).show();
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }
