@@ -8,17 +8,14 @@ import android.content.SharedPreferences;
  */
 
 public class UserPrefsManager {
-    private static final String TAG = "UserPrefsManager";
     private static final String APP_KEY = "app_info";
 
-    private static final String DEFAULT_MAC = "B0:B4:48:76:E7:86"; // EV33
+    private static final String DEFAULT_MAC = "B8:27:EB:04:8B:94"; // RPI
 
-    private Context context;
     private SharedPreferences sharedPrefs;
 
     public UserPrefsManager(Context context) {
-        this.context = context;
-        this.sharedPrefs = this.context.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE);
+        this.sharedPrefs = context.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE);
     }
 
     /**
@@ -29,7 +26,7 @@ public class UserPrefsManager {
     public void updateMacAddress(String mac) {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(StorageKeys.MAC_ADDRESS.name(), mac);
-        editor.commit();
+        editor.apply();
     }
 
     /**

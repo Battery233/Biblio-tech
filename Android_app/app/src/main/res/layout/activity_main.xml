@@ -14,7 +14,7 @@
         android:layout_height="100dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="100dp"
         android:backgroundTint="@color/colorPrimaryTrans"
         android:elevation="12dp"
         android:fontFamily="@font/adam"
@@ -24,15 +24,16 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDevMode" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/btnDevMode"
-        android:layout_width="250dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorPrimaryTrans"
         android:elevation="12dp"
         android:fontFamily="@font/adam"
@@ -40,9 +41,10 @@
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDemoMode" />
 
     <Button
         android:id="@+id/btnSettings"
