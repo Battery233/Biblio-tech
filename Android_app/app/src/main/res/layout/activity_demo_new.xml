@@ -59,7 +59,7 @@
     <Button
         android:id="@+id/btnGet"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -68,8 +68,9 @@
         android:fontFamily="@font/adam"
         android:text="@string/fetchButtonFindLabel"
         android:textColor="@color/colorWhite"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
