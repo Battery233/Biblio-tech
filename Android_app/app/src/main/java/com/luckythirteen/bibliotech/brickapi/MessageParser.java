@@ -35,7 +35,7 @@ public class MessageParser {
             }
         } catch (JsonParseException e) {
             Log.w(TAG, e.getMessage());
-            return MessageType.malformedjson;
+            return MessageType.malFormedJson;
         }
 
     }
@@ -52,14 +52,14 @@ public class MessageParser {
                     return MessageType.foundBook;
                 } else if (messageContent.equals(MessageType.missingBook.name())) {
                     return MessageType.missingBook;
-                } else if (messageContent.equals(MessageType.busy)) {
+                } else if (MessageType.busy.equals(messageContent)) {
                     return MessageType.busy;
                 } else {
                     return MessageType.undefined;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return MessageType.malformedjson;
+                return MessageType.malFormedJson;
             }
 
         } else {

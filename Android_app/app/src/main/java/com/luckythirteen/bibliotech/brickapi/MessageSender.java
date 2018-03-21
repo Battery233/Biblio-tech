@@ -14,7 +14,7 @@ import co.lujun.lmbluetoothsdk.base.State;
 
 public class MessageSender {
     private static final String TAG = "MessageSender";
-    private BluetoothController bluetoothController;
+    private final BluetoothController bluetoothController;
 
     public MessageSender(BluetoothController bluetoothController) {
         this.bluetoothController = bluetoothController;

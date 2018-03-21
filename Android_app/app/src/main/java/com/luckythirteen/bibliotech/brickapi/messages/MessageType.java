@@ -7,10 +7,9 @@ package com.luckythirteen.bibliotech.brickapi.messages;
 public enum MessageType {
     undefined,
     bookList,
-    bookitem,
     missingBook,
     foundBook,
     message,
     busy,
-    malformedjson;
+    malFormedJson
 }

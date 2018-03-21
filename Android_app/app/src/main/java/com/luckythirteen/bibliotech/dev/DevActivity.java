@@ -51,12 +51,11 @@ public class DevActivity extends AppCompatActivity {
     private static String TARGET_MAC = "B0:B4:48:76:E7:86";                                      // EV3 33
 
     // UI elements
-    private TextView bluetoothStatus, speedLabel, spinDurationLabel;
+    private TextView bluetoothStatus;
+    private TextView spinDurationLabel;
     private EditText messageText, speedText, durationText;
-    private Button sendButton, forwardButton, backwardButton, stopButton;
     private ImageButton reconnectButton;
-    private SeekBar speedBar, durationBar;
-    private Spinner outputSocketSpinner;
+    private SeekBar durationBar;
     private CheckBox distanceModeCheckBox;
     private CheckBox boxA, boxB, boxC, boxD;
 
@@ -183,17 +182,17 @@ public class DevActivity extends AppCompatActivity {
         speedText = findViewById(R.id.txtSpeedValue);
         durationText = findViewById(R.id.txtDurationValue);
         messageText = findViewById(R.id.editMessage);
-        sendButton = findViewById(R.id.btnSendMessage);
-        forwardButton = findViewById(R.id.btnForward);
-        backwardButton = findViewById(R.id.btnBackward);
-        stopButton = findViewById(R.id.btnStop);
+        Button sendButton = findViewById(R.id.btnSendMessage);
+        Button forwardButton = findViewById(R.id.btnForward);
+        Button backwardButton = findViewById(R.id.btnBackward);
+        Button stopButton = findViewById(R.id.btnStop);
         distanceModeCheckBox = findViewById(R.id.checkMoveMode);
-        speedLabel = findViewById(R.id.txtSetSpeed);
+        TextView speedLabel = findViewById(R.id.txtSetSpeed);
         spinDurationLabel = findViewById(R.id.txtSetDuration);
 
         reconnectButton = findViewById(R.id.btnReconnect);
 
-        speedBar = findViewById(R.id.seekBarSpeed);
+        SeekBar speedBar = findViewById(R.id.seekBarSpeed);
         speedBar.setMax(MAX_SPEED);
         durationBar = findViewById(R.id.seekBarDuration);
         durationBar.setMax(MAX_DURATION);
@@ -365,7 +364,7 @@ public class DevActivity extends AppCompatActivity {
 
 
         // OUTPUT SOCKET SPINNER
-        outputSocketSpinner = findViewById(R.id.spinnerOutSocket);
+        Spinner outputSocketSpinner = findViewById(R.id.spinnerOutSocket);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.output_socket_array, R.layout.spinner);
@@ -502,5 +501,11 @@ public class DevActivity extends AppCompatActivity {
 
             bluetoothController.release();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

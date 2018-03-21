@@ -17,7 +17,7 @@ class WifiHotUtil(context: Context) {
 
     private var mContext: Context? = null
 
-    val isWifiApEnabled: Boolean
+    private val isWifiApEnabled: Boolean
         get() {
             try {
                 val method = mWifiManager!!.javaClass.getMethod("isWifiApEnabled")
@@ -108,7 +108,7 @@ class WifiHotUtil(context: Context) {
     }
 
     companion object {
-        val TAG = "WifiApAdmin"
+        const val TAG = "WifiApAdmin"
     }
 
 }

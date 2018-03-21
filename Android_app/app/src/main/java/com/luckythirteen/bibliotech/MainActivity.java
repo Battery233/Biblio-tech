@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.dev.DevActivity;
+import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
 /**
  * Activity essentially for selecting demo mode (retrieve book)
@@ -30,12 +31,15 @@ public class MainActivity extends AppCompatActivity {
     private static final int DEMO_REQUEST_ENABLE_BT = 2;
 
     // Buttons on screen
-    private Button demoButton, devButton, settingsButton;
+    private Button demoButton;
+    private Button devButton;
+    private UserPrefsManager userPrefsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        userPrefsManager = new UserPrefsManager(this.getApplicationContext());
 
         // Attach listener to demo button to load the "fetch book" activity
         demoButton = findViewById(R.id.btnDemoMode);
@@ -46,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
                     Intent intent = new Intent(MainActivity.super.getApplicationContext(), FetchActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
+
             }
         });
 
@@ -56,20 +62,26 @@ public class MainActivity extends AppCompatActivity {
         devButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Only start dev activity if bluetooth is on
-                if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
-                    Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
-                    startActivity(intent);
+                if (!userPrefsManager.getMacAddress().equals("B8:27:EB:04:8B:94")) {
+                    // Only start dev activity if bluetooth is on
+                    if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
+                        Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Cannot run dev_mode on RPI\nGo settings and change MAC address", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        settingsButton = findViewById(R.id.btnSettings);
+        Button settingsButton = findViewById(R.id.btnSettings);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }

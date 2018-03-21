@@ -24,17 +24,15 @@ public class BookListArrayAdapter extends ArrayAdapter<Book> {
 
     private static final String TAG = "BookListArrayAdapter";
 
-    private Context context;
-    private int resourceId;
-    private List<Book> books;
-    private AlertDialog parentDialog;
-    private FetchActivity fetchActivity;
+    private final Context context;
+    private final List<Book> books;
+    private final AlertDialog parentDialog;
+    private final FetchActivity fetchActivity;
 
-    public BookListArrayAdapter(Context context, int resourceId, List<Book> books, AlertDialog parentDialog, FetchActivity fetchActivity) {
-        super(context, resourceId, books);
+    BookListArrayAdapter(Context context, List<Book> books, AlertDialog parentDialog, FetchActivity fetchActivity) {
+        super(context, R.layout.list_books_row, books);
 
         this.context = context;
-        this.resourceId = resourceId;
         this.books = books;
         this.parentDialog = parentDialog;
         this.fetchActivity = fetchActivity;
@@ -50,17 +48,18 @@ public class BookListArrayAdapter extends ArrayAdapter<Book> {
         // If we've not loaded this row before, inflate it otherwise get it's ViewHolder and update it
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_books_row, parent, false);
-
+            try {
+                convertView = inflater.inflate(R.layout.list_books_row, parent, false);
+            } catch (Exception ignored) {
+            }
 
             viewHolder = new BookListArrayAdapter.ViewHolderItem();
-            viewHolder.txtTitle = (TextView) convertView.findViewById(R.id.txtRowTitle);
-            viewHolder.txtAuthor = (TextView) convertView.findViewById(R.id.txtRowAuthor);
+            viewHolder.txtTitle = convertView.findViewById(R.id.txtRowTitle);
+            viewHolder.txtAuthor = convertView.findViewById(R.id.txtRowAuthor);
 
             convertView.setTag(viewHolder);
         } else {
-            ViewHolderItem tag = (ViewHolderItem) convertView.getTag();
-            viewHolder = tag;
+            viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
         // Update row with info for that song

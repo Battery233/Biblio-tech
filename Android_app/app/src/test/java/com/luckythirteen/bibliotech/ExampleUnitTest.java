@@ -1,16 +1,8 @@
 package com.luckythirteen.bibliotech;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.luckythirteen.bibliotech.brickapi.MessageParser;
-import com.luckythirteen.bibliotech.brickapi.obj.Book;
 
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

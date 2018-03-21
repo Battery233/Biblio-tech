@@ -2,7 +2,7 @@
     <string name="app_name">Bibliotech</string>
 
     <string name="selectModeLabel">Welcome</string>
-    <string name="DemoModeButtonLabel">Demo Mode</string>
+    <string name="DemoModeButtonLabel">My library</string>
     <string name="DevModeButtonLabel">Dev Mode</string>
     <string name="SettingsButtonLabel">Settings</string>
 
@@ -14,19 +14,13 @@
     <string name="fetchTitlePlaceholder">Big Data How the Information Revolution Is Transforming Our Lives</string>
     <string name="fetchBookListTitle">Select a book</string>
     <string name="fetchBookHelperMessage">Select a book first</string>
-    <string name="fetchBookHeaderTitle">Title</string>
-    <string name="fetchBookHeaderAuthor">Author</string>
-    <string name="fetchButtonFindLabel">FIND BOOK</string>
-    <string name="fetchButtonGetLabel">GET!</string>
+    <string name="fetchButtonFindLabel">→FIND BOOK←</string>
 
     <string name="progressFindingBook">Looking for book…</string>
     <string name="progressScanningShelf">Scanning shelf…</string>
 
     <string name="txtMessage">Message:</string>
-    <string name="editTextPlaceholder">&lt;message&gt;</string>
     <string name="btnSendMessage">Send Message</string>
-    <string name="txtMessageReceived">Received:</string>
-    <string name="txtMessageReceivedPlaceholder">&lt;none&gt;</string>
 
     <string name="txtBluetoothConnecting">Connecting</string>
     <string name="txtBluetoothConnected">Connected</string>
@@ -37,7 +31,6 @@
     <string name="txtSetDuration">Spin duration (ms):</string>
     <string name="txtSetDistance">Distance (mm):</string>
     <string name="txtDefaultDurationValue">0</string>
-    <string name="BookDatabase">Book Database</string>
 
     <string-array name="output_socket_array">
         <item>A</item>
@@ -56,12 +49,17 @@
     <string name="btnStop">STOP</string>
     <string name="checkMoveMode">Dist</string>
 
+    <string name="contentDescription">Not given</string>
+
     <string name="txtSettingsMacTitle">MAC Address</string>
     <string name="btnSettingsLoadEV33">Load EV33</string>
     <string name="btnSettingsLoadEV13">Load EV13</string>
+    <string name="btnSettingsLoadRPI">Load RPI</string>
     <string name="btnSettingsSave">Save</string>
 
     <string name="msgSaveSuccessful">Saved successfully!</string>
     <string name="msgSaveUnsuccessful">Failed to save</string>
+
+    <string name="slogan">The future library</string>
 
 </resources>

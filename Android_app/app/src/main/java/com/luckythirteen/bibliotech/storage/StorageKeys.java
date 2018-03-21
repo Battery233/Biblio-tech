@@ -5,5 +5,5 @@ package com.luckythirteen.bibliotech.storage;
  */
 
 public enum StorageKeys {
-    MAC_ADDRESS;
+    MAC_ADDRESS
 }
