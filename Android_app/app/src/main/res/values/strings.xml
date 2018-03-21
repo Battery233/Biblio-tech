@@ -7,17 +7,20 @@
     <string name="SettingsButtonLabel">Settings</string>
 
     <string name="fetchScreenTitle">Fetch a book!</string>
-    <string name="selectBookButton">Select book</string>
+    <string name="selectBookButton">Browse books</string>
     <string name="fetchTitleLabel">Title:</string>
     <string name="fetchAuthorLabel">Author:</string>
     <string name="fetchAuthorPlaceholder">Brian Clegg</string>
     <string name="fetchTitlePlaceholder">Big Data How the Information Revolution Is Transforming Our Lives</string>
     <string name="fetchBookListTitle">Select a book</string>
     <string name="fetchBookHelperMessage">Select a book first</string>
-    <string name="fetchButtonFindLabel">→FIND BOOK←</string>
+    <string name="fetchButtonFindLabel">FIND BOOK</string>
 
     <string name="progressFindingBook">Looking for book…</string>
     <string name="progressScanningShelf">Scanning shelf…</string>
+
+    <string name="scanFailed">Sorry, the book is no longer in the shelf.</string>
+    <string name="scanSuccess">Book found. Retrieving it for you.</string>
 
     <string name="txtMessage">Message:</string>
     <string name="btnSendMessage">Send Message</string>

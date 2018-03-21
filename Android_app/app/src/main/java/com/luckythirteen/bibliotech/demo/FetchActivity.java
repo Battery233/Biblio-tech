@@ -79,6 +79,7 @@ public class FetchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_new);
         setupUI();
+        setTitle("Library");
 
         // books = getBooks();
 
@@ -483,6 +484,29 @@ public class FetchActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void showScanResultPrompt(boolean found)
+    {
+        progressText.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        final String message = found ? getResources().getString(R.string.scanSuccess) : getResources().getString(R.string.scanFailed);
+        final Context context = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(message)
+                        .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .show();
+
+            }
+        });
     }
 
     /**
