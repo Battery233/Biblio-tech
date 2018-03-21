@@ -20,7 +20,7 @@ import java.util.List;
  * Custom ArrayAdapter for displaying the found books in MapsActivity
  */
 
-public class BookListArrayAdapter extends ArrayAdapter<Book> {
+class BookListArrayAdapter extends ArrayAdapter<Book> {
 
     private static final String TAG = "BookListArrayAdapter";
 

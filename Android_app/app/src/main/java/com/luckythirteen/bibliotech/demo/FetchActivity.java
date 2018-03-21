@@ -601,7 +601,10 @@ public class FetchActivity extends AppCompatActivity {
             Toast.makeText(context, "Still trying to find the book", Toast.LENGTH_SHORT).show();
         } else {
             super.onBackPressed();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            try {
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            } catch (Exception ignored) {
+            }
         }
     }
 

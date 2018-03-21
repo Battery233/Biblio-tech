@@ -8,6 +8,7 @@ package com.luckythirteen.bibliotech.brickapi
 import android.content.Context
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
+import android.util.Log
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
@@ -82,7 +83,7 @@ class WifiHotUtil(context: Context) {
         } catch (e: NoSuchMethodException) {
             e.printStackTrace()
         }
-
+        Log.d(TAG,"startWifiAP")
     }
 
     fun closeWifiAp() {
@@ -103,12 +104,10 @@ class WifiHotUtil(context: Context) {
             } catch (e: InvocationTargetException) {
                 e.printStackTrace()
             }
-
         }
     }
 
     companion object {
         const val TAG = "WifiApAdmin"
     }
-
 }

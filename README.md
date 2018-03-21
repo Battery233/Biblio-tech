@@ -9,37 +9,31 @@ sent) and the second is either a list of argument or the content of the message.
 All arguments are optional.
 
 ```javascript
-// APP TO EV3
+// APP TO RASPBERRY PI
 
 // For testing, simple move command to engines
 
 // Speed: int (deg / sec)
 // Time: int (ms)
-// Brick: "13" or "33"
-// Ports: "A", "B", "C", "D"
+// Ports: { "13" / "33" : ["A", "B", "C", "D"] }
+
 {
    "move": {
       "speed": 219,
       "time": 2851,
-      "brick": "13"
-      "ports": [
-         "A",
-         "B",
-         "C",
-         "D"
-      ]
+      "ports": {
+        "13" : ["A", "B", "C", "D"]
+      }
    }
 }
 
 // For testing, simple stop command to engines
-// Ports: "A", "B", "C", "D"
-// Default is all ports
+// Default is all ports on all bricks
 {
     "stop": {
-        "ports": [
-            "A",
-            "B"
-        ]
+      "ports": {
+        "13" : ["A", "B", "C", "D"]
+      }
     }
 }
 
@@ -88,7 +82,7 @@ All arguments are optional.
     "coordinateD":{}
 }
 
-// EV3 TO APP
+// RASPBERRY PI TO APP
 
 // Send list of books
 // ISBN: string
@@ -102,14 +96,14 @@ All arguments are optional.
             "title": "The Castle",
             "author": "Franz Kafka",
             "avail": 0,
-            "pos": "1,2"
+            "pos": "1"
         },
         {
             "ISBN": "9781840226881",
             "title": "Wealth of Nations",
             "author": "Adam Smith",
             "avail": 1,
-            "pos": "2,3"
+            "pos": "2"
         }
     ]
 }
@@ -122,11 +116,50 @@ All arguments are optional.
     }
 }
 
-// AUXILLIARY EV3 -> MAIN EV3
+// RASPBERRY PI TO bricks
+
+// Move robot to the left of given amount in mm
+{
+  "left": 10
+}
+
+// Move robot to the right of given amount in mm
+{
+  "right": 10
+}
+
+// Move robot up
+{
+  "up": {}
+}
+
+// Move robot down
+{
+  "down": {}
+}
+
+// BRICKS TO RASPBERRY PI
+// Send message
+// content: string, message to send (vertical_success, vertical_failure)
+{
+    "message": {
+        "content": "vertical_success"
+    }
+}
 
 // position: int (x-coordinate of robot)
 {
    "position": 0
 }
 
+
+
 ```
+
+### MAC addresses of the devices
+
+Raspberry Pi MAC address = "B8:27:EB:04:8B:94"
+
+EV3-13 MAC address = "B0:B4:48:76:A2:C9"
+
+EV3-33 MAC address = "B0:B4:48:76:E7:86"
