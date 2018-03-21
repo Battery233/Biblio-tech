@@ -22,7 +22,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".demo.FetchActivity"
-            android:label="Demo mode" />
+            android:label="Demo mode"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">
