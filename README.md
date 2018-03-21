@@ -155,3 +155,11 @@ All arguments are optional.
 
 
 ```
+
+### MAC addresses of the devices
+
+Raspberry Pi MAC address = "B8:27:EB:04:8B:94"
+
+EV3-13 MAC address = "B0:B4:48:76:A2:C9"
+
+EV3-33 MAC address = "B0:B4:48:76:E7:86"
