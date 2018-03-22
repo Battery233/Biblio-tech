@@ -11,6 +11,8 @@ HORIZONTAL_SPEED = 360
 TOUCH_SENSOR_LEFT_ADDRESS = 'in1'
 TOUCH_SENSOR_RIGHT_ADDRESS = 'in2'
 
+MESSAGE_SCAN_COMPLETE = 'scan_over'
+
 
 class Brick13(control.Brick):
 
@@ -27,7 +29,7 @@ class Brick13(control.Brick):
 
         print('Stop action set to: ' + self.stop_action)
 
-    def move(self, distance, touch_sensor):
+    def move(self, distance, touch_sensor, socket):
         if not touch_sensor.connected:
             print('Refusing to move: unsafe without touch sensor')
             return
@@ -49,11 +51,13 @@ class Brick13(control.Brick):
                 print('Reached edge! Stopping motors')
                 time.sleep(0.1)
 
-    def move_left(self, distance):
-        self.move(-distance, self.touch_sensor_left)
+        self.send_message(socket, MESSAGE_SCAN_COMPLETE)
 
-    def move_right(self, distance):
-        self.move(distance, self.touch_sensor_right)
+    def move_left(self, distance, socket):
+        self.move(-distance, self.touch_sensor_left, socket)
+
+    def move_right(self, distance, socket):
+        self.move(distance, self.touch_sensor_right, socket)
 
     def parse_message(self, data, socket):
         print("Parse message: " + data)
@@ -65,10 +69,10 @@ class Brick13(control.Brick):
 
         if (command_type == 'left' and len(command_args) == 1 and
                 'distance' in command_args.keys()):
-            self.move_left(command_args['distance'])
+            self.move_left(command_args['distance'], socket)
 
         elif command_type == 'right' and len(command_args) == 1 and 'distance' in command_args.keys():
-            self.move_right(command_args['distance'])
+            self.move_right(command_args['distance'], socket)
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
                 self.stop_motors(command_args['ports'])

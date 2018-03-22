@@ -67,10 +67,14 @@ class Robot():
                  CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Top level, left cell
                  500 - BOOK_WIDTH - END_CELL_OFFSET, 300]  # Top level, right cell
 
+    TOLERABLE_OFFSET = 5  # mm
+
     MESSAGE_BOOK_NOT_ALIGNED = 'bookNotAligned'
     MESSAGE_BUSY = 'busy'
     MESSAGE_MISSING_BOOK = 'missingBook'
     MESSAGE_FOUND_BOOK = 'foundBook'
+
+    scanning_over = True
 
     def __init__(self, server_name):
         # Create sample production.db in root folder
@@ -176,7 +180,9 @@ class Robot():
     def scan_ISBN(self, ISBN):
         print("Scanning for ISBN " + ISBN)
 
-        while not self.motor_ready(self.HORIZONTAL_MOTOR):
+        self.scanning_over = False
+
+        while not self.scanning_over:
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
                 self.stop_motors()
@@ -335,6 +341,8 @@ class Robot():
 
         elif command_type == 'vertical_failure':
             print('Could not perform vertical movement: already up or already down')
+        elif command_type == 'scan_over':
+            self.scanning_over = True
 
     def send_busy_message(self, socket):
         socket.send(self.MESSAGE_BUSY)
