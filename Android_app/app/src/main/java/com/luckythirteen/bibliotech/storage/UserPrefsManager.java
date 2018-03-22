@@ -37,6 +37,4 @@ public class UserPrefsManager {
     public String getMacAddress() {
         return sharedPrefs.getString(StorageKeys.MAC_ADDRESS.name(), DEFAULT_MAC);
     }
-
-
 }
