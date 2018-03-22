@@ -47,7 +47,8 @@ def primary_action(action):
 def disruptive_action(action):
     def break_get_book_flow(self, socket, *args, **kwargs):
         # Break the flow of findBook - takeBook. Sorry user, too slow
-        self.state['alignedToBook'] = None
+        #self.state['alignedToBook'] = None
+        self.aligned_to_book = None
 
         action(self, socket, *args, **kwargs)
 
@@ -326,7 +327,7 @@ class Robot():
 
                 print(built_query)
                 message = {'bookList': built_query}
-                socket.send(json.dumps(built_query))
+                socket.send(json.dumps(message))
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
