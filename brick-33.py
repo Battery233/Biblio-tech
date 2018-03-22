@@ -29,8 +29,8 @@ class Brick33(control.Brick):
 
         self.vertical_motor_1 = self.MOTORS[VERTICAL_SOCKET_1]
         self.vertical_motor_2 = self.MOTORS[VERTICAL_SOCKET_2]
-        self.arm_motor = self.MOTORS.MOTORS[ARM_SOCKET]
-        self.finger_motor = self.MOTORS.MOTORS[FINGER_SOCKET]
+        self.arm_motor = self.MOTORS[ARM_SOCKET]
+        self.finger_motor = self.MOTORS[FINGER_SOCKET]
 
         self.stop_action = 'hold'
 
@@ -122,4 +122,4 @@ class Brick33(control.Brick):
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick33(Device.BRICK_33)
+    brick = Brick33(Device.RPI)

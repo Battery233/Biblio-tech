@@ -25,8 +25,8 @@ class Brick13(control.Brick):
         self.touch_sensor_left = ev3.TouchSensor(address=TOUCH_SENSOR_LEFT_ADDRESS)
         self.touch_sensor_right = ev3.TouchSensor(address=TOUCH_SENSOR_RIGHT_ADDRESS)
 
-        print('TouchSensor left connected? ' + self.touch_sensor_left.connected)
-        print('TouchSensor right connected? ' + self.touch_sensor_right.connected)
+        print('TouchSensor left connected? ' + str(self.touch_sensor_left.connected))
+        print('TouchSensor right connected? ' + str(self.touch_sensor_right.connected))
 
         print('Stop action set to: ' + self.stop_action)
 
@@ -87,4 +87,4 @@ class Brick13(control.Brick):
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick13(Device.BRICK_13)
+    brick = Brick13(Device.RPI)
