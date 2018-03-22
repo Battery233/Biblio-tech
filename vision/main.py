@@ -5,17 +5,32 @@ except:
 import zbar
 import pygame.camera
 import numpy
+import signal
 
 import functools
 import time
+import os
 
 CAMERA_VIEW_FILE = "camera_view.jpg"
-CAMERA_WIDTH = 176
-CAMERA_HEIGHT = 144
+CAMERA_WIDTH = 640
+CAMERA_HEIGHT = 480
 CAMERA_X_CENTER = CAMERA_WIDTH / 2
 
 ACTUAL_QR_SIDE = 300
 
+camera = None
+
+def signal_handler(signal, frame):
+    print('Closing camera safefully (hopefully)')
+    if camera:
+        print("stopping camera")
+        camera.stop()
+        print("camera stopped")
+        pygame.close()
+    print("exiting")
+    os._exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def activate_camera(source='/dev/video0'):
     pygame.camera.init()

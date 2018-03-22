@@ -87,6 +87,9 @@ class Robot():
         self.server_thread = Thread(target=self.server.start_server)
         self.server_thread.start()
 
+        # Turn camera on and get it as object
+        self.camera = vision.activate_camera()
+
         while not self.server.bricks_connected():
             time.sleep(5)
             print('Waiting for bricks to be connected')
@@ -98,9 +101,7 @@ class Robot():
         self.aligned_to_book = None
         self.is_busy = False
 
-        # Turn camera on and get it as object
-        self.camera = vision.activate_camera()
-
+        
         # Stop all motors
         self.stop_motors()
 
