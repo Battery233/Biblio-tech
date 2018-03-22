@@ -325,7 +325,8 @@ class Robot():
                     built_query.append(book_dict)
 
                 print(built_query)
-                socket.send('bookList', items=built_query)
+                message = {'bookList': built_query}
+                socket.send(json.dumps(built_query))
             else:
                 raise ValueError('Invalid arguments for queryDB')
 
