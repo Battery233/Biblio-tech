@@ -22,7 +22,6 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String EV13_MAC = "B0:B4:48:76:A2:C9";
     private static final String RPI_MAC = "B8:27:EB:04:8B:94";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

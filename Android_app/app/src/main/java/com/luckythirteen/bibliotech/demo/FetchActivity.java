@@ -443,7 +443,6 @@ public class FetchActivity extends AppCompatActivity {
                         .show();
             }
         });
-
     }
 
 
@@ -483,11 +482,9 @@ public class FetchActivity extends AppCompatActivity {
                         .show();
             }
         });
-
     }
 
-    private void showScanResultPrompt(boolean found)
-    {
+    private void showScanResultPrompt(boolean found) {
         progressText.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         final String message = found ? getResources().getString(R.string.scanSuccess) : getResources().getString(R.string.scanFailed);
@@ -504,7 +501,6 @@ public class FetchActivity extends AppCompatActivity {
                             }
                         })
                         .show();
-
             }
         });
     }
@@ -525,7 +521,6 @@ public class FetchActivity extends AppCompatActivity {
         books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", "2,3", false));
 
         return books;
-
     }
 
     /**
@@ -579,11 +574,9 @@ public class FetchActivity extends AppCompatActivity {
                 authorLabel.setVisibility(View.INVISIBLE);
                 authorTextView.setVisibility(View.INVISIBLE);
                 btnGetBook.setVisibility(View.INVISIBLE);
-
                 helperText.setVisibility(View.VISIBLE);
                 helperArrow.setVisibility(View.VISIBLE);
                 helperArrow.startAnimation(arrowAnim);
-
                 chosenBook = null;
             }
         });
