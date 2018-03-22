@@ -2,6 +2,7 @@ import json
 import time
 
 from ev3dev import ev3
+from messages.server import Device
 
 import control
 
@@ -86,4 +87,4 @@ class Brick13(control.Brick):
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick13("brick 13")
+    brick = Brick13(Device.BRICK_13)

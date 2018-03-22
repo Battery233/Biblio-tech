@@ -1,6 +1,8 @@
 import json
 import time
 
+from messages.server import Device
+
 import control
 
 VERTICAL_SOCKET_1 = 0
@@ -120,4 +122,4 @@ class Brick33(control.Brick):
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick33("brick 33")
+    brick = Brick33(Device.BRICK_33)
