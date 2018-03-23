@@ -60,13 +60,9 @@ class Robot():
     RAILS_LENGTH = 705  # TODO: compute this again
 
     BOOK_WIDTH = 60
-    CELL_WIDTH = 210
-    END_CELL_OFFSET = 10
-    CELLS_START = [0, CELL_WIDTH, 0, CELL_WIDTH]  # Bottom level, left to right, top level, left to right
-    CELLS_END = [CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Bottom level, left cell
-                 2 * CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Bottom level, right cell
-                 CELL_WIDTH - BOOK_WIDTH - END_CELL_OFFSET,  # Top level, left cell
-                 500 - BOOK_WIDTH - END_CELL_OFFSET, 300]  # Top level, right cell
+    # (former) CELL_WIDTH = 210
+    CELL_WIDTH = 105
+    CELLS_PER_ROW = 4
 
     TOLERABLE_OFFSET = 5  # mm
 
@@ -98,7 +94,7 @@ class Robot():
         # Initialize robot's x_coordinate to 0 (TODO: get rid of this assumption?):
         self.current_x_coordinate = 0
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
-        self.bottom_row = True
+        self.current_shelf_level = 0
         self.aligned_to_book = None
         self.is_busy = False
 
@@ -121,65 +117,64 @@ class Robot():
         self.is_busy = False
         print('Ending action, freeing robot')
 
-    def reach_cell(self, cell, end_of_cell=False):
-        # Get the target x coordinate (the place where we want to move the robot)
+    def get_cell_x_coordinate(self, cell):
+        """
+        |  4  |  5  |  6  |  7  |
+        |-----------------------|
+        |  0  |  1  |  2  |  3  |
 
-        if end_of_cell:
-            target_x_coordinate = self.CELLS_END[cell]
-        else:
-            target_x_coordinate = self.CELLS_START[cell]
+        Get the index of that cell on its row and multiply by the width of a cell
+
+        """
+        cell %= self.CELLS_PER_ROW
+        return cell * self.CELL_WIDTH
+
+    def get_cell_shelf_level(self, cell):
+        # 0 for bottom level, 1 for top level
+        return cell / self.CELLS_PER_ROW
+
+    def reach_cell(self, cell):
+        # TODO: Implement message from brick to RPI to be sent when vertical movement is finished
+        # instead of waiting of hardcoded sleeping
+
+        # Get the target x coordinate (the place where we want to move the robot)
+        target_x_coordinate = self.get_cell_x_coordinate(cell)
 
         # Compute the offset with which the robot will be moved
-        # x_offset = target_x_coordinate - self.current_x_coordinate
         x_offset = self.current_x_coordinate - target_x_coordinate
 
-        if cell > 1 and self.bottom_row:
-            # If the index is in the second half, this cell is on the upper row...:)
-            print("Move the robot by " + str(x_offset))
-            if x_offset >= 0:
-                action = 'right'
-                distance = x_offset
-            else:
-                action = 'left'
-                distance = abs(x_offset)
-            args = {'move': distance}
+        target_shelf_level = self.get_cell_shelf_level(cell)
 
-            message = self.server.make_message(action, distance=distance)
-            self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
-
-            self.server.send_to_device(self.server.make_message('up'), BRICK_VERTICAL_MOVEMENT)
+        if target_shelf_level == 0 and self.current_shelf_level == 1:
+            # We are on the top row and want to reach some cell on the bottom row,
+            # so first we do the vertical movement before the horizontal one
+            self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
+            print("[reach_cell]: waiting for motor to free")
             time.sleep(8)
-            self.bottom_row = False
+            self.current_shelf_level = 0
 
-        elif cell <= 1 and not self.bottom_row:
-            message = '{"down":{}}'
-            self.server.send_to_device(message, BRICK_VERTICAL_MOVEMENT)
-            time.sleep(8)
-            self.bottom_row = True
+            self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset))
+        else:
+            # We are on either bottom or top row but here we always make horizontal movement first
+            self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset))
 
-            print("Move the robot by " + str(x_offset))
-            if x_offset >= 0:
-                action = 'right'
-                distance = x_offset
-            else:
-                action = 'left'
-                distance = abs(x_offset)
-            args = {'move': distance}
-
-            message = self.server.make_message(action, distance=distance)
-            self.server.send_to_device(message, BRICK_HORIZONTAL_MOVEMENT)
+            if self.current_shelf_level == 0 and target_shelf_level == 1:
+                # Now we do the vertical movement if we were on level 0 but want to reach level 1
+                self.server.send_to_device(self.server.make_message('up'), BRICK_VERTICAL_MOVEMENT)
+                print("[reach_cell]: waiting for motor to free")
+                time.sleep(8)
+                self.current_shelf_level = 1
 
         # Update the current x_coordinate to be the target coordinate as the robot is now there
         self.current_x_coordinate = target_x_coordinate
 
-        print("[reach_cell]: waiting for motor to free")
-        # TODO: Change this to wait for the brick's response instead of hardcoded sleeping
-        time.sleep(10)
-        # self.wait_for_motor(self.HORIZONTAL_MOTOR)
         print("[reach_cell]: action complete")
 
     # TODO: Interface motor ready and stop message with brick
     def scan_ISBN(self, ISBN):
+        # TODO: discuss about this as it is not clear to me how the robot regains its position from where
+        # it can grab the book
+
         print("Scanning for ISBN " + ISBN)
 
         self.scanning_over = False
@@ -201,32 +196,15 @@ class Robot():
         '''
 
         print("The received ISBN is " + str(ISBN))
+        cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
+        print("The book, according to the information I have in the DB, should be at cell " + str(cell))
 
-        # The received ISBN is a string so we make it an int
-        # TODO: this must be updated to properly retrieve the book's position from the database, not hardcoded.
-        end_of_cell = False
-        if int(ISBN) == WEALTH_OF_NATIONS_ISBN:
-            print("The searched book is Wealth of Nations")
-            # Need to reach the end of cell 0 (so the beginning of cell 1)
-            cell = 0
-            end_of_cell = False
-        elif int(ISBN) == THE_CASTLE_ISBN:
-            print("The searched book is The Castle")
-            # Need to reach the end of cell 1 (so the beginning of cell 2 - actually the end of the rails)
-            cell = 1
-            end_of_cell = False
-
-        else:
-            cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
-            end_of_cell = False
-
-        print(cell)
-
-        self.reach_cell(cell, end_of_cell)
+        # Now we actually move to that cell
+        self.reach_cell(cell)
 
         # TODO: current ignore wiggling and qr recognize on top shelf
         global IGNORE_QR_CODE
-        if self.bottom_row:
+        if self.current_shelf_level == 1:
             IGNORE_QR_CODE = False
         else:
             IGNORE_QR_CODE = True
