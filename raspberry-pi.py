@@ -258,7 +258,7 @@ class Robot:
             self.reach_cell(current_cell)
             self.scan_ISBN(full_scanning=True, cell=current_cell)
 
-        for cell in range(2 * self.CELLS_PER_ROW, 0, -1):
+        for cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
             self.reach_cell(current_cell - 1)
             self.scan_ISBN(full_scanning=True, cell=current_cell)
 
