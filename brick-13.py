@@ -32,9 +32,7 @@ class Brick13(Brick):
         print('Stop action set to: ' + self.stop_action)
 
     def move(self, distance, socket):
-        if not self.touch_sensor_left.connected or
-            not self.touch_sensor_right.connected:
-
+        if not self.touch_sensor_left.connected or not self.touch_sensor_right.connected:
             print('Refusing to move: unsafe without touch sensors')
             return
 
@@ -53,15 +51,15 @@ class Brick13(Brick):
             if self.touch_sensor_left.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached left edge! Stopping motors')
-                self.send_message(socket, MESSAGE_LEFT_EDGE)
+                self.send_message(socket, control.MESSAGE_LEFT_EDGE)
             if self.touch_sensor_right.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached right edge! Stopping motors')
-                self.send_message(socket, MESSAGE_RIGHT_EDGE)
+                self.send_message(socket, control.MESSAGE_RIGHT_EDGE)
 
             time.sleep(0.1)
 
-        self.send_message(socket, MESSAGE_SCAN_COMPLETE)
+        self.send_message(socket, control.MESSAGE_SCAN_COMPLETE)
 
     def parse_message(self, data, socket):
         print("Parse message: " + data)
