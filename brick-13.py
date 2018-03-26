@@ -18,6 +18,7 @@ TOUCH_SENSOR_RIGHT_ADDRESS = 'in2'
 # move the robot to the left end when start
 # make sure the touch sensor works or the whole thing will goes wrong
 MOVE_TO_INITIAL_POSITION = False
+START_FROM_LEFT = True
 
 ROBOT_LENGTH = 170
 RAILS_LENGTH = 705
@@ -38,13 +39,23 @@ class Brick13(Brick):
 
         print('Stop action set to: ' + self.stop_action)
 
-        if str(self.touch_sensor_left.connected):
-            if MOVE_TO_INITIAL_POSITION:
-                print("move to very left position in 1 second")
-                time.sleep(1)
-                self.move(RAILS_LENGTH - ROBOT_LENGTH, [HORIZONTAL_SOCKET])
+        if MOVE_TO_INITIAL_POSITION:
+            if START_FROM_LEFT:
+                if str(self.touch_sensor_left.connected):
+                    print("move to very left position in 1 second")
+                    time.sleep(1)
+                    self.move(ROBOT_LENGTH - RAILS_LENGTH, [HORIZONTAL_SOCKET])
+                else:
+                    print("Left touch sensor not ready")
             else:
-                print("Disabled moving to 0 position function")
+                if str(self.touch_sensor_right.connected):
+                    print("move to very right position in 1 second")
+                    time.sleep(1)
+                    self.move(RAILS_LENGTH - ROBOT_LENGTH , [HORIZONTAL_SOCKET])
+                else:
+                    print("Right touch sensor not ready")
+        else:
+            print("Disabled moving to 0 position function")
 
     def move(self, distance, socket):
         if not self.touch_sensor_left.connected or not self.touch_sensor_right.connected:
