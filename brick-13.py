@@ -32,11 +32,12 @@ class Brick13(Brick):
         print('Stop action set to: ' + self.stop_action)
 
     def move(self, distance, socket):
-        if not self.touch_sensor_left.connected or
-            not self.touch_sensor_right.connected:
+        if not self.touch_sensor_left.connected or not self.touch_sensor_right.connected:
 
             print('Refusing to move: unsafe without touch sensors')
             return
+
+        # TODO: send busy message to RPI
 
         motor = self.horizontal_motor
         if motor.connected:
@@ -48,20 +49,18 @@ class Brick13(Brick):
             print('Horizontal motor not connected. Cannot move')
 
         while not self.motor_ready(motor):
-            time.sleep(0.1)
-
             if self.touch_sensor_left.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached left edge! Stopping motors')
-                self.send_message(socket, MESSAGE_LEFT_EDGE)
+                self.send_message(socket, control.MESSAGE_LEFT_EDGE)
             if self.touch_sensor_right.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached right edge! Stopping motors')
-                self.send_message(socket, MESSAGE_RIGHT_EDGE)
+                self.send_message(socket, control.MESSAGE_RIGHT_EDGE)
 
             time.sleep(0.1)
 
-        self.send_message(socket, MESSAGE_SCAN_COMPLETE)
+        # TODO: send avaiable message to RPI
 
     def parse_message(self, data, socket):
         print("Parse message: " + data)
@@ -88,4 +87,4 @@ class Brick13(Brick):
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick13(Device.RPI)
+    brick = Brick13(Device.BRICK_13)

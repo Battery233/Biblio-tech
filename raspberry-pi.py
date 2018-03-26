@@ -13,11 +13,8 @@ BRICK_VERTICAL_MOVEMENT = Device.BRICK_33
 BRICK_HORIZONTAL_MOVEMENT = Device.BRICK_13
 BRICK_BOOK_FETCHING = Device.BRICK_33
 
-# FOR HARCODE:
+# FOR HARDCODE:
 IGNORE_QR_CODE = False
-
-WEALTH_OF_NATIONS_ISBN = 9781840226881
-THE_CASTLE_ISBN = 9780241197806
 
 DB_FILE = db.PRODUCTION_DB
 
@@ -99,6 +96,12 @@ class Robot():
         self.aligned_to_book = None
         self.is_busy = False
 
+        self.BRICK_AVAILABLE_STATE = 'available'
+        self.BRICK_BUSY_STATE = 'busy'
+
+        # Assume both bricks are available (i.e. none of their motors is moving)
+        self.BRICK_13_state = self.BRICK_AVAILABLE_STATE
+        self.BRICK_33_state = self.BRICK_AVAILABLE_STATE
 
         # Stop all motors
         self.stop_motors()
@@ -154,10 +157,12 @@ class Robot():
             time.sleep(8)
             self.current_shelf_level = 0
 
-            self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset))
+            self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset),
+                                       BRICK_HORIZONTAL_MOVEMENT)
         else:
             # We are on either bottom or top row but here we always make horizontal movement first
-            self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset))
+            self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset),
+                                       BRICK_HORIZONTAL_MOVEMENT)
 
             if self.current_shelf_level == 0 and target_shelf_level == 1:
                 # Now we do the vertical movement if we were on level 0 but want to reach level 1
@@ -172,20 +177,36 @@ class Robot():
         print("[reach_cell]: action complete")
 
     # TODO: Interface motor ready and stop message with brick
-    def scan_ISBN(self, ISBN):
-        # TODO: discuss about this as it is not clear to me how the robot regains its position from where
-        # it can grab the book
+    def scan_ISBN(self, target_ISBN=None, whole_scanning = False):
+        print("Scanning for ISBN " + target_ISBN)
 
-        print("Scanning for ISBN " + ISBN)
+        # Traverse the current cell and keep scanning while moving
+        self.server.send_to_device(self.server.make_message('horizontal', amount=self.CELL_WIDTH),
+                                   BRICK_HORIZONTAL_MOVEMENT)
 
-        self.scanning_over = False
-
-        while not self.scanning_over:
+        found_ISBN = None
+        while self.BRICK13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
-            if ISBN == decoded_ISBN and offset < self.TOLERABLE_OFFSET:
-                self.stop_motors()
-                return True
+            if decoded_ISBN is not None:
+                found_ISBN = decoded_ISBN
 
+        # Now the state of BRICK13 is 'available', it means horizontal movement has finished.
+        # So we have to move the brick back to the beginning of the cell. Keep scanning just to
+        # increase accuracy.
+
+        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH))
+        while self.BRICK13_state == 'busy':
+            decoded_ISBN, offset = vision.read_QR(self.camera)
+            if decoded_ISBN is not None:
+                found_ISBN = decoded_ISBN
+
+        if whole_scanning:
+            pass
+            # TODO: update database
+            return
+
+        if found_ISBN == target_ISBN:
+            return True
         return False
 
     @primary_action
@@ -325,6 +346,24 @@ class Robot():
             print('Could not perform vertical movement: already up or already down')
         elif command_type == 'scan_over':
             self.scanning_over = True
+
+        elif command_type == control.MESSAGE_AVAILABLE:
+            if len(command_args) != 1:
+                raise ValueError('Invalid arguments for MESSAGE_AVAILABLE')
+
+            if command_args['brick_id'] == Device.BRICK_13:
+                self.BRICK_13_state = self.BRICK_AVAILABLE_STATE
+            else:
+                self.BRICK_33_state = self.BRICK_AVAILABLE_STATE
+
+        elif command_type == control.MESSAGE_BUSY:
+            if len(command_args) != 1:
+                raise ValueError('Invalid arguments for MESSAGE_BUSY')
+            if command_args['brick_id'] == Device.BRICK_13:
+                self.BRICK_13_state = self.BRICK_BUSY_STATE
+            else:
+                self.BRICK_33_state = self.BRICK_BUSY_STATE
+
 
     def send_busy_message(self, socket):
         socket.send(self.MESSAGE_BUSY)
