@@ -33,7 +33,6 @@ class Brick13(Brick):
 
     def move(self, distance, socket):
         if not self.touch_sensor_left.connected or not self.touch_sensor_right.connected:
-
             print('Refusing to move: unsafe without touch sensors')
             return
 
