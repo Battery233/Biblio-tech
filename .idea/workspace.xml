@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6330549c-80d7-4f8c-be2c-3ff09755bfe8" name="Default" comment="Update">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/brick-13.py" afterPath="$PROJECT_DIR$/brick-13.py" />
+      <change beforePath="$PROJECT_DIR$/brick-33.py" afterPath="$PROJECT_DIR$/brick-33.py" />
+      <change beforePath="$PROJECT_DIR$/brick.py" afterPath="$PROJECT_DIR$/brick.py" />
+      <change beforePath="$PROJECT_DIR$/raspberry-pi.py" afterPath="$PROJECT_DIR$/raspberry-pi.py" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/httpRequests/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,13 +35,71 @@
     <favorites_list name="sdp-group13" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="brick-13.py" pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="brick-13.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/brick-13.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="3" column="11" lean-forward="false" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
+            <state relative-caret-position="570">
+              <caret line="46" column="61" lean-forward="false" selection-start-line="46" selection-start-column="61" selection-end-line="46" selection-end-column="61" />
+              <folding>
+                <element signature="e#24#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="brick-33.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/brick-33.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="631">
+              <caret line="123" column="15" lean-forward="false" selection-start-line="123" selection-start-column="15" selection-end-line="123" selection-end-column="15" />
+              <folding>
+                <element signature="e#24#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="control.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/control.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="1" column="11" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="17" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dev_mode.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dev_mode.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="151">
+              <caret line="238" column="0" lean-forward="false" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="raspberry-pi.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/raspberry-pi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3241">
+              <caret line="378" column="0" lean-forward="true" selection-start-line="378" selection-start-column="0" selection-end-line="378" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="brick.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/brick.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="883">
+              <caret line="108" column="20" lean-forward="false" selection-start-line="108" selection-start-column="20" selection-end-line="108" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -117,8 +177,9 @@
         <option value="$PROJECT_DIR$/control.py" />
         <option value="$PROJECT_DIR$/Android_app/build/android-profile/profile-2018-03-20-17-12-39-626.json" />
         <option value="$PROJECT_DIR$/raspberry-pi.py" />
-        <option value="$PROJECT_DIR$/brick-33.py" />
+        <option value="$PROJECT_DIR$/brick.py" />
         <option value="$PROJECT_DIR$/brick-13.py" />
+        <option value="$PROJECT_DIR$/brick-33.py" />
       </list>
     </option>
   </component>
@@ -169,7 +230,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -181,6 +241,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
@@ -350,10 +411,9 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26429343" sideWeight="0.5" order="18" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18991417" sideWeight="0.49622437" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19259657" sideWeight="0.49622437" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="20" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2360515" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28004292" sideWeight="0.5037756" order="7" side_tool="true" content_ui="tabs" />
@@ -370,6 +430,7 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -386,7 +447,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Robot_control/dev_mode.py" />
     <entry file="file://$PROJECT_DIR$/Robot_control/dev_mode.py" />
     <entry file="file://$PROJECT_DIR$/Robot_control/dev_mode.py" />
     <entry file="file://$PROJECT_DIR$/Robot_control/dev_mode.py" />
@@ -468,21 +528,6 @@
     <entry file="file://$PROJECT_DIR$/main_brick.py" />
     <entry file="file://$PROJECT_DIR$/ultrasonic.py" />
     <entry file="file://$PROJECT_DIR$/auxiliary_brick.py" />
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="-360">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/messages/client.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1350">
@@ -494,13 +539,6 @@
     <entry file="file://$PROJECT_DIR$/json_list.py" />
     <entry file="file://$PROJECT_DIR$/json_message_test.py" />
     <entry file="file://$PROJECT_DIR$/app_test.py" />
-    <entry file="file://$PROJECT_DIR$/dev_mode.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6870">
-          <caret line="238" column="0" lean-forward="false" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/messages/server.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5010">
@@ -513,24 +551,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="188">
           <caret line="127" column="2" lean-forward="false" selection-start-line="127" selection-start-column="2" selection-end-line="127" selection-end-column="2" />
-          <folding>
-            <marker date="1521561330228" expanded="true" signature="268:425" ph="CREATE TABLE... books" />
-            <marker date="1521561330228" expanded="true" signature="696:713" ph="DELETE FROM books... " />
-            <marker date="1521561330228" expanded="true" signature="883:1037" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="1064:1200" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="1218:1317" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="1344:1449" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="1476:1579" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="1606:1735" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="1902:2026" ph="INSERT INTO books... " />
-            <marker date="1521561330228" expanded="true" signature="2175:2194" ph="SELECT * FRO... books" />
-            <marker date="1521561330228" expanded="true" signature="2422:2478" ph="UPDATE books... " />
-            <marker date="1521561330228" expanded="true" signature="2637:2689" ph="UPDATE books... " />
-            <marker date="1521561330228" expanded="true" signature="2863:2902" ph="SELECT posit... books" />
-            <marker date="1521561330228" expanded="true" signature="3237:3277" ph="SELECT posit... books" />
-            <marker date="1521561330228" expanded="true" signature="3503:3536" ph="SELECT title... books" />
-            <marker date="1521561330228" expanded="true" signature="3729:3765" ph="SELECT ISBN books" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -558,29 +579,96 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/raspberry-pi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="58" column="26" lean-forward="false" selection-start-line="58" selection-start-column="26" selection-end-line="58" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#11#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="-4283">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding>
+              <marker date="1522063598679" expanded="true" signature="532:696" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="698:820" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="711:818" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="768:813" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="822:906" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="907:991" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="921:989" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="938:983" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="993:1057" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="1059:1118" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1077:1116" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1120:1187" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="1189:1248" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1207:1246" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1250:1360" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="1361:1420" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1379:1418" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1422:1495" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="1496:1551" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1512:1549" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1553:1665" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="1666:1753" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1755:1901" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="1902:2287" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="1919:2285" ph="[...]" />
+              <marker date="1522063598679" expanded="true" signature="1929:2096" ph="{&quot;ISBN&quot;: &quot;9780241197806&quot;...}" />
+              <marker date="1522063598679" expanded="true" signature="2106:2279" ph="{&quot;ISBN&quot;: &quot;9781840226881&quot;...}" />
+              <marker date="1522063598679" expanded="true" signature="2289:2384" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="2385:2437" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2402:2435" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2439:2518" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="2519:2541" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2561:2575" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2596:2612" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2614:2728" ph="//..." />
+              <marker date="1522063598679" expanded="true" signature="2729:2793" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2746:2791" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2836:2856" ph="{...}" />
+              <marker date="1522063598679" expanded="true" signature="2881:2931" ph="{...}" />
+            </folding>
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="-360">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/brick.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="883">
+          <caret line="108" column="20" lean-forward="false" selection-start-line="108" selection-start-column="20" selection-end-line="108" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/brick-13.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="46" column="61" lean-forward="false" selection-start-line="46" selection-start-column="61" selection-end-line="46" selection-end-column="61" />
+          <folding>
+            <element signature="e#24#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/brick-33.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="8" column="7" lean-forward="true" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
-          <folding />
+        <state relative-caret-position="631">
+          <caret line="123" column="15" lean-forward="false" selection-start-line="123" selection-start-column="15" selection-end-line="123" selection-end-column="15" />
+          <folding>
+            <element signature="e#24#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -592,11 +680,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/brick-13.py">
+    <entry file="file://$PROJECT_DIR$/dev_mode.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="3" column="11" lean-forward="false" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
+        <state relative-caret-position="151">
+          <caret line="238" column="0" lean-forward="false" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/raspberry-pi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3241">
+          <caret line="378" column="0" lean-forward="true" selection-start-line="378" selection-start-column="0" selection-end-line="378" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

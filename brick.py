@@ -105,8 +105,8 @@ class Brick:
         elif isinstance(letter, int):
             return letter
         else:
+            print("Set value to default A: value 0")
             return 0
-
 
     def wait_for_motor(self, motor):
         # Make sure that motor has time to start
