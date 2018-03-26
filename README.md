@@ -148,7 +148,11 @@ All arguments are optional.
    "position": 0
 }
 
-
+//Hit the touch sensor
+{
+   'left_edge_reached'
+   'right_edge_reached'
+}
 
 ```
 
