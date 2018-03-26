@@ -177,7 +177,7 @@ class Robot():
         print("[reach_cell]: action complete")
 
     # TODO: Interface motor ready and stop message with brick
-    def scan_ISBN(self, target_ISBN=None, whole_scanning = False):
+    def scan_ISBN(self, target_ISBN=None, full_scanning = False, cell=None):
         print("Scanning for ISBN " + target_ISBN)
 
         # Traverse the current cell and keep scanning while moving
@@ -200,9 +200,8 @@ class Robot():
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
 
-        if whole_scanning:
-            pass
-            # TODO: update database
+        if full_scanning:
+            db.update_book_position(DB_FILE, found_ISBN, cell)
             return
 
         if found_ISBN == target_ISBN:
@@ -220,6 +219,12 @@ class Robot():
         print("The received ISBN is " + str(ISBN))
         cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
         print("The book, according to the information I have in the DB, should be at cell " + str(cell))
+
+        if cell == -1:
+            # TODO: discuss if this is good for the user
+            # Position -1 means the book is not in the shelf (at least according to the robot's belief)
+            socket.send(self.MESSAGE_MISSING_BOOK)
+            return
 
         # Now we actually move to that cell
         self.reach_cell(cell)
@@ -241,9 +246,19 @@ class Robot():
 
     @primary_action
     @disruptive_action
-    def full_scan(self, socket, ISBN):
-        # TODO: A LOT
-        pass
+    def full_scan(self):
+        all_ISBNs = db.get_all_ISBNs(DB_FILE)
+        for ISBN in all_ISBNs:
+            # Assume the none of the books is in the shelf
+            db.update_book_position(DB_FILE, ISBN, -1)
+
+        for current_cell in range(0, self.CELLS_PER_ROW):
+            self.reach_cell(current_cell)
+            self.scan_ISBN(full_scanning=True, cell=current_cell)
+
+        for cell in range(2 * self.CELLS_PER_ROW, 0, -1):
+            self.reach_cell(current_cell - 1)
+            self.scan_ISBN(full_scanning=True, cell=current_cell)
 
     def stop_motors(self, ports=None):
         # Currrently, ignores the 'ports' argument for simplicity

@@ -156,6 +156,19 @@ def get_all_titles_and_positions(db):
     return books
 
 
+def get_all_ISBNs(db):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    c.execute('SELECT ISBN FROM books')
+
+    ISBNs = c.fetchall();
+
+    conn.close()
+
+    return ISBNs
+
+
 def get_ISBN_by_title(db, title):
     conn = sqlite3.connect(db)
     c = conn.cursor()
