@@ -121,7 +121,8 @@ class Brick33(Brick):
         print("move last motor")
         self.rotate_motor([FINGER_SOCKET], FINGER_RETRACTION_SPEED, FINGER_TIME)
 
-        # TODO: send available message to RPI
+        # TODO : send available message to RPI
+
 
 if __name__ == '__main__':
     # Initialize brick

@@ -53,9 +53,11 @@ def disruptive_action(action):
     return break_get_book_flow
 
 
-class Robot():
-    ROBOT_LENGTH = 170  # TODO: compute this again
-    RAILS_LENGTH = 705  # TODO: compute this again
+class Robot:
+    # TODO: compute these again
+    ROBOT_LENGTH = 170
+    RAILS_LENGTH = 705
+    ROBOT_RIGHT_COORDINATE = RAILS_LENGTH - ROBOT_LENGTH
 
     BOOK_WIDTH = 60
     # (former) CELL_WIDTH = 210
@@ -379,6 +381,16 @@ class Robot():
             else:
                 self.BRICK_33_state = self.BRICK_BUSY_STATE
 
+        elif command_type == control.MESSAGE_LEFT_EDGE:
+            print("Hit the left touch sensor")
+            self.current_x_coordinate = 0
+
+        elif command_type == control.MESSAGE_RIGHT_EDGE:
+            print("Hit the right touch sensor")
+            self.current_x_coordinate = self.ROBOT_RIGHT_COORDINATE
+
+        else:
+            print("unknown message")
 
     def send_busy_message(self, socket):
         socket.send(self.MESSAGE_BUSY)
