@@ -118,15 +118,11 @@ All arguments are optional.
 
 // RASPBERRY PI TO bricks
 
-// Move robot to the left of given amount in mm
+// Move robot to horizontally the given amount in mm
 {
-  "left": 10
+  "horizontal": 10
 }
 
-// Move robot to the right of given amount in mm
-{
-  "right": 10
-}
 
 // Move robot up
 {

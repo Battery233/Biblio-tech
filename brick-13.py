@@ -6,6 +6,7 @@ import time
 from ev3dev import ev3
 from messages.server import Device
 
+from brick import Brick
 import control
 
 HORIZONTAL_SOCKET = 0
@@ -14,10 +15,8 @@ HORIZONTAL_SPEED = 360
 TOUCH_SENSOR_LEFT_ADDRESS = 'in1'
 TOUCH_SENSOR_RIGHT_ADDRESS = 'in2'
 
-MESSAGE_SCAN_COMPLETE = 'scan_over'
 
-
-class Brick13(control.Brick):
+class Brick13(Brick):
 
     def __init__(self, brick_id):
         super().__init__(brick_id)
@@ -32,9 +31,11 @@ class Brick13(control.Brick):
 
         print('Stop action set to: ' + self.stop_action)
 
-    def move(self, distance, touch_sensor, socket):
-        if not touch_sensor.connected:
-            print('Refusing to move: unsafe without touch sensor')
+    def move(self, distance, socket):
+        if not self.touch_sensor_left.connected or
+            not self.touch_sensor_right.connected:
+
+            print('Refusing to move: unsafe without touch sensors')
             return
 
         motor = self.horizontal_motor
@@ -49,18 +50,18 @@ class Brick13(control.Brick):
         while not self.motor_ready(motor):
             time.sleep(0.1)
 
-            if touch_sensor.is_pressed:
+            if self.touch_sensor_left.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
-                print('Reached edge! Stopping motors')
-                time.sleep(0.1)
+                print('Reached left edge! Stopping motors')
+                self.send_message(socket, MESSAGE_LEFT_EDGE)
+            if self.touch_sensor_right.is_pressed:
+                self.stop_motors([HORIZONTAL_SOCKET])
+                print('Reached right edge! Stopping motors')
+                self.send_message(socket, MESSAGE_RIGHT_EDGE)
+
+            time.sleep(0.1)
 
         self.send_message(socket, MESSAGE_SCAN_COMPLETE)
-
-    def move_left(self, distance, socket):
-        self.move(-distance, self.touch_sensor_left, socket)
-
-    def move_right(self, distance, socket):
-        self.move(distance, self.touch_sensor_right, socket)
 
     def parse_message(self, data, socket):
         print("Parse message: " + data)
@@ -70,12 +71,10 @@ class Brick13(control.Brick):
         command_type = list(json_command.keys())[0]
         command_args = json_command[command_type]
 
-        if (command_type == 'left' and len(command_args) == 1 and
+        if (command_type == 'horizontal' and len(command_args) == 1 and
                 'distance' in command_args.keys()):
-            self.move_left(command_args['distance'], socket)
+            self.move(command_args['distance'], socket)
 
-        elif command_type == 'right' and len(command_args) == 1 and 'distance' in command_args.keys():
-            self.move_right(command_args['distance'], socket)
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
                 self.stop_motors(command_args['ports'])

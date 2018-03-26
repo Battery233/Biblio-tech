@@ -5,6 +5,7 @@ import time
 
 from messages.server import Device
 
+from brick import Brick
 import control
 
 VERTICAL_SOCKET_1 = 0
@@ -24,7 +25,7 @@ FINGER_EXTENSION_SPEED = 90
 FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
 
-class Brick33(control.Brick):
+class Brick33(Brick):
 
     def __init__(self, brick_id):
         super().__init__(brick_id)

@@ -5,6 +5,7 @@ from threading import Thread
 
 import db.main as db
 import vision.main as vision
+import control
 from messages import server
 from messages.server import Device
 
@@ -98,7 +99,7 @@ class Robot():
         self.aligned_to_book = None
         self.is_busy = False
 
-        
+
         # Stop all motors
         self.stop_motors()
 
