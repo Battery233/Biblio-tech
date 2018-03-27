@@ -196,7 +196,7 @@ class Robot:
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
-        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH))
+        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH), BRICK_HORIZONTAL_MOVEMENT)
         while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
@@ -246,7 +246,7 @@ class Robot:
             IGNORE_QR_CODE = False
         else:
             IGNORE_QR_CODE = False
-        IGNORE_QR_CODE = True
+        IGNORE_QR_CODE = False
         print("Ignore QR code? : " + str(IGNORE_QR_CODE))
         # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
