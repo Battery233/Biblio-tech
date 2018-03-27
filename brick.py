@@ -30,7 +30,8 @@ class Brick:
         if body is not None:
             message = {title: body}
         else:
-            message = {'message': {"content": title}}
+            message = {title: { } }
+            # message = {'message': {"content": title}}
 
         print("sending message: " + json.dumps(message))
         socket.send(json.dumps(message))
