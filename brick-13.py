@@ -118,4 +118,4 @@ class Brick13(Brick):
 
 if __name__ == '__main__':
     # Initialize brick
-    brick = Brick13(Device.BRICK_13)
+    brick = Brick13(Device.RPI)
