@@ -91,8 +91,7 @@ class Robot:
             time.sleep(5)
             print('Waiting for bricks to be connected')
 
-        # Initialize robot's x_coordinate to 0 (TODO: get rid of this assumption?):
-        self.current_x_coordinate = 0
+        self.reset_position()
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
         self.current_shelf_level = 0
         self.aligned_to_book = None
@@ -134,6 +133,12 @@ class Robot:
         """
         cell %= self.CELLS_PER_ROW
         return cell * self.CELL_WIDTH
+
+    def reset_position(self):
+        self.server.send_to_device(
+            self.server.make_message(control.MESSAGE_RESET_POSITION),
+            BRICK_HORIZONTAL_MOVEMENT
+        )
 
     def get_cell_shelf_level(self, cell):
         # 0 for bottom level, 1 for top level
@@ -187,7 +192,7 @@ class Robot:
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         found_ISBN = None
-        while self.BRICK13_state == 'busy':
+        while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
@@ -196,8 +201,8 @@ class Robot:
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
-        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH))
-        while self.BRICK13_state == 'busy':
+        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH), BRICK_HORIZONTAL_MOVEMENT)
+        while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
@@ -209,6 +214,15 @@ class Robot:
         if found_ISBN == target_ISBN:
             return True
         return False
+
+    def send_message(self, socket, title, body=None):
+        if body is not None:
+            message = {title: body}
+        else:
+            message = {'message': {"content": title}}
+            # message = {title: { } }
+            print("sending message: " + json.dumps(message))
+            socket.send(json.dumps(message))
 
     @primary_action
     @disruptive_action
@@ -236,15 +250,16 @@ class Robot:
         if self.current_shelf_level == 1:
             IGNORE_QR_CODE = False
         else:
-            IGNORE_QR_CODE = True
+            IGNORE_QR_CODE = False
+        IGNORE_QR_CODE = False
         print("Ignore QR code? : " + str(IGNORE_QR_CODE))
         # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
             self.aligned_to_book = ISBN
             print("[FindBook] sending message: book found")
-            socket.send(self.MESSAGE_FOUND_BOOK)
+            self.send_message(socket, self.MESSAGE_FOUND_BOOK)
         else:
-            socket.send(self.MESSAGE_MISSING_BOOK)
+            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
 
     @primary_action
     @disruptive_action
