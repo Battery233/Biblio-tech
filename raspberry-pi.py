@@ -91,12 +91,14 @@ class Robot:
             time.sleep(5)
             print('Waiting for bricks to be connected')
 
+        # Move the robot at the beginning of first cell
         self.reset_position()
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
         self.current_shelf_level = 0
         self.aligned_to_book = None
         self.is_busy = False
 
+        self.current_x_coordinate = 0
         self.BRICK_AVAILABLE_STATE = 'available'
         self.BRICK_BUSY_STATE = 'busy'
 
@@ -106,9 +108,7 @@ class Robot:
 
         # Stop all motors
         self.stop_motors()
-
-        # Move the robot at the beginning of first cell
-        self.reach_cell(0)
+        time.sleep(0.1)
 
     def wait(self):
         if self.is_busy:
