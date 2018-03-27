@@ -91,8 +91,7 @@ class Robot:
             time.sleep(5)
             print('Waiting for bricks to be connected')
 
-        # Initialize robot's x_coordinate to 0 (TODO: get rid of this assumption?):
-        self.current_x_coordinate = 0
+        self.reset_position()
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
         self.current_shelf_level = 0
         self.aligned_to_book = None
@@ -134,6 +133,12 @@ class Robot:
         """
         cell %= self.CELLS_PER_ROW
         return cell * self.CELL_WIDTH
+
+    def reset_position(self):
+        self.server.send_to_device(
+            self.server.make_message(control.MESSAGE_RESET_POSITION),
+            BRICK_HORIZONTAL_MOVEMENT
+        )
 
     def get_cell_shelf_level(self, cell):
         # 0 for bottom level, 1 for top level

@@ -93,6 +93,9 @@ class Brick13(Brick):
 
         # TODO: send available message to RPI
 
+    def reset_position(self):
+        self.move(-200000)
+
     def parse_message(self, data, socket):
         print("Parse message: " + data)
 
@@ -112,6 +115,8 @@ class Brick13(Brick):
                 self.stop_motors()
             else:
                 raise ValueError('Invalid stop command')
+        elif command_type == control.MESSAGE_RESET_POSITION and len(command_args) == 0:
+            self.reset_position()
         else:
             raise ValueError('Invalid command')
 
