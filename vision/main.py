@@ -83,6 +83,7 @@ def decode_QR(filename):
     position = symbol.position
 
     # find corners
+    """
     a, b, c, d = position
 
     # compute center of mass: sum coordinates element-wise and divide by 4
@@ -100,6 +101,7 @@ def decode_QR(filename):
 
     # TODO convert to mm
     # offset = int(offset * pix_mm_rate)
+    """
     offset = 0
 
     return data, offset

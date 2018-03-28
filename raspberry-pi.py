@@ -192,6 +192,7 @@ class Robot:
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         found_ISBN = None
+        print('scanning ISBN...current state of BRICK 13' + str(self.BRICK_13_state))
         while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
@@ -201,11 +202,14 @@ class Robot:
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
+        time.sleep(0.5)
+        print('scanning ISBN...current state of BRICK 13' + str(self.BRICK_13_state))
         self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH), BRICK_HORIZONTAL_MOVEMENT)
         while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
+        print('scanning ISBN...current state of BRICK 13' + str(self.BRICK_13_state))
 
         if full_scanning:
             db.update_book_position(DB_FILE, found_ISBN, cell)
@@ -383,7 +387,7 @@ class Robot:
             if len(command_args) != 1:
                 raise ValueError('Invalid arguments for MESSAGE_AVAILABLE')
 
-            if command_args['brick_id'] == Device.BRICK_13:
+            if command_args['brick_id'] == Device.BRICK_13.value:
                 self.BRICK_13_state = self.BRICK_AVAILABLE_STATE
             else:
                 self.BRICK_33_state = self.BRICK_AVAILABLE_STATE
@@ -391,7 +395,10 @@ class Robot:
         elif command_type == control.MESSAGE_BUSY:
             if len(command_args) != 1:
                 raise ValueError('Invalid arguments for MESSAGE_BUSY')
-            if command_args['brick_id'] == Device.BRICK_13:
+            print('Value of "brick_id":' + str(command_args['brick_id']))
+            print('Value of Device.BRICK_13:' + str(Device.BRICK_13))
+            print('Value of Device.BRICK_13.value:' + str(Device.BRICK_13.value))
+            if command_args['brick_id'] == Device.BRICK_13.value:
                 self.BRICK_13_state = self.BRICK_BUSY_STATE
             else:
                 self.BRICK_33_state = self.BRICK_BUSY_STATE
