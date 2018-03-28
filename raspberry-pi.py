@@ -45,7 +45,7 @@ def primary_action(action):
 def disruptive_action(action):
     def break_get_book_flow(self, socket, *args, **kwargs):
         # Break the flow of findBook - takeBook. Sorry user, too slow
-        #self.state['alignedToBook'] = None
+        # self.state['alignedToBook'] = None
         self.aligned_to_book = None
 
         action(self, socket, *args, **kwargs)
@@ -188,7 +188,7 @@ class Robot:
         print("[reach_cell]: action complete")
 
     # TODO: Interface motor ready and stop message with brick
-    def scan_ISBN(self, target_ISBN=None, full_scanning = False, cell=None):
+    def scan_ISBN(self, target_ISBN=None, full_scanning=False, cell=None):
         if target_ISBN is None:
             print('Scanning for any ISBN that might be at cell = ' + str(cell))
         else:
@@ -211,6 +211,7 @@ class Robot:
                 found_ISBN = decoded_ISBN
 
         # Now the state of BRICK13 is 'available', it means horizontal movement has finished.
+        # Now the state of BRICK13 is 'available', it means horizontal movement has finished.
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
@@ -230,9 +231,13 @@ class Robot:
         # Give breathing time to the brick
         time.sleep(1)
         if full_scanning:
-            # TODO: change the DB function(s) to take anything and then convert to str
             if found_ISBN is not None:
-                db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
+                # noinspection PyBroadException
+                try:
+                    db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
+                except:
+                    db.add_book(DB_FILE, str(found_ISBN), "", "", str(cell), db.STATUS_AVAILABLE)
+                    print("Unknown book found, add ISBN to db")
             return
 
         if found_ISBN == target_ISBN:
@@ -251,10 +256,10 @@ class Robot:
     @primary_action
     @disruptive_action
     def find_book(self, socket, ISBN):
-        '''
+        """
         Move the robot at the position of the book having the title received
         as an argument.
-        '''
+        """
 
         print("The received ISBN is " + str(ISBN))
         cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
@@ -315,7 +320,8 @@ class Robot:
         self.reach_cell(0)
 
     def stop_motors(self, ports=None):
-        # Currrently, ignores the 'ports' argument for simplicity
+        # TODO: do we need add sth about stopping a specific motor?
+        # Currently, ignores the 'ports' argument for simplicity
         message = self.server.make_message('stop')
         self.server.send_to_device(message, Device.BRICK_33)
         self.server.send_to_device(message, Device.BRICK_13)

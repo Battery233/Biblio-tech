@@ -22,12 +22,13 @@ def create_book_table(db):
     conn.close()
 
 
+# noinspection PyBroadException
 def flush_db(db):
     # Physically remove db file
     try:
         os.remove(db)
     except:
-        pass
+        print("Exception in flush_db: failed to remove db")
 
 
 def clear_books(db):
@@ -45,9 +46,10 @@ def add_sample_books(db):
     conn = sqlite3.connect(db)
     c = conn.cursor()
 
-    # Insert sample data
+    # Insert library data
     c.execute(
-        "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives', 'Brian Clegg', '2'," + STATUS_AVAILABLE + ")")
+        "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives',"
+        " 'Brian Clegg', '2'," + STATUS_AVAILABLE + ")")
     c.execute(
         "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '2',"
         + STATUS_AVAILABLE + ")")
@@ -64,10 +66,14 @@ def add_sample_books(db):
     conn.close()
 
 
-def add_book(db, ISBN, title, author, position, status):
+def add_book(db, ISBN_all_type, title_all_type, author_all_type, position_all_type, status_all_type):
     conn = sqlite3.connect(db)
     c = conn.cursor()
-
+    ISBN = str(ISBN_all_type)
+    title = str(title_all_type)
+    author = str(author_all_type)
+    position = str(position_all_type)
+    status = str(status_all_type)
     c.execute("INSERT INTO books VALUES (" +
               ISBN + ", '" + title + "', '" + author + "', '" + position + "', " + status + ")")
 
@@ -149,7 +155,7 @@ def get_all_titles_and_positions(db):
 
     c.execute('SELECT title, position FROM books')
 
-    books = c.fetchall();
+    books = c.fetchall()
 
     conn.close()
 
@@ -162,7 +168,7 @@ def get_all_ISBNs(db):
 
     c.execute('SELECT ISBN FROM books')
 
-    ISBNs = c.fetchall();
+    ISBNs = c.fetchall()
 
     conn.close()
 

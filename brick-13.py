@@ -11,7 +11,7 @@ import control
 
 HORIZONTAL_SOCKET = 0
 HORIZONTAL_SPEED = 360
-HORIZONTAL_SPEED_FOR_SCANNING = 90 # TODO: change the code to actually use this
+HORIZONTAL_SPEED_FOR_SCANNING = 90  # TODO: change the code to actually use this
 
 TOUCH_SENSOR_LEFT_ADDRESS = 'in1'
 TOUCH_SENSOR_RIGHT_ADDRESS = 'in2'
@@ -55,11 +55,15 @@ class Brick13(Brick):
                     print("move to very right position in 1 second")
                     time.sleep(1)
                     self.move(RAILS_LENGTH - ROBOT_LENGTH, [HORIZONTAL_SOCKET])
+                    print("get the position,set the position value to " + str(RAILS_LENGTH - ROBOT_LENGTH))
                     # make sure it will stop
                     self.stop_motors([HORIZONTAL_SOCKET])
 
+                elif str(self.touch_sensor_left.connected):
+                    print("Only left touch sensor is connected")
+
                 else:
-                    print("Right touch sensor not ready")
+                    print("None of the  touch sensors are ready")
 
         else:
             print("Disabled moving to 0 position function")
