@@ -275,11 +275,19 @@ class Robot:
             db.update_book_position(DB_FILE, ISBN, -1)
 
         for current_cell in range(0, self.CELLS_PER_ROW):
+            while self.BRICK_13_state == 'busy':
+                time.sleep(0.1)
             self.reach_cell(current_cell)
+            while self.BRICK_13_state == 'busy':
+                time.sleep(0.1)
             self.scan_ISBN(full_scanning=True, cell=current_cell)
 
         for cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
+            while self.BRICK_13_state == 'busy':
+                time.sleep(0.1)
             self.reach_cell(current_cell - 1)
+            while self.BRICK_13_state == 'busy':
+                time.sleep(0.1)
             self.scan_ISBN(full_scanning=True, cell=current_cell)
 
     def stop_motors(self, ports=None):
