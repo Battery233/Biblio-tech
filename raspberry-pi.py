@@ -268,7 +268,7 @@ class Robot:
 
     @primary_action
     @disruptive_action
-    def full_scan(self):
+    def full_scan(self, socket=None, *args=None, **kwargs=None):
         all_ISBNs = db.get_all_ISBNs(DB_FILE)
         for ISBN in all_ISBNs:
             # Assume the none of the books is in the shelf
