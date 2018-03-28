@@ -123,7 +123,7 @@ class Brick33(Brick):
         print("move last motor")
         self.rotate_motor([FINGER_SOCKET], FINGER_RETRACTION_SPEED, FINGER_TIME)
 
-        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})
+        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
 
 
 if __name__ == '__main__':

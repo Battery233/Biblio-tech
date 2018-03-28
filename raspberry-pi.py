@@ -143,7 +143,7 @@ class Robot:
 
     def get_cell_shelf_level(self, cell):
         # 0 for bottom level, 1 for top level
-        return cell / self.CELLS_PER_ROW
+        return int(cell / self.CELLS_PER_ROW)
 
     def reach_cell(self, cell):
         # TODO: Implement message from brick to RPI to be sent when vertical movement is finished
@@ -156,6 +156,9 @@ class Robot:
         x_offset = self.current_x_coordinate - target_x_coordinate
 
         target_shelf_level = self.get_cell_shelf_level(cell)
+
+        print(' --- To reach cell ' + str(cell) + ', we need to go to shelf level ' + str(target_shelf_level) +
+              ' (now we are at level ' + str(self.current_shelf_level))
 
         if target_shelf_level == 0 and self.current_shelf_level == 1:
             # We are on the top row and want to reach some cell on the bottom row,
@@ -186,14 +189,22 @@ class Robot:
 
     # TODO: Interface motor ready and stop message with brick
     def scan_ISBN(self, target_ISBN=None, full_scanning = False, cell=None):
-        print("Scanning for ISBN " + target_ISBN)
+        if target_ISBN is None:
+            print('Scanning for any ISBN that might be at cell = ' + str(cell))
+        else:
+            print("Scanning for ISBN " + target_ISBN)
+
+        # Give breathing time to the brick
+        time.sleep(1)
 
         # Traverse the current cell and keep scanning while moving
         self.server.send_to_device(self.server.make_message('horizontal', amount=self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
+        # Give time to the brick to process the message
+        time.sleep(1)
 
         found_ISBN = None
-        print('scanning ISBN...current state of BRICK 13' + str(self.BRICK_13_state))
+        print('scanning ISBN...current state of BRICK 13 (1) ' + str(self.BRICK_13_state))
         while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
@@ -203,17 +214,25 @@ class Robot:
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
-        time.sleep(0.5)
-        print('scanning ISBN...current state of BRICK 13' + str(self.BRICK_13_state))
-        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH), BRICK_HORIZONTAL_MOVEMENT)
+        time.sleep(1)
+        print('scanning ISBN...current state of BRICK 13 (2) ' + str(self.BRICK_13_state))
+        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH),
+                                   BRICK_HORIZONTAL_MOVEMENT)
+        # Give time to the brick to process the message
+        time.sleep(1)
+
         while self.BRICK_13_state == 'busy':
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
-        print('scanning ISBN...current state of BRICK 13' + str(self.BRICK_13_state))
+        print('scanning ISBN...current state of BRICK 13 (3) ' + str(self.BRICK_13_state))
 
+        # Give breathing time to the brick
+        time.sleep(1)
         if full_scanning:
-            db.update_book_position(DB_FILE, found_ISBN, cell)
+            # TODO: change the DB function(s) to take anything and then convert to str
+            if found_ISBN is not None:
+                db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
             return
 
         if found_ISBN == target_ISBN:
@@ -268,11 +287,13 @@ class Robot:
 
     @primary_action
     @disruptive_action
-    def full_scan(self, socket=None, *args=None, **kwargs=None):
+    def full_scan(self, socket=None, *args, **kwargs):
         all_ISBNs = db.get_all_ISBNs(DB_FILE)
-        for ISBN in all_ISBNs:
+        for item in all_ISBNs:
+            ISBN = str(item[0])
+            print('Current ISBN: ' + str(ISBN) + ' type = ' + str(type(ISBN)))
             # Assume the none of the books is in the shelf
-            db.update_book_position(DB_FILE, ISBN, -1)
+            db.update_book_position(DB_FILE, ISBN, '-1')
 
         for current_cell in range(0, self.CELLS_PER_ROW):
             while self.BRICK_13_state == 'busy':
@@ -282,13 +303,16 @@ class Robot:
                 time.sleep(0.1)
             self.scan_ISBN(full_scanning=True, cell=current_cell)
 
-        for cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
+        for current_cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
             while self.BRICK_13_state == 'busy':
                 time.sleep(0.1)
             self.reach_cell(current_cell - 1)
             while self.BRICK_13_state == 'busy':
                 time.sleep(0.1)
-            self.scan_ISBN(full_scanning=True, cell=current_cell)
+            self.scan_ISBN(full_scanning=True, cell=current_cell - 1)
+
+        # Return to cell 0
+        self.reach_cell(0)
 
     def stop_motors(self, ports=None):
         # Currrently, ignores the 'ports' argument for simplicity
@@ -404,9 +428,6 @@ class Robot:
         elif command_type == control.MESSAGE_BUSY:
             if len(command_args) != 1:
                 raise ValueError('Invalid arguments for MESSAGE_BUSY')
-            print('Value of "brick_id":' + str(command_args['brick_id']))
-            print('Value of Device.BRICK_13:' + str(Device.BRICK_13))
-            print('Value of Device.BRICK_13.value:' + str(Device.BRICK_13.value))
             if command_args['brick_id'] == Device.BRICK_13.value:
                 self.BRICK_13_state = self.BRICK_BUSY_STATE
             else:
