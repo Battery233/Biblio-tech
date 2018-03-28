@@ -63,9 +63,8 @@ class BluetoothClient:
                 break
 
             data = data.decode("UTF-8")
-            self.callback(data, sock)
-
             print('Received: ' + str(data))
+            self.callback(data, sock)
 
     def send_message(self, data):
         self.sock.send(data)

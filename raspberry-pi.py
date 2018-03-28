@@ -87,9 +87,10 @@ class Robot:
         # Turn camera on and get it as object
         self.camera = vision.activate_camera()
 
+        print('Waiting for bricks to be connected...')
+
         while not self.server.bricks_connected():
-            time.sleep(5)
-            print('Waiting for bricks to be connected')
+            time.sleep(1)
 
         # Move the robot at the beginning of first cell
         self.reset_position()
