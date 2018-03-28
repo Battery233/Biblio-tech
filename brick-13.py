@@ -68,7 +68,7 @@ class Brick13(Brick):
             print('Refusing to move: unsafe without touch sensors')
             return
 
-        # TODO: send busy message to RPI
+        self.send_message(socket, control.MESSAGE_BUSY, {'brick_id': Device.BRICK_13.value})
 
         motor = self.horizontal_motor
         if motor.connected:
@@ -86,17 +86,17 @@ class Brick13(Brick):
                 print('Reached left edge! Stopping motors')
                 self.send_message(socket, control.MESSAGE_LEFT_EDGE)
             # Similarly, we only care about the right sensor if we're moving right
-            if distance < 0 self.touch_sensor_right.is_pressed:
+            if distance < 0 and self.touch_sensor_right.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached right edge! Stopping motors')
                 self.send_message(socket, control.MESSAGE_RIGHT_EDGE)
 
             time.sleep(0.1)
 
-        # TODO: send available message to RPI
+        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})
 
-    def reset_position(self):
-        self.move(-200000)
+    def reset_position(self, socket):
+        self.move(200000, socket)
 
     def parse_message(self, data, socket):
         print("Parse message: " + data)
@@ -118,7 +118,7 @@ class Brick13(Brick):
             else:
                 raise ValueError('Invalid stop command')
         elif command_type == control.MESSAGE_RESET_POSITION and len(command_args) == 0:
-            self.reset_position()
+            self.reset_position(socket)
         else:
             raise ValueError('Invalid command')
 
