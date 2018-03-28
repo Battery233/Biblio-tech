@@ -5,7 +5,7 @@ from threading import Thread
 
 import db.main as db
 import vision.main as vision
-import control
+import status
 from messages import server
 from messages.server import Device
 
@@ -137,7 +137,7 @@ class Robot:
 
     def reset_position(self):
         self.server.send_to_device(
-            self.server.make_message(control.MESSAGE_RESET_POSITION),
+            self.server.make_message(status.MESSAGE_RESET_POSITION),
             BRICK_HORIZONTAL_MOVEMENT
         )
 
@@ -422,7 +422,7 @@ class Robot:
         elif command_type == 'scan_over':
             self.scanning_over = True
 
-        elif command_type == control.MESSAGE_AVAILABLE:
+        elif command_type == status.MESSAGE_AVAILABLE:
             if len(command_args) != 1:
                 raise ValueError('Invalid arguments for MESSAGE_AVAILABLE')
 
@@ -431,7 +431,7 @@ class Robot:
             else:
                 self.BRICK_33_state = self.BRICK_AVAILABLE_STATE
 
-        elif command_type == control.MESSAGE_BUSY:
+        elif command_type == status.MESSAGE_BUSY:
             if len(command_args) != 1:
                 raise ValueError('Invalid arguments for MESSAGE_BUSY')
             if command_args['brick_id'] == Device.BRICK_13.value:
@@ -439,13 +439,21 @@ class Robot:
             else:
                 self.BRICK_33_state = self.BRICK_BUSY_STATE
 
-        elif command_type == control.MESSAGE_LEFT_EDGE:
+        elif command_type == status.MESSAGE_LEFT_EDGE:
             print("Hit the left touch sensor")
             self.current_x_coordinate = 0
 
-        elif command_type == control.MESSAGE_RIGHT_EDGE:
+        elif command_type == status.MESSAGE_RIGHT_EDGE:
             print("Hit the right touch sensor")
             self.current_x_coordinate = self.ROBOT_RIGHT_COORDINATE
+
+        elif command_type == status.MESSAGE_TOP_EDGE:
+            self.current_shelf_level = 1
+            print("Hit the TOP touch sensor")
+
+        elif command_type == status.MESSAGE_BOTTOM_EDGE:
+            self.current_shelf_level = 0
+            print("Hit the BOTTOM touch sensor")
 
         else:
             print("unknown message")

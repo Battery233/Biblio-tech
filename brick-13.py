@@ -7,7 +7,7 @@ from ev3dev import ev3
 from messages.server import Device
 
 from brick import Brick
-import control
+import status
 
 HORIZONTAL_SOCKET = 0
 HORIZONTAL_SPEED = 360
@@ -73,7 +73,7 @@ class Brick13(Brick):
             print('Refusing to move: unsafe without touch sensors')
             return
 
-        self.send_message(socket, control.MESSAGE_BUSY, {'brick_id': Device.BRICK_13.value})
+        self.send_message(socket, status.MESSAGE_BUSY, {'brick_id': Device.BRICK_13.value})
 
         motor = self.horizontal_motor
         if motor.connected:
@@ -89,16 +89,16 @@ class Brick13(Brick):
             if distance > 0 and self.touch_sensor_left.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached left edge! Stopping motors')
-                self.send_message(socket, control.MESSAGE_LEFT_EDGE)
+                self.send_message(socket, status.MESSAGE_LEFT_EDGE)
             # Similarly, we only care about the right sensor if we're moving right
             if distance < 0 and self.touch_sensor_right.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached right edge! Stopping motors')
-                self.send_message(socket, control.MESSAGE_RIGHT_EDGE)
+                self.send_message(socket, status.MESSAGE_RIGHT_EDGE)
 
             time.sleep(0.1)
 
-        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})
+        self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})
 
     def reset_position(self, socket):
         self.move(200000, socket)
@@ -122,8 +122,16 @@ class Brick13(Brick):
                 self.stop_motors()
             else:
                 raise ValueError('Invalid stop command')
-        elif command_type == control.MESSAGE_RESET_POSITION and len(command_args) == 0:
+
+        elif command_type == status.MESSAGE_RESET_POSITION and len(command_args) == 0:
             self.reset_position(socket)
+
+        elif command_type == status.MESSAGE_TOP_EDGE:
+            print("Hit the TOP touch sensor")
+
+        elif command_type == status.MESSAGE_BOTTOM_EDGE:
+            print("Hit the BOTTOM touch sensor")
+
         else:
             raise ValueError('Invalid command')
 

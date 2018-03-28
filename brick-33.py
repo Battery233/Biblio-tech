@@ -3,10 +3,11 @@
 import json
 import time
 
+from ev3dev import ev3
 from messages.server import Device
 
 from brick import Brick
-import control
+import status
 
 VERTICAL_SOCKET_1 = 0
 FINGER_SOCKET = 1
@@ -24,6 +25,11 @@ FINGER_TIME = 1500
 FINGER_EXTENSION_SPEED = 90
 FINGER_RETRACTION_SPEED = -FINGER_EXTENSION_SPEED
 
+# flag for using vertical touch sensor or not
+TOUCH_SENSOR_ENABLED = False
+TOUCH_SENSOR_TOP_ADDRESS = 'in1'
+TOUCH_SENSOR_BOTTOM_ADDRESS = 'in4'
+
 
 class Brick33(Brick):
 
@@ -34,6 +40,12 @@ class Brick33(Brick):
         self.vertical_motor_2 = self.MOTORS[VERTICAL_SOCKET_2]
         self.arm_motor = self.MOTORS[ARM_SOCKET]
         self.finger_motor = self.MOTORS[FINGER_SOCKET]
+
+        if TOUCH_SENSOR_ENABLED:
+            self.touch_sensor_TOP = ev3.TouchSensor(address=TOUCH_SENSOR_TOP_ADDRESS)
+            self.touch_sensor_BOTTOM = ev3.TouchSensor(address=TOUCH_SENSOR_BOTTOM_ADDRESS)
+            print('TouchSensor TOP connected? ' + str(self.touch_sensor_TOP.connected))
+            print('TouchSensor BOTTOM connected? ' + str(self.touch_sensor_BOTTOM.connected))
 
         self.stop_action = 'hold'
 
@@ -77,8 +89,12 @@ class Brick33(Brick):
             raise ValueError('Invalid command')
 
     def move_vertically(self, up, socket):
+        if TOUCH_SENSOR_ENABLED:
+            if not self.touch_sensor_TOP.connected or not self.touch_sensor_BOTTOM.connected:
+                print('Refusing to move: unsafe without vertical touch sensors')
+                return
 
-        self.send_message(socket, control.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
+        self.send_message(socket, status.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
 
         # "movement" has to be negative if moving up, positive if moving down
         if up:
@@ -90,16 +106,39 @@ class Brick33(Brick):
         self.move_motor_by_dist(self.vertical_motor_1, movement, VERTICAL_SPEED)
         self.move_motor_by_dist(self.vertical_motor_2, movement, VERTICAL_SPEED)
 
+        if TOUCH_SENSOR_ENABLED:
+
+            while not (self.motor_ready(self.vertical_motor_1) | self.motor_ready(self.vertical_motor_2)):
+
+                if self.touch_sensor_TOP.is_pressed:
+                    self.stop_motors(self.vertical_motor_1)
+                    self.stop_motors(self.vertical_motor_2)
+
+                    print('Reached TOP edge! Stopping motors')
+
+                    self.send_message(socket, status.MESSAGE_TOP_EDGE)
+
+                elif self.touch_sensor_BOTTOM.is_pressed:
+                    self.stop_motors(self.vertical_motor_1)
+                    self.stop_motors(self.vertical_motor_2)
+
+                    print('Reached TOP edge! Stopping motors')
+
+                    self.send_message(socket, status.MESSAGE_BOTTOM_EDGE)
+
+                time.sleep(0.1)
+
+        # TODO: test this wait action should be before while loop or after?
         self.wait_for_motor(self.vertical_motor_1)
         self.wait_for_motor(self.vertical_motor_2)
 
         print("Movement successfully completed")
 
-        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
+        self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
 
     def take_book(self, socket):
 
-        self.send_message(socket, control.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
+        self.send_message(socket, status.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
 
         print("Enter in take_book")
         # extend arm
@@ -123,7 +162,7 @@ class Brick33(Brick):
         print("move last motor")
         self.rotate_motor([FINGER_SOCKET], FINGER_RETRACTION_SPEED, FINGER_TIME)
 
-        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
+        self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
 
 
 if __name__ == '__main__':
