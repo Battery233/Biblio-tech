@@ -57,13 +57,13 @@ class Brick33(Brick):
         command_args = json_command[command_type]
 
         if command_type == "up" and len(command_args) == 0:
-            self.move_vertically(up=True)
+            self.move_vertically(up=True, socket=socket)
 
         elif command_type == "down" and len(command_args) == 0:
-            self.move_vertically(up=False)
+            self.move_vertically(up=False, socket=socket)
 
         elif command_type == 'takeBook' and len(command_args) == 0:
-            self.take_book()
+            self.take_book(socket)
 
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
@@ -76,8 +76,9 @@ class Brick33(Brick):
         else:
             raise ValueError('Invalid command')
 
-    def move_vertically(self, up):
-        # TODO: send busy message to RPI
+    def move_vertically(self, up, socket):
+
+        self.send_message(socket, control.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
 
         # "movement" has to be negative if moving up, positive if moving down
         if up:
@@ -94,10 +95,11 @@ class Brick33(Brick):
 
         print("Movement successfully completed")
 
-        # TODO: send available message to RPI
+        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
 
-    def take_book(self):
-        # TODO: send busy message to RPI
+    def take_book(self, socket):
+
+        self.send_message(socket, control.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
 
         print("Enter in take_book")
         # extend arm
@@ -121,7 +123,7 @@ class Brick33(Brick):
         print("move last motor")
         self.rotate_motor([FINGER_SOCKET], FINGER_RETRACTION_SPEED, FINGER_TIME)
 
-        # TODO : send available message to RPI
+        self.send_message(socket, control.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})
 
 
 if __name__ == '__main__':
