@@ -112,6 +112,12 @@ class Robot:
         self.stop_motors()
         time.sleep(0.1)
 
+        # start periodic scannings
+        self.scan_interval = 60 # minutes
+        while True:
+            time.sleep(self.scan_interval * 60) # multiply by 60 to make'em actually minutes
+            self.full_scan()
+
     def wait(self):
         if self.is_busy:
             return False
@@ -465,9 +471,13 @@ class Robot:
         elif command_type == status.MESSAGE_BOTTOM_EDGE:
             self.current_shelf_level = 0
             print("Hit the BOTTOM touch sensor")
-
+        elif command_type == status.MESSAGE_GET_SCAN_INTERVAL:
+            message = self.server.make_message(status.MESSAGE_SCAN_INTERVAL, interval=self.scan_interval)
+            socket.send(message)
+        elif command type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
+            self.scan_interval = command_args['interval']
         else:
-            print("unknown message")
+            print("unknown message received")
 
     def send_busy_message(self, socket):
         socket.send(self.MESSAGE_BUSY)
