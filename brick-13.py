@@ -87,7 +87,11 @@ class Brick13(Brick):
         else:
             print('Horizontal motor not connected. Cannot move')
 
+        print('Enter main loop in move function')
+        iter = 0
         while not self.motor_ready(motor):
+            iter = iter + 1
+            print('Iteration #' + str(iter))
             # We only care about the left sensor if we're moving left
             if distance > 0 and self.touch_sensor_left.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
