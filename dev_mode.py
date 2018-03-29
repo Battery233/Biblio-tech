@@ -49,7 +49,6 @@ current_x_coordinateD = 0.0
 # @param int speed      Speed to move motor at (degrees/sec)
 # @param int time       Time to move motor for (milliseconds)
 def move_motor(socket, speed, time):
-    detect_motors()
     motor = MOTORS[socket]
     if motor.connected:
         # Safety checks (1000 speed is cutting it close but should be safe, time check is just for sanity)
@@ -76,7 +75,6 @@ def move_motor(socket, speed, time):
 # @param float  dist       Distance to move motor in centimeters
 # @param int    speed      Speed to move motor at (degrees / sec)
 def move_motor_by_dist(socket, dist, speed):
-    detect_motors()
     motor = MOTORS[socket]
 
     if motor.connected:
@@ -168,9 +166,12 @@ def parse_message(data, socket):
     global current_x_coordinateD
     if valid_json:
         if command_type == 'move' and len(command_args) == 3:
+            detect_motors()
             for port in command_args['ports']:
                 motorPort = letter_to_int(port)
-                move_motor(motorPort, command_args['speed'], command_args['time'])
+                thread = Thread(target=move_motor, args=(motorPort, command_args['speed'], command_args['time']))
+                thread.start()
+                # move_motor(motorPort, command_args['speed'], command_args['time'])
 
         elif command_type == 'stop':
             stop_motor()
@@ -178,7 +179,9 @@ def parse_message(data, socket):
         if command_type == 'moveDist' and len(command_args) == 3:
             for port in command_args['ports']:
                 motorPort = letter_to_int(port)
-                move_motor_by_dist(motorPort, command_args['dist'], command_args['speed'])
+                thread = Thread(target=move_motor_by_dist, args=(motorPort, command_args['dist'], command_args['speed']))
+                thread.start()
+                # move_motor_by_dist(motorPort, command_args['dist'], command_args['speed'])
 
         elif command_type == 'queryDB':
             '''

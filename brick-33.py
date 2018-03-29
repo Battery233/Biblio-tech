@@ -2,6 +2,7 @@
 
 import json
 import time
+from threading import Thread
 
 from ev3dev import ev3
 from messages.server import Device
@@ -103,8 +104,13 @@ class Brick33(Brick):
             movement = -VERTICAL_MOVEMENT
 
         print('Move by ' + str(movement))
-        self.move_motor_by_dist(self.vertical_motor_1, movement, VERTICAL_SPEED)
-        self.move_motor_by_dist(self.vertical_motor_2, movement, VERTICAL_SPEED)
+        thread_one = Thread(target=self.move_motor_by_dist, args=(self.vertical_motor_1, movement, VERTICAL_SPEED))
+        thread_two = Thread(target=self.move_motor_by_dist, args=(self.vertical_motor_2, movement, VERTICAL_SPEED))
+        thread_one.start()
+        thread_two.start()
+
+        #self.move_motor_by_dist(self.vertical_motor_1, movement, VERTICAL_SPEED)
+        #self.move_motor_by_dist(self.vertical_motor_2, movement, VERTICAL_SPEED)
 
         if TOUCH_SENSOR_ENABLED:
 
