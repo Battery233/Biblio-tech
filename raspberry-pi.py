@@ -95,8 +95,6 @@ class Robot:
         while not self.server.bricks_connected():
             time.sleep(1)
 
-        # Move the robot at the beginning of first cell
-        self.reset_position()
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
         self.current_shelf_level = 0
         self.aligned_to_book = None
@@ -107,6 +105,12 @@ class Robot:
         # Assume both bricks are available (i.e. none of their motors is moving)
         self.BRICK_HORIZONTAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
         self.BRICK_VERTICAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
+
+        # Move the robot at the beginning of first cell
+        self.reset_position()
+
+        # TODO add a waiter for VERTICAL BRICK
+        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_AVAILABLE_STATE)
 
         # Stop all motors
         self.stop_motors()
