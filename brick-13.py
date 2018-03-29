@@ -99,6 +99,11 @@ class Brick13(Brick):
                 print('Reached right edge! Stopping motors')
                 self.send_message(socket, status.MESSAGE_RIGHT_EDGE)
 
+            if self.touch_sensor_left.is_pressed:
+                print('Touch sensor Left PRESSED')
+            if self.touch_sensor_right.is_pressed:
+                print('Touch sensor Right PRESSED')
+
             time.sleep(0.1)
 
         self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})

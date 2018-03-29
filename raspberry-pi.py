@@ -106,15 +106,12 @@ class Robot:
         self.BRICK_HORIZONTAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
         self.BRICK_VERTICAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
 
-        # Move the robot at the beginning of first cell
-        self.reset_position()
-
-        # TODO add a waiter for VERTICAL BRICK
-        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_AVAILABLE_STATE)
-
         # Stop all motors
         self.stop_motors()
         time.sleep(0.1)
+
+        # Move the robot at the beginning of first cell
+        self.reset_position()
 
         # start periodic scannings
         self.scan_interval = 60 # minutes
