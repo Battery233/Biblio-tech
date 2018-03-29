@@ -474,7 +474,7 @@ class Robot:
         elif command_type == status.MESSAGE_GET_SCAN_INTERVAL:
             message = self.server.make_message(status.MESSAGE_SCAN_INTERVAL, interval=self.scan_interval)
             socket.send(message)
-        elif command type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
+        elif command_type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
             self.scan_interval = command_args['interval']
         else:
             print("unknown message received")
