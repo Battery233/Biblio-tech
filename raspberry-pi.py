@@ -204,7 +204,7 @@ class Robot:
         time.sleep(1)
 
         # Traverse the current cell and keep scanning while moving
-        self.server.send_to_device(self.server.make_message('horizontal', amount=self.CELL_WIDTH),
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         # Give time to the brick to process the message
@@ -228,7 +228,7 @@ class Robot:
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ' +
               str(self.BRICK_HORIZONTAL_MOVEMENT_state))
-        self.server.send_to_device(self.server.make_message('horizontal', amount=-self.CELL_WIDTH),
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         # Give time to the brick to process the message

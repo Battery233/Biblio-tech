@@ -68,7 +68,7 @@ class Brick13(Brick):
         else:
             print("Disabled moving to 0 position function")
 
-    def move(self, distance, socket):
+    def move(self, distance, socket, scanning=False):
         if not self.touch_sensor_left.connected or not self.touch_sensor_right.connected:
             print('Refusing to move: unsafe without touch sensors')
             return
@@ -79,7 +79,10 @@ class Brick13(Brick):
         if motor.connected:
             # convert to cm and then to deg
             angle = int(self.cm_to_deg(float(distance) / 10))
-            motor.run_to_rel_pos(position_sp=angle, speed_sp=HORIZONTAL_SPEED, )
+            if scanning:
+                motor.run_to_rel_pos(position_sp=angle, speed_sp=HORIZONTAL_SPEED_FOR_SCANNING, )
+            else:
+                motor.run_to_rel_pos(position_sp=angle, speed_sp=HORIZONTAL_SPEED, )
 
         else:
             print('Horizontal motor not connected. Cannot move')
@@ -114,6 +117,10 @@ class Brick13(Brick):
         if (command_type == 'horizontal' and len(command_args) == 1 and
                 'amount' in command_args.keys()):
             self.move(command_args['amount'], socket)
+
+        elif command_type == 'horizontal_scan' and len(command_args) == 1 and 'amount' in command_args.keys():
+            self.move(command_args['amount'], socket, scanning=True)
+
 
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
