@@ -367,7 +367,10 @@ class Robot:
             if self.aligned_to_book == ISBN:
                 message = '{"takeBook":{}}'
                 self.server.send_to_device(message, BRICK_BOOK_FETCHING)
-                time.sleep(23)
+                # Wait for book retrieval (time might need adjusted)
+                time.sleep(15)
+                # Set book to unavailable in database
+                db.update_book_status(DB_FILE, ISBN, 0)
                 self.reach_cell(0)
             else:
                 socket.send(self.MESSAGE_BOOK_NOT_ALIGNED)
