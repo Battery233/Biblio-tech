@@ -218,6 +218,7 @@ class Robot:
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
+            print ('... found ISBN: ' + str(found_ISBN))
 
         # Now the state of the horizontal brick is 'available', it means horizontal movement has finished.
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
@@ -238,6 +239,7 @@ class Robot:
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
+            print ('... found ISBN: ' + str(found_ISBN))
 
         print(' Finished scanning for ISBN...current state of HORIZONTAL BRICK is' +
               str(self.BRICK_HORIZONTAL_MOVEMENT_state))
