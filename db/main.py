@@ -1,7 +1,8 @@
 import sqlite3
 import os
+import db.commands as commands
 
-# test for travis-ci
+# this file is for the operation of the db, the db design is in command.py
 
 PRODUCTION_DB = 'production.db'
 TEST_DB = 'test.db'
@@ -15,9 +16,7 @@ def create_book_table(db):
     c = conn.cursor()
 
     # Create table
-    c.execute('''CREATE TABLE books
-                 (ISBN INTEGER, title TEXT, author TEXT, position TEXT,
-                 status INTEGER, UNIQUE(ISBN) ON CONFLICT REPLACE)''')
+    c.execute(commands.command_create())
     conn.commit()
     conn.close()
 
@@ -36,7 +35,7 @@ def clear_books(db):
     c = conn.cursor()
 
     # Delete all table entries
-    c.execute("DELETE FROM books")
+    c.execute(commands.command_delete())
 
     conn.commit()
     conn.close()
@@ -48,19 +47,18 @@ def add_sample_books(db):
 
     # Insert library data
     c.execute(
-        "INSERT INTO books VALUES (9781785782343, 'Big Data How the Information Revolution Is Transforming Our Lives',"
-        " 'Brian Clegg', '2'," + STATUS_AVAILABLE + ")")
-    c.execute(
-        "INSERT INTO books VALUES (9781447221098, 'Dirk Gently Holistic Detective Agency', 'Douglas Adams', '2',"
-        + STATUS_AVAILABLE + ")")
-    c.execute("INSERT INTO books VALUES (9780241197806, 'The Castle', 'Franz Kafka', '1'," + STATUS_AVAILABLE + ")")
-    c.execute(
-        "INSERT INTO books VALUES (9781840226881, 'Wealth of Nations', 'Adam Smith', '0'," + STATUS_AVAILABLE + ")")
-    c.execute(
-        "INSERT INTO books VALUES (9780349140438, 'Steve Jobs', 'Walter Isaacson', '3'," + STATUS_AVAILABLE + ")")
-    c.execute(
-        "INSERT INTO books VALUES (9780140441185, 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', '2'," +
-        STATUS_UNAVAILABLE + ")")
+        commands.command_add_item('9781785782343', 'Big Data How the Information Revolution Is Transforming Our Lives',
+                                  'Brian Clegg', '2', STATUS_AVAILABLE))
+    c.execute(commands.command_add_item('9781447221098', 'Dirk Gently Holistic Detective Agency',
+                                        'Douglas Adams', '2', STATUS_AVAILABLE))
+    c.execute(commands.command_add_item('9780241197806', 'The Castle',
+                                        'Franz Kafka', '1', STATUS_AVAILABLE))
+    c.execute(commands.command_add_item('9781840226881', 'Wealth of Nations',
+                                        'Adam Smith', '0', STATUS_AVAILABLE))
+    c.execute(commands.command_add_item('9780349140438', 'Steve Jobs',
+                                        'Walter Isaacson', '3', STATUS_AVAILABLE))
+    c.execute(commands.command_add_item('9780140441185', 'Thus Spoke Zarathustra',
+                                        'Friedrich Nietzsche', '2', STATUS_UNAVAILABLE))
 
     conn.commit()
     conn.close()
@@ -74,8 +72,7 @@ def add_book(db, ISBN_all_type, title_all_type, author_all_type, position_all_ty
     author = str(author_all_type)
     position = str(position_all_type)
     status = str(status_all_type)
-    c.execute("INSERT INTO books VALUES (" +
-              ISBN + ", '" + title + "', '" + author + "', '" + position + "', " + status + ")")
+    c.execute(commands.command_add_item(ISBN, title, author, position, status))
 
     conn.commit()
     conn.close()
@@ -86,7 +83,7 @@ def get_books(db):
     c = conn.cursor()
 
     # Get all books
-    c.execute("SELECT * FROM books")
+    c.execute(commands.command_select_all())
     books = c.fetchall()
     print("[DBS] running get_books in db.main")
     conn.close()
