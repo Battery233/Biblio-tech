@@ -1,6 +1,6 @@
 import sqlite3
 import os
-import db.commands as commands
+from db import commands
 
 # this file is for the operation of the db, the db design is in command.py
 

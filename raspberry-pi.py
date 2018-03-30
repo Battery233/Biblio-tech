@@ -323,7 +323,6 @@ class Robot:
         self.reach_cell(0)
 
     def stop_motors(self, ports=None):
-        # TODO: do we need add sth about stopping a specific motor?
         # Currently, ignores the 'ports' argument for simplicity
         message = self.server.make_message('stop')
         self.server.send_to_device(message, Device.BRICK_33)
@@ -446,7 +445,7 @@ class Robot:
         elif command_type == status.MESSAGE_GET_SCAN_INTERVAL:
             message = self.server.make_message(status.MESSAGE_SCAN_INTERVAL, interval=self.scan_interval)
             socket.send(message)
-        elif command type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
+        elif command_type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
             self.scan_interval = command_args['interval']
         else:
             print("unknown message received")
