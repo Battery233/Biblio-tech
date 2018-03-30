@@ -75,6 +75,10 @@ class Brick33(Brick):
         elif command_type == "down" and len(command_args) == 0:
             self.move_vertically(up=False, socket=socket)
 
+        elif command_type == "enable_vertical_touch_sensor" and len(command_args) == 0:
+            global TOUCH_SENSOR_ENABLED
+            TOUCH_SENSOR_ENABLED = True
+
         elif command_type == 'takeBook' and len(command_args) == 0:
             self.take_book(socket)
 
@@ -109,8 +113,8 @@ class Brick33(Brick):
         thread_one.start()
         thread_two.start()
 
-        #self.move_motor_by_dist(self.vertical_motor_1, movement, VERTICAL_SPEED)
-        #self.move_motor_by_dist(self.vertical_motor_2, movement, VERTICAL_SPEED)
+        # self.move_motor_by_dist(self.vertical_motor_1, movement, VERTICAL_SPEED)
+        # self.move_motor_by_dist(self.vertical_motor_2, movement, VERTICAL_SPEED)
 
         if TOUCH_SENSOR_ENABLED:
 

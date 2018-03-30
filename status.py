@@ -12,3 +12,5 @@ MESSAGE_RESET_POSITION = 'reset_position'
 MESSAGE_SCAN_INTERVAL = 'scan_interval'
 MESSAGE_GET_SCAN_INTERVAL = 'get_scan_interval'
 MESSAGE_SET_SCAN_INTERVAL = 'set_scan_interval'
+
+ENABLE_VERTICAL_TOUCH_SENSOR = 'enable_vertical_touch_sensor'

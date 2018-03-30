@@ -16,6 +16,13 @@ BRICK_BOOK_FETCHING = Device.BRICK_33
 # FOR HARDCODE:
 IGNORE_QR_CODE = False
 
+# move vertical brick to level
+# **********WARNING*********
+# must make sure TOUCH_SENSOR in brick33.py is working when set MOVE_TO_LEVEL_0 true
+# rpi will send a message to enable TOUCH_SENSOR in vertical brick even TOUCH_SENSOR_ENABLED in brick33.py is false
+# TODO: to be tested
+MOVE_TO_LEVEL_0 = False
+
 DB_FILE = db.PRODUCTION_DB
 
 
@@ -112,14 +119,20 @@ class Robot:
         # TODO add a waiter for VERTICAL BRICK
         self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_AVAILABLE_STATE)
 
+        # move BRICK_VERTICAL to level 0: only use this when bottom touch sensor is working:
+        if MOVE_TO_LEVEL_0:
+            self.server.send_to_device(self.server.make_message('enable_vertical_touch_sensor'),
+                                       BRICK_VERTICAL_MOVEMENT)
+            self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
+
         # Stop all motors
         self.stop_motors()
         time.sleep(0.1)
 
         # start periodic scannings
-        self.scan_interval = 60 # minutes
+        self.scan_interval = 60  # minutes
         while True:
-            time.sleep(self.scan_interval * 60) # multiply by 60 to make'em actually minutes
+            time.sleep(self.scan_interval * 60)  # multiply by 60 to make'em actually minutes
             self.full_scan()
 
     def wait(self):
@@ -222,7 +235,7 @@ class Robot:
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
-            print ('... found ISBN: ' + str(found_ISBN))
+            print('... found ISBN: ' + str(found_ISBN))
 
         # Now the state of the horizontal brick is 'available', it means horizontal movement has finished.
         # So we have to move the brick back to the beginning of the cell. Keep scanning just to
@@ -243,7 +256,7 @@ class Robot:
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
-            print ('... found ISBN: ' + str(found_ISBN))
+            print('... found ISBN: ' + str(found_ISBN))
 
         print(' Finished scanning for ISBN...current state of HORIZONTAL BRICK is' +
               str(self.BRICK_HORIZONTAL_MOVEMENT_state))
@@ -340,7 +353,6 @@ class Robot:
         self.reach_cell(0)
 
     def stop_motors(self, ports=None):
-        # TODO: do we need add sth about stopping a specific motor?
         # Currently, ignores the 'ports' argument for simplicity
         message = self.server.make_message('stop')
         self.server.send_to_device(message, Device.BRICK_33)
@@ -510,6 +522,7 @@ class Robot:
         elif brick_id == BRICK_VERTICAL_MOVEMENT:
             while self.BRICK_VERTICAL_MOVEMENT_state != brick_state:
                 time.sleep(0.1)
+
 
 if __name__ == '__main__':
     # Initialize robot, starts listening for commands
