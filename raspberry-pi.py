@@ -161,6 +161,7 @@ class Robot:
 
     def reset_position(self):
         self.server.send_to_device(self.server.make_message(status.MESSAGE_RESET_POSITION), BRICK_HORIZONTAL_MOVEMENT)
+        self.current_x_coordinate = 0
 
     def get_cell_shelf_level(self, cell):
         # 0 for bottom level, 1 for top level
