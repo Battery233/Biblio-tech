@@ -150,8 +150,6 @@ class Robot:
     def reach_cell(self, cell):
         print('========================= enter reach_cell ===============================')
         print('---> Reaching cell: ' + str(cell))
-        # TODO: Implement message from brick to RPI to be sent when vertical movement is finished
-        # instead of waiting of hardcoded sleeping
 
         # Get the target x coordinate (the place where we want to move the robot)
         target_x_coordinate = self.get_cell_x_coordinate(cell)
@@ -174,10 +172,12 @@ class Robot:
 
             self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset),
                                        BRICK_HORIZONTAL_MOVEMENT)
+            time.sleep(4)
         else:
             # We are on either bottom or top row but here we always make horizontal movement first
             self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset),
                                        BRICK_HORIZONTAL_MOVEMENT)
+            time.sleep(4)
 
             if self.current_shelf_level == 0 and target_shelf_level == 1:
                 # Now we do the vertical movement if we were on level 0 but want to reach level 1
@@ -216,8 +216,9 @@ class Robot:
         # So we have to move it back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
-        # Give the brick some breathing time before returning it to the beginning of the cell
-        time.sleep(0.5)
+        # Give the robot some breathing time to make sure it reaches the end of the cell
+        # before returning it to the beginning of the cell
+        time.sleep(3)
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
         self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH),
@@ -231,6 +232,9 @@ class Robot:
             print('Attempt #' + str(attempt) + '...decoded_ISBN: ' + str(decoded_ISBN))
 
         print(' Finished scanning for ISBN...; found ISBN ' + str(found_ISBN))
+
+        # Give the robot some breathing time after it finished scanning
+        time.sleep(3)
 
         if full_scanning:
             if found_ISBN is not None:
@@ -303,22 +307,14 @@ class Robot:
             db.update_book_position(DB_FILE, ISBN, '-1')
 
         for current_cell in range(0, self.CELLS_PER_ROW):
-            # TODO: fix this properly
-            time.sleep(10)
             self.reach_cell(current_cell)
-            time.sleep(2)
             self.scan_ISBN(full_scanning=True, cell=current_cell)
 
-        time.sleep(30)
 
         for current_cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
-            # TODO: fix this properly
-            time.sleep(10)
             self.reach_cell(current_cell - 1)
-            time.sleep(2)
             self.scan_ISBN(full_scanning=True, cell=current_cell - 1)
 
-        time.sleep(10)
         # Return to cell 0
         self.reach_cell(0)
 
