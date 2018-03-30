@@ -143,7 +143,7 @@ def get_position_by_ISBN(db, ISBN):
     conn = sqlite3.connect(db)
     c = conn.cursor()
 
-    c.execute(commands.command_get_position_by_ISBN(ISBN))
+    c.execute(commands.command_get_position_by_ISBN(int(ISBN)))
 
     row = c.fetchone()
 
