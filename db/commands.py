@@ -23,11 +23,11 @@ def command_select_all():
 
 
 def command_update_book_position(ISBN, position):
-    return "UPDATE %s SET position='%s' WHERE ISBN= %d" % (TABLE_NAME, position, ISBN)
+    return "UPDATE %s SET position='%s' WHERE ISBN= %s" % (TABLE_NAME, position, ISBN)
 
 
 def command_update_book_status(ISBN, status):
-    return "UPDATE %s SET status='%s' WHERE ISBN=%d" % (TABLE_NAME, status, ISBN)
+    return "UPDATE %s SET status='%s' WHERE ISBN=%s" % (TABLE_NAME, status, ISBN)
 
 
 def command_get_all_titles_and_positions():
@@ -39,7 +39,7 @@ def command_get_all_ISBNs():
 
 
 def command_get_position_by_ISBN(isbn):
-    return "SELECT position FROM %s WHERE ISBN=%d" % (TABLE_NAME, isbn)
+    return "SELECT position FROM %s WHERE ISBN=%s" % (TABLE_NAME, isbn)
 
 
 def command_get_position_by_title(title):
@@ -48,4 +48,3 @@ def command_get_position_by_title(title):
 
 def command_get_ISBN_by_title(title):
     return "SELECT ISBN FROM %s WHERE title=%s" % (TABLE_NAME, title)
-
