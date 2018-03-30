@@ -1,4 +1,6 @@
+MESSAGE_FOUND_BOOK = 'foundBook'
 MESSAGE_SCAN_COMPLETE = 'scan_over'
+
 MESSAGE_LEFT_EDGE = 'left_edge_reached'
 MESSAGE_RIGHT_EDGE = 'right_edge_reached'
 MESSAGE_BOTTOM_EDGE = 'bottom_edge_reached'
