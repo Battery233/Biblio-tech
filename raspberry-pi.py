@@ -329,16 +329,20 @@ class Robot:
         # Return to cell 0
         self.reach_cell(0)
 
+    # RETURNS TRUE IF IT HAS TO STOP SCANNING (FOUNDBOOK)
     def full_scan_cell(self, cell, socket=None, target_ISBN = None):
         if target_ISBN is not None:
+            print('scanning cell looking for book')
             found = self.scan_ISBN(full_scanning=True, target_ISBN=target_ISBN, cell=cell)
             if found:
+                print('In full scan, found book we were looking for')
                 if socket is not None:
                     message = self.server.make_message(status.MESSAGE_FOUND_BOOK)
                     socket.send(message)
                 return True
 
         else:
+            print('scanning cell NOT looking for any book in particular')
             self.scan_ISBN(full_scanning=True, cell=cell)
             return False
 
@@ -488,6 +492,7 @@ class Robot:
         else:
             print("[query_DB], tittle is not none")
             return db.get_position_by_title(DB_FILE, title)
+
 
 if __name__ == '__main__':
     # Initialize robot, starts listening for commands
