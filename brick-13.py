@@ -11,7 +11,7 @@ import status
 
 HORIZONTAL_SOCKET = 0
 HORIZONTAL_SPEED = 360
-HORIZONTAL_SPEED_FOR_SCANNING = 30
+HORIZONTAL_SPEED_FOR_SCANNING = 90
 
 TOUCH_SENSOR_LEFT_ADDRESS = 'in1'
 TOUCH_SENSOR_RIGHT_ADDRESS = 'in2'
@@ -73,8 +73,6 @@ class Brick13(Brick):
             print('Refusing to move: unsafe without touch sensors')
             return
 
-        self.send_message(socket, status.MESSAGE_BUSY, {'brick_id': Device.BRICK_13.value})
-
         motor = self.horizontal_motor
         if motor.connected:
             # convert to cm and then to deg
@@ -108,9 +106,9 @@ class Brick13(Brick):
             if self.touch_sensor_right.is_pressed:
                 print('Touch sensor Right PRESSED')
 
-            time.sleep(0.1)
+            print('The motor state is now ' + str(motor.state))
 
-        self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_13.value})
+            time.sleep(0.1)
 
     def reset_position(self, socket):
         self.move(200000, socket)

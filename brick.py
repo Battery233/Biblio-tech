@@ -79,7 +79,9 @@ class Brick:
     def motor_ready(self, motor):
         # Make sure that motor has time to start
         time.sleep(0.1)
-        return motor.state == ['ready']
+
+        # Motor is ready only when its state is empty according to documentation
+        return motor.state == []
 
     def stop_motors(self, sockets=None):
         # Stop all the motors by default
