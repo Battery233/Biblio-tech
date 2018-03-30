@@ -19,7 +19,8 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".demo.FetchActivity"
             android:label="Demo mode"
@@ -38,6 +39,10 @@
             android:label="Dev mode"
             android:screenOrientation="portrait" />
         <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme"
+            />
     </application>
 
 </manifest>

@@ -124,7 +124,6 @@ class Brick13(Brick):
         elif command_type == 'horizontal_scan' and len(command_args) == 1 and 'amount' in command_args.keys():
             self.move(command_args['amount'], socket, scanning=True)
 
-
         elif command_type == 'stop':
             if len(command_args) == 1 and ('stop' in command_args.keys()):
                 self.stop_motors(command_args['ports'])

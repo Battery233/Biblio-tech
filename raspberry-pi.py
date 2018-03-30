@@ -16,6 +16,13 @@ BRICK_BOOK_FETCHING = Device.BRICK_33
 # FOR HARDCODE:
 IGNORE_QR_CODE = False
 
+# move vertical brick to level
+# **********WARNING*********
+# must make sure TOUCH_SENSOR in brick33.py is working when set MOVE_TO_LEVEL_0 true
+# rpi will send a message to enable TOUCH_SENSOR in vertical brick even TOUCH_SENSOR_ENABLED in brick33.py is false
+# TODO: to be tested
+MOVE_TO_LEVEL_0 = False
+
 DB_FILE = db.PRODUCTION_DB
 
 
@@ -95,6 +102,10 @@ class Robot:
         while not self.server.bricks_connected():
             time.sleep(1)
 
+        # Stop all motors
+        self.stop_motors()
+        time.sleep(0.1)
+
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
         self.current_shelf_level = 0
         self.aligned_to_book = None
@@ -102,18 +113,21 @@ class Robot:
 
         self.current_x_coordinate = 0
 
+        # move BRICK_VERTICAL to level 0: only use this when bottom touch sensor is working:
+        if MOVE_TO_LEVEL_0:
+            self.server.send_to_device(self.server.make_message('enable_vertical_touch_sensor'),
+                                       BRICK_VERTICAL_MOVEMENT)
+            self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
 
-        # Stop all motors
-        self.stop_motors()
-        time.sleep(0.1)
+
 
         # Move the robot at the beginning of first cell
         self.reset_position()
 
         # start periodic scannings
-        self.scan_interval = 60 # minutes
+        self.scan_interval = 60  # minutes
         while True:
-            time.sleep(self.scan_interval * 60) # multiply by 60 to make'em actually minutes
+            time.sleep(self.scan_interval * 60)  # multiply by 60 to make'em actually minutes
             self.full_scan()
 
     def wait(self):
@@ -212,6 +226,7 @@ class Robot:
                 found_ISBN = decoded_ISBN
             print('Attempt #' + str(attempt) + '...decoded_ISBN: ' + str(decoded_ISBN))
 
+
         # Now the robot has (probably) reached the end of the cell.
         # So we have to move it back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
@@ -242,8 +257,7 @@ class Robot:
                 try:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
                 except:
-                    db.add_book(DB_FILE, str(found_ISBN), "", "", str(cell), db.STATUS_AVAILABLE)
-                    print("Unknown book found, add ISBN to db")
+                    print("Unknown book found!")
             return
 
         if found_ISBN == target_ISBN:
@@ -298,25 +312,36 @@ class Robot:
 
     @primary_action
     @disruptive_action
-    def full_scan(self, socket=None, *args, **kwargs):
-        all_ISBNs = db.get_all_ISBNs(DB_FILE)
-        for item in all_ISBNs:
-            ISBN = str(item[0])
-            print('Current ISBN: ' + str(ISBN) + ' type = ' + str(type(ISBN)))
-            # Assume the none of the books is in the shelf
-            db.update_book_position(DB_FILE, ISBN, '-1')
-
+    def full_scan(self, socket=None, target_ISBN=None, *args, **kwargs):
         for current_cell in range(0, self.CELLS_PER_ROW):
             self.reach_cell(current_cell)
-            self.scan_ISBN(full_scanning=True, cell=current_cell)
 
+            if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
+                return
 
         for current_cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
             self.reach_cell(current_cell - 1)
-            self.scan_ISBN(full_scanning=True, cell=current_cell - 1)
+
+            if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
+                return
+
 
         # Return to cell 0
         self.reach_cell(0)
+
+    def full_scan_cell(self, cell, socket=None, target_ISBN = None):
+        if target_ISBN is not None:
+            found = self.scan_ISBN(full_scanning=True, target_ISBN=target_ISBN, cell=cell)
+            if found:
+                if socket is not None:
+                    message = self.server.make_message(status.MESSAGE_FOUND_BOOK)
+                    socket.send(message)
+                return True
+
+        else:
+            self.scan_ISBN(full_scanning=True, cell=cell)
+            return False
+
 
     def stop_motors(self, ports=None):
         # Currently, ignores the 'ports' argument for simplicity
