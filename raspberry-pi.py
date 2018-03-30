@@ -113,17 +113,6 @@ class Robot:
 
         self.current_x_coordinate = 0
 
-        # Assume both bricks are available (i.e. none of their motors is moving)
-        self.BRICK_HORIZONTAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
-        self.BRICK_VERTICAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
-
-        # Move the robot at the beginning of first cell
-        self.reset_position()
-
-        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_BUSY_STATE)
-        # TODO add a waiter for VERTICAL BRICK
-        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_AVAILABLE_STATE)
-
         # move BRICK_VERTICAL to level 0: only use this when bottom touch sensor is working:
         if MOVE_TO_LEVEL_0:
             self.server.send_to_device(self.server.make_message('enable_vertical_touch_sensor'),
@@ -131,6 +120,9 @@ class Robot:
             self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
 
 
+
+        # Move the robot at the beginning of first cell
+        self.reset_position()
 
         # start periodic scannings
         self.scan_interval = 60  # minutes
@@ -172,8 +164,6 @@ class Robot:
     def reach_cell(self, cell):
         print('========================= enter reach_cell ===============================')
         print('---> Reaching cell: ' + str(cell))
-        # TODO: Implement message from brick to RPI to be sent when vertical movement is finished
-        # instead of waiting of hardcoded sleeping
 
         # Get the target x coordinate (the place where we want to move the robot)
         target_x_coordinate = self.get_cell_x_coordinate(cell)
@@ -196,10 +186,12 @@ class Robot:
 
             self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset),
                                        BRICK_HORIZONTAL_MOVEMENT)
+            time.sleep(4)
         else:
             # We are on either bottom or top row but here we always make horizontal movement first
             self.server.send_to_device(self.server.make_message('horizontal', amount=x_offset),
                                        BRICK_HORIZONTAL_MOVEMENT)
+            time.sleep(4)
 
             if self.current_shelf_level == 0 and target_shelf_level == 1:
                 # Now we do the vertical movement if we were on level 0 but want to reach level 1
@@ -221,48 +213,43 @@ class Robot:
             print("Scanning for ISBN " + target_ISBN)
 
         # Give breathing time to the brick
-        time.sleep(1)
+        time.sleep(0.5)
 
-        # Traverse the current cell and keep scanning while moving
         self.server.send_to_device(self.server.make_message('horizontal_scan', amount=self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
-        # Give time to the brick to process the message
-        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_BUSY_STATE)
-        time.sleep(1)
-
         found_ISBN = None
-        print('  Begin scanning for ISBN (left -> right)...current state of HORIZONTAL BRICK ' +
-              str(self.BRICK_HORIZONTAL_MOVEMENT_state))
-        while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
+        print('  Begin scanning for ISBN (left -> right)...')
+        for attempt in range(20):
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
-            print('... found ISBN: ' + str(found_ISBN))
+            print('Attempt #' + str(attempt) + '...decoded_ISBN: ' + str(decoded_ISBN))
 
-        # Now the state of the horizontal brick is 'available', it means horizontal movement has finished.
-        # So we have to move the brick back to the beginning of the cell. Keep scanning just to
+
+        # Now the robot has (probably) reached the end of the cell.
+        # So we have to move it back to the beginning of the cell. Keep scanning just to
         # increase accuracy.
 
-        # Give the brick some breathing time before returning it to the beginning of the cell
-        time.sleep(1)
+        # Give the robot some breathing time to make sure it reaches the end of the cell
+        # before returning it to the beginning of the cell
+        time.sleep(3)
 
-        print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ' +
-              str(self.BRICK_HORIZONTAL_MOVEMENT_state))
+        print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
         self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
-        # Give time to the brick to process the message
-        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_BUSY_STATE)
-
-        while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
+        print('  Begin scanning for ISBN (right -> left)...')
+        for attempt in range(20):
             decoded_ISBN, offset = vision.read_QR(self.camera)
             if decoded_ISBN is not None:
                 found_ISBN = decoded_ISBN
-            print('... found ISBN: ' + str(found_ISBN))
+            print('Attempt #' + str(attempt) + '...decoded_ISBN: ' + str(decoded_ISBN))
 
-        print(' Finished scanning for ISBN...current state of HORIZONTAL BRICK is' +
-              str(self.BRICK_HORIZONTAL_MOVEMENT_state))
+        print(' Finished scanning for ISBN...; found ISBN ' + str(found_ISBN))
+
+        # Give the robot some breathing time after it finished scanning
+        time.sleep(3)
 
         if full_scanning:
             if found_ISBN is not None:
@@ -327,26 +314,17 @@ class Robot:
     @disruptive_action
     def full_scan(self, socket=None, target_ISBN=None, *args, **kwargs):
         for current_cell in range(0, self.CELLS_PER_ROW):
-            while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
-                time.sleep(0.1)
             self.reach_cell(current_cell)
-            while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
-                time.sleep(0.1)
 
             if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
                 return
-
-        # TODO: add state message for vertical brick
 
         for current_cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
-            while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
-                time.sleep(0.1)
             self.reach_cell(current_cell - 1)
-            while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
-                time.sleep(0.1)
 
             if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
                 return
+
 
         # Return to cell 0
         self.reach_cell(0)
@@ -470,23 +448,6 @@ class Robot:
         elif command_type == 'scan_over':
             self.scanning_over = True
 
-        elif command_type == status.MESSAGE_AVAILABLE:
-            if len(command_args) != 1:
-                raise ValueError('Invalid arguments for MESSAGE_AVAILABLE')
-
-            if command_args['brick_id'] == BRICK_HORIZONTAL_MOVEMENT:
-                self.BRICK_HORIZONTAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
-            else:
-                self.BRICK_VERTICAL_MOVEMENT_state = self.BRICK_AVAILABLE_STATE
-
-        elif command_type == status.MESSAGE_BUSY:
-            if len(command_args) != 1:
-                raise ValueError('Invalid arguments for MESSAGE_BUSY')
-            if command_args['brick_id'] == BRICK_HORIZONTAL_MOVEMENT:
-                self.BRICK_HORIZONTAL_MOVEMENT_state = self.BRICK_BUSY_STATE
-            else:
-                self.BRICK_VERTICAL_MOVEMENT_state = self.BRICK_BUSY_STATE
-
         elif command_type == status.MESSAGE_LEFT_EDGE:
             print("Hit the left touch sensor")
             self.current_x_coordinate = 0
@@ -527,15 +488,6 @@ class Robot:
         else:
             print("[query_DB], tittle is not none")
             return db.get_position_by_title(DB_FILE, title)
-
-    def wait_until_brick_becomes(self, brick_id, brick_state):
-        if brick_id == BRICK_HORIZONTAL_MOVEMENT:
-            while self.BRICK_HORIZONTAL_MOVEMENT_state != brick_state:
-                time.sleep(0.1)
-        elif brick_id == BRICK_VERTICAL_MOVEMENT:
-            while self.BRICK_VERTICAL_MOVEMENT_state != brick_state:
-                time.sleep(0.1)
-
 
 if __name__ == '__main__':
     # Initialize robot, starts listening for commands
