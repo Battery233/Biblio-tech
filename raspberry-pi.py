@@ -102,6 +102,10 @@ class Robot:
         while not self.server.bricks_connected():
             time.sleep(1)
 
+        # Stop all motors
+        self.stop_motors()
+        time.sleep(0.1)
+
         # Initialize robot's vertical position to be the bottom row: (TODO: check if we can get rid of this assumption)
         self.current_shelf_level = 0
         self.aligned_to_book = None
@@ -116,6 +120,7 @@ class Robot:
         # Move the robot at the beginning of first cell
         self.reset_position()
 
+        self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_BUSY_STATE)
         # TODO add a waiter for VERTICAL BRICK
         self.wait_until_brick_becomes(BRICK_HORIZONTAL_MOVEMENT, self.BRICK_AVAILABLE_STATE)
 
@@ -125,9 +130,7 @@ class Robot:
                                        BRICK_VERTICAL_MOVEMENT)
             self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
 
-        # Stop all motors
-        self.stop_motors()
-        time.sleep(0.1)
+
 
         # start periodic scannings
         self.scan_interval = 60  # minutes
@@ -267,8 +270,7 @@ class Robot:
                 try:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
                 except:
-                    db.add_book(DB_FILE, str(found_ISBN), "", "", str(cell), db.STATUS_AVAILABLE)
-                    print("Unknown book found, add ISBN to db")
+                    print("Unknown book found!")
             return
 
         if found_ISBN == target_ISBN:
@@ -323,21 +325,16 @@ class Robot:
 
     @primary_action
     @disruptive_action
-    def full_scan(self, socket=None, *args, **kwargs):
-        all_ISBNs = db.get_all_ISBNs(DB_FILE)
-        for item in all_ISBNs:
-            ISBN = str(item[0])
-            print('Current ISBN: ' + str(ISBN) + ' type = ' + str(type(ISBN)))
-            # Assume the none of the books is in the shelf
-            db.update_book_position(DB_FILE, ISBN, '-1')
-
+    def full_scan(self, socket=None, target_ISBN=None, *args, **kwargs):
         for current_cell in range(0, self.CELLS_PER_ROW):
             while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
                 time.sleep(0.1)
             self.reach_cell(current_cell)
             while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
                 time.sleep(0.1)
-            self.scan_ISBN(full_scanning=True, cell=current_cell)
+
+            if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
+                return
 
         # TODO: add state message for vertical brick
 
@@ -347,10 +344,26 @@ class Robot:
             self.reach_cell(current_cell - 1)
             while self.BRICK_HORIZONTAL_MOVEMENT_state == self.BRICK_BUSY_STATE:
                 time.sleep(0.1)
-            self.scan_ISBN(full_scanning=True, cell=current_cell - 1)
+
+            if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
+                return
 
         # Return to cell 0
         self.reach_cell(0)
+
+    def full_scan_cell(self, cell, socket=None, target_ISBN = None):
+        if target_ISBN is not None:
+            found = self.scan_ISBN(full_scanning=True, target_ISBN=target_ISBN, cell=cell)
+            if found:
+                if socket is not None:
+                    message = self.server.make_message(status.MESSAGE_FOUND_BOOK)
+                    socket.send(message)
+                return True
+
+        else:
+            self.scan_ISBN(full_scanning=True, cell=cell)
+            return False
+
 
     def stop_motors(self, ports=None):
         # Currently, ignores the 'ports' argument for simplicity
