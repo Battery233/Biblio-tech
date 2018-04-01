@@ -23,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.luckythirteen.bibliotech.MainActivity;
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.brickapi.MessageParser;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
@@ -228,19 +227,19 @@ public class FetchActivity extends AppCompatActivity {
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
 
-        if(!usingInnerDB){
+        if (!usingInnerDB) {
             if (!queriedDatabase) {
-                try{
+                try {
                     sendMessageWithFeedback(new QueryDB(null));
                     if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
                         progressBar.setVisibility(View.VISIBLE);
                     }
-                }catch(Exception ignored){
+                } catch (Exception ignored) {
                 }
             } else if (books != null) {
                 showBookList(this.books);
             }
-        }else {
+        } else {
             showBookList(getBooks());
         }
     }
@@ -331,8 +330,8 @@ public class FetchActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                        alertDialog.setTitle( Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"));
-                        alertDialog.setPositiveButton("Show all",new DialogInterface.OnClickListener() {
+                        alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"));
+                        alertDialog.setPositiveButton("Show all", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -348,7 +347,7 @@ public class FetchActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                        alertDialog.setNeutralButton("Show upper level only",new DialogInterface.OnClickListener() {
+                        alertDialog.setNeutralButton("Show upper level only", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
@@ -385,14 +384,14 @@ public class FetchActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                        alertDialog.setTitle( Html.fromHtml("<font color='#d2691e'>Choose a way to scan the shelf</font>"));
-                        alertDialog.setPositiveButton("scan all",new DialogInterface.OnClickListener() {
+                        alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose a way to scan the shelf</font>"));
+                        alertDialog.setPositiveButton("scan all", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sendMessageWithFeedback(new ScanAll());
                             }
                         });
-                        alertDialog.setNeutralButton("scan upper level only",new DialogInterface.OnClickListener() {
+                        alertDialog.setNeutralButton("scan upper level only", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sendMessageWithFeedback(new ScanUpper());
@@ -493,8 +492,7 @@ public class FetchActivity extends AppCompatActivity {
                     Toast.makeText(context, "Robot is busy!", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        else if (type == MessageType.scanFinished){
+        } else if (type == MessageType.scanFinished) {
             final Context context = this.getApplicationContext();
             runOnUiThread(new Runnable() {
                 @Override
@@ -502,8 +500,7 @@ public class FetchActivity extends AppCompatActivity {
                     Toast.makeText(context, "Scan finished.", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        else if (type == MessageType.undefined) {
+        } else if (type == MessageType.undefined) {
             Log.w(TAG, "Don't understand message: " + json);
         }
     }
@@ -620,10 +617,10 @@ public class FetchActivity extends AppCompatActivity {
         books.add(new Book("9781447221098", "Dirk Gently Holistic Detective Agency", "Douglas Adams", "1", true));
         books.add(new Book("9780241197806", "The Castle", "Franz Kafka", "2", true));
         books.add(new Book("9781840226881", "Wealth of Nations", "adam Smith", "3", true));
-        books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", "4", true));
+        books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", "6", true));
         books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", "5", false));
-        books.add(new Book("9798709872074", "Damn", "Obama", "6", false));
-        books.add(new Book("3762975097525", "It's a test", "Ch Ye", "7", false));
+        books.add(new Book("9798709872074", "Damn", "Obama", "4", false));
+        books.add(new Book("3762975097525", "It's a test", "Ch Ye", "7", true));
 
         return books;
     }

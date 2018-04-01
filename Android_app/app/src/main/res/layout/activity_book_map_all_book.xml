@@ -195,4 +195,132 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/book" />
 
+    <TextView
+        android:id="@+id/title0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book0"
+        app:layout_constraintEnd_toEndOf="@+id/book0"
+        app:layout_constraintStart_toStartOf="@+id/book0"
+        app:layout_constraintTop_toTopOf="@+id/book0" />
+
+    <TextView
+        android:id="@+id/title4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book4"
+        app:layout_constraintEnd_toEndOf="@+id/book4"
+        app:layout_constraintStart_toStartOf="@+id/book4"
+        app:layout_constraintTop_toTopOf="@+id/book4" />
+
+    <TextView
+        android:id="@+id/title7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book7"
+        app:layout_constraintEnd_toEndOf="@+id/book7"
+        app:layout_constraintStart_toStartOf="@+id/book7"
+        app:layout_constraintTop_toTopOf="@+id/book7" />
+
+    <TextView
+        android:id="@+id/title5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book5"
+        app:layout_constraintEnd_toEndOf="@+id/book5"
+        app:layout_constraintStart_toStartOf="@+id/book5"
+        app:layout_constraintTop_toTopOf="@+id/book5" />
+
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book2"
+        app:layout_constraintEnd_toEndOf="@+id/book2"
+        app:layout_constraintStart_toStartOf="@+id/book2"
+        app:layout_constraintTop_toTopOf="@+id/book2" />
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book1"
+        app:layout_constraintEnd_toEndOf="@+id/book1"
+        app:layout_constraintStart_toStartOf="@+id/book1"
+        app:layout_constraintTop_toTopOf="@+id/book1" />
+
+    <TextView
+        android:id="@+id/title3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book3"
+        app:layout_constraintEnd_toEndOf="@+id/book3"
+        app:layout_constraintStart_toStartOf="@+id/book3"
+        app:layout_constraintTop_toTopOf="@+id/book3" />
+
+    <TextView
+        android:id="@+id/title6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book6"
+        app:layout_constraintEnd_toEndOf="@+id/book6"
+        app:layout_constraintStart_toStartOf="@+id/book6"
+        app:layout_constraintTop_toTopOf="@+id/book6" />
+
 </android.support.constraint.ConstraintLayout>
