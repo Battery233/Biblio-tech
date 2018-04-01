@@ -34,7 +34,7 @@ class BookMap : AppCompatActivity() {
         listSize = books.size
         setContentView(R.layout.activity_book_map_all_book)
         supportActionBar?.hide()
-        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         if (showShelf == 0) {
             Toast.makeText(this, "Show all books in shelf", Toast.LENGTH_SHORT).show()
             longWood.visibility = VISIBLE

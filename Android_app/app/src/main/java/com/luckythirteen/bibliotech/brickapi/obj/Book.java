@@ -57,8 +57,7 @@ public class Book implements Parcelable {
 
         @Override
         public Book createFromParcel(Parcel source) {
-            Book b = new Book(source.readString(),source.readString(),source.readString(),source.readString(),source.readByte() != 0);
-            return b;
+            return new Book(source.readString(),source.readString(),source.readString(),source.readString(),source.readByte() != 0);
         }
 
         @Override
