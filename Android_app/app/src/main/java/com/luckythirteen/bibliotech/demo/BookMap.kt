@@ -1,7 +1,10 @@
 package com.luckythirteen.bibliotech.demo
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
+import android.util.Log
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.WindowManager
@@ -16,11 +19,11 @@ class BookMap : AppCompatActivity() {
     // showShelf == 0, show all books
     // showShelf ==1, show books in level 1 only
     // showShelf ==2, show books in level 2 only
-    var showShelf = 0
-    var books = ArrayList<Book>()
-    var showLevelOne = false
-    var showLevelTwo = false
-    var listSize = 0
+    private var showShelf = 0
+    private var books = ArrayList<Book>()
+    private var showLevelOne = false
+    private var showLevelTwo = false
+    private var listSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +59,34 @@ class BookMap : AppCompatActivity() {
         if (showLevelOne) {
             for (i in 0..3) {
                 if (i < books.size) {
-                    for (j in 0..books.size) {
+                    for (j in 0 until books.size) {
                         if (books[j].pos == i.toString()) {
                             if (books[j].isAvailable) {
-                                findViewById<TextView>(textID[j]).text = books[i].title
-                                findViewById<TextView>(textID[j]).visibility = VISIBLE
-                                findViewById<View>(imageId[j]).visibility = VISIBLE
+                                findViewById<TextView>(textID[i]).text = books[j].title
+                                findViewById<TextView>(textID[i]).visibility = VISIBLE
+                                findViewById<View>(imageId[i]).visibility = VISIBLE
+                                findViewById<View>(imageId[i]).setOnClickListener {
+                                    val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
+                                    alertDialog.setPositiveButton("ok", null)
+                                    alertDialog.setNegativeButton("Go back", { _, _ ->
+                                        onBackPressed()
+                                    })
+                                    alertDialog.show()
+                                }
+                                findViewById<TextView>(textID[i]).setOnClickListener {
+                                    val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
+                                    alertDialog.setPositiveButton("ok", null)
+                                    alertDialog.setNegativeButton("Go back", { _, _ ->
+                                        onBackPressed()
+                                    })
+                                    alertDialog.show()
+                                }
                             }
+                            Log.d(">>>>>show book", "i = $i, j = $j")
                             break
                         }
                     }
@@ -77,10 +101,31 @@ class BookMap : AppCompatActivity() {
                     for (j in 0 until books.size) {
                         if (books[j].pos == i.toString()) {
                             if (books[j].isAvailable) {
-                                findViewById<TextView>(textID[j]).text = books[i].title
-                                findViewById<TextView>(textID[j]).visibility = VISIBLE
-                                findViewById<View>(imageId[j]).visibility = VISIBLE
+                                findViewById<TextView>(textID[i]).text = books[j].title
+                                findViewById<TextView>(textID[i]).visibility = VISIBLE
+                                findViewById<View>(imageId[i]).visibility = VISIBLE
+                                findViewById<View>(imageId[i]).setOnClickListener {
+                                    val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
+                                    alertDialog.setPositiveButton("ok", null)
+                                    alertDialog.setNegativeButton("Go back", { _, _ ->
+                                        onBackPressed()
+                                    })
+                                    alertDialog.show()
+                                }
+                                findViewById<TextView>(textID[i]).setOnClickListener {
+                                    val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
+                                    alertDialog.setPositiveButton("ok", null)
+                                    alertDialog.setNegativeButton("Go back", { _, _ ->
+                                        onBackPressed()
+                                    })
+                                    alertDialog.show()
+                                }
                             }
+                            Log.d(">>>>>show book", "i = $i, j = $j")
                             break
                         }
                     }

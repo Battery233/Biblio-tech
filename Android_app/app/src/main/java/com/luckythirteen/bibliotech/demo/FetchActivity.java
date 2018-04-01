@@ -76,7 +76,7 @@ public class FetchActivity extends AppCompatActivity {
     private final static String DEMO_ACTIVE_KEY = "demo_active";
     private boolean queriedDatabase = false;
     private boolean busy = false;          //flag for avoiding busy status
-    private boolean usingInnerDB = true;
+    private boolean usingInnerDB = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -614,12 +614,12 @@ public class FetchActivity extends AppCompatActivity {
     private ArrayList<Book> getBooks() {
         ArrayList<Book> books = new ArrayList<>();
         books.add(new Book("9781785782343", "Big Data How the Information Revolution Is Transforming Our Lives", "Brian Clegg", "0", true));
-        books.add(new Book("9781447221098", "Dirk Gently Holistic Detective Agency", "Douglas Adams", "1", true));
         books.add(new Book("9780241197806", "The Castle", "Franz Kafka", "2", true));
-        books.add(new Book("9781840226881", "Wealth of Nations", "adam Smith", "3", true));
-        books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", "6", true));
+        books.add(new Book("9781840226881", "Wealth of Nations", "adam Smith", "6", true));
+        books.add(new Book("9780349140438", "Steve Jobs", "Walter Isaacson", "4", true));
         books.add(new Book("9780140441185", "Thus Spoke Zarathustra", "Friedrich Nietzsche", "5", false));
-        books.add(new Book("9798709872074", "Damn", "Obama", "4", false));
+        books.add(new Book("9798709872074", "Damn", "Obama", "3", false));
+        books.add(new Book("9781447221098", "Dirk Gently Holistic Detective Agency", "Douglas Adams", "1", true));
         books.add(new Book("3762975097525", "It's a test", "Ch Ye", "7", true));
 
         return books;
