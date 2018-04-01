@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Only start dev activity if bluetooth is on
-                if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
+                if (bluetoothOn(DEMO_REQUEST_ENABLE_BT)) {
                     Intent intent = new Intent(MainActivity.super.getApplicationContext(), FetchActivity.class);
                     startActivity(intent);
                     try {
