@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.luckythirteen.bibliotech.MainActivity;
 import com.luckythirteen.bibliotech.R;
 import com.luckythirteen.bibliotech.brickapi.MessageParser;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
@@ -334,18 +336,46 @@ public class FetchActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
+                                Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
+                                intent.putExtra("showShelf", 0);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelableArrayList("books", books);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                try {
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                } catch (Exception ignored) {
+                                }
                             }
                         });
                         alertDialog.setNeutralButton("Show upper level only",new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
+                                intent.putExtra("showShelf", 2);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelableArrayList("books", books);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                try {
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                } catch (Exception ignored) {
+                                }
                             }
                         });
                         alertDialog.setNegativeButton("Show lower level only", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
+                                intent.putExtra("showShelf", 1);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelableArrayList("books", books);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                try {
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                } catch (Exception ignored) {
+                                }
                             }
                         });
                         alertDialog.show();
