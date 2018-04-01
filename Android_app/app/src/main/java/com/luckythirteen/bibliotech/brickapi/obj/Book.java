@@ -32,7 +32,6 @@ public class Book {
         return pos;
     }
 
-
     public boolean isAvailable() {
         return available;
     }
