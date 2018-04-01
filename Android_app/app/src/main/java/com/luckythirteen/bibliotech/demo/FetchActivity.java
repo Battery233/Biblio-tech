@@ -327,7 +327,7 @@ public class FetchActivity extends AppCompatActivity {
                 @SuppressLint("InflateParams") View wordsPrompt = layoutInflater.inflate(R.layout.dialog_booklist, null);
                 AlertDialog.Builder promptBuilder = new AlertDialog.Builder(FetchActivity.this, R.style.AlertDialogTheme);
                 promptBuilder.setView(wordsPrompt);
-                promptBuilder.setPositiveButton("show shelf state map", new DialogInterface.OnClickListener() {
+                promptBuilder.setPositiveButton("show shelf", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -381,8 +381,7 @@ public class FetchActivity extends AppCompatActivity {
                         alertDialog.show();
                     }
                 });
-                promptBuilder.setNeutralButton("cancel", null);
-                promptBuilder.setNegativeButton("scan the shelf", new DialogInterface.OnClickListener() {
+                promptBuilder.setNegativeButton("scan shelf", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
