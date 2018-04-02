@@ -219,7 +219,7 @@ class Robot:
         # Give breathing time to the brick
         time.sleep(0.5)
 
-        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=self.CELL_WIDTH),
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         found_ISBN = None
@@ -240,7 +240,7 @@ class Robot:
         time.sleep(3)
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
-        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH),
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=self.CELL_WIDTH),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         print('  Begin scanning for ISBN (right -> left)...')
