@@ -330,12 +330,14 @@ class Robot:
             self.reach_cell(current_cell)
 
             if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
+                self.send_message(socket, self.MESSAGE_FOUND_BOOK)
                 return
 
         for current_cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
             self.reach_cell(current_cell - 1)
 
             if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
+                self.send_message(socket, self.MESSAGE_FOUND_BOOK)
                 return
 
         # Return to the retrieval position
