@@ -1,6 +1,6 @@
 import unittest
 
-import main
+from db import main
 
 db = main.TEST_DB
 

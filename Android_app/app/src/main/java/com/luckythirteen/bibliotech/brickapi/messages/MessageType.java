@@ -11,5 +11,6 @@ public enum MessageType {
     foundBook,
     message,
     busy,
-    malFormedJson
+    malFormedJson,
+    scanFinished
 }

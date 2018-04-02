@@ -6,6 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+    </style>
+
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:colorForeground">@color/colorAccent</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
@@ -13,6 +18,12 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">#d2691e</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorPrimary">#000000</item>
     </style>
 
 </resources>

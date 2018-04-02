@@ -68,7 +68,7 @@ public class DevActivity extends AppCompatActivity {
     // Max speed and max duration to allow app to send to robot (for motors)
     private static final int MAX_SPEED = 999; // degrees per second
     private static final int MAX_DURATION = 9999; // milliseconds
-    private static final int MAX_DISTANCE = 600; // millimetres
+    private static final int MAX_DISTANCE = 10000; // millimetres
 
     private MessageSender messageSender;
 
@@ -337,9 +337,9 @@ public class DevActivity extends AppCompatActivity {
                     int value = Integer.valueOf(s.toString());
 
                     if (!distanceModeCheckBox.isChecked() && value > MAX_DURATION)
-                        speedText.setText(String.valueOf(MAX_DURATION));
+                        durationText.setText(String.valueOf(MAX_DURATION));
                     else if (distanceModeCheckBox.isChecked() && value > MAX_DISTANCE)
-                        speedText.setText(String.valueOf(MAX_DISTANCE));
+                        durationText.setText(String.valueOf(MAX_DISTANCE));
                 } catch (NumberFormatException e) {
                     // it's fine, just means string is empty "" or user somehow pasted non
                     // numeric characters in

@@ -54,7 +54,9 @@ public class MessageParser {
                     return MessageType.missingBook;
                 } else if (MessageType.busy.toString().equals(messageContent)) {
                     return MessageType.busy;
-                } else {
+                }else if (MessageType.scanFinished.toString().equals(messageContent)) {
+                    return MessageType.scanFinished;
+                }else {
                     return MessageType.undefined;
                 }
             } catch (Exception e) {
