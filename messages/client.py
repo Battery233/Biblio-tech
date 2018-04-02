@@ -24,6 +24,7 @@ class BluetoothClient:
         self.service_matches = find_service(uuid=uuid, address=self.target_addr)
         self.should_run = True
 
+    def connect(self):
         if len(self.service_matches) > 0:
             self.first_match = self.service_matches[0]
             self.port = self.first_match['port']
