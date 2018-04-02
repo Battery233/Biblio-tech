@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -79,19 +81,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Button settingsButton = findViewById(R.id.btnSettings);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
-                try {
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                } catch (Exception ignored) {
-                }
-            }
-        });
     }
 
     /**
@@ -143,5 +132,31 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_account) {
+
+            return true;
+        }
+        if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+            try {
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            } catch (Exception ignored) {
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -46,22 +46,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDemoMode" />
 
-    <Button
-        android:id="@+id/btnSettings"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/colorPrimaryTrans"
-        android:elevation="12dp"
-        android:fontFamily="@font/adam"
-        android:text="@string/SettingsButtonLabel"
-        android:textColor="@color/colorWhite"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
