@@ -10,6 +10,7 @@
     <color name="colorAccent">#7eaba4</color>
 
     <color name="colorWhite">#f4eade</color>
+    <color name="colorHint">#01579b</color>
 
     <color name="colorBluetoothConnected">#00ff55</color>
     <color name="colorBluetoothDisconnected">#b20000</color>
