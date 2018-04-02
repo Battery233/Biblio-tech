@@ -50,15 +50,15 @@ def add_sample_books(db):
         commands.command_add_item('9781785782343', 'Big Data How the Information Revolution Is Transforming Our Lives',
                                   'Brian Clegg', '2', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9781447221098', 'Dirk Gently Holistic Detective Agency',
-                                        'Douglas Adams', '2', STATUS_AVAILABLE))
+                                        'Douglas Adams', '3', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9780241197806', 'The Castle',
                                         'Franz Kafka', '1', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9781840226881', 'Wealth of Nations',
                                         'Adam Smith', '0', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9780349140438', 'Steve Jobs',
-                                        'Walter Isaacson', '3', STATUS_AVAILABLE))
+                                        'Walter Isaacson', '5', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9780140441185', 'Thus Spoke Zarathustra',
-                                        'Friedrich Nietzsche', '2', STATUS_UNAVAILABLE))
+                                        'Friedrich Nietzsche', '7', STATUS_UNAVAILABLE))
 
     conn.commit()
     conn.close()
