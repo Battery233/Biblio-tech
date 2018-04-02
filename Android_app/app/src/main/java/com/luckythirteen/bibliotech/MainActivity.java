@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 final EditText input = new EditText(this);
                 input.setGravity(Gravity.CENTER);
                 input.setHint("Input password:");
-                input.setHintTextColor(getResources().getColor(R.color.colorPrimary));
+                input.setHintTextColor(getResources().getColor(R.color.colorAccent));
                 input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(10)});
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
