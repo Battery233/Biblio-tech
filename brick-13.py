@@ -86,12 +86,12 @@ class Brick13(Brick):
             print('Horizontal motor not connected. Cannot move')
 
         while not self.motor_ready(motor):
-            if self.touch_sensor_left.is_pressed:
+            if distance > 0 and self.touch_sensor_left.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached left edge! Stopping motors')
                 self.send_message(socket, status.MESSAGE_LEFT_EDGE)
             # Similarly, we only care about the right sensor if we're moving right
-            if self.touch_sensor_right.is_pressed:
+            if distance < 0 and self.touch_sensor_right.is_pressed:
                 self.stop_motors([HORIZONTAL_SOCKET])
                 print('Reached right edge! Stopping motors')
                 self.send_message(socket, status.MESSAGE_RIGHT_EDGE)
