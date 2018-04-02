@@ -1,10 +1,6 @@
 import sqlite3
 import os
-<<<<<<< HEAD
-import db.commands as commands
-=======
 from db import commands
->>>>>>> d2638a5eaabeb22cc8d4710205383a54ecf0640c
 
 # this file is for the operation of the db, the db design is in command.py
 
@@ -21,10 +17,7 @@ def create_book_table(db):
 
     # Create table
     c.execute(commands.command_create())
-<<<<<<< HEAD
-=======
 
->>>>>>> d2638a5eaabeb22cc8d4710205383a54ecf0640c
     conn.commit()
     conn.close()
 
@@ -57,25 +50,15 @@ def add_sample_books(db):
         commands.command_add_item('9781785782343', 'Big Data How the Information Revolution Is Transforming Our Lives',
                                   'Brian Clegg', '2', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9781447221098', 'Dirk Gently Holistic Detective Agency',
-<<<<<<< HEAD
-                                        'Douglas Adams', '2', STATUS_AVAILABLE))
-=======
                                         'Douglas Adams', '3', STATUS_AVAILABLE))
->>>>>>> d2638a5eaabeb22cc8d4710205383a54ecf0640c
     c.execute(commands.command_add_item('9780241197806', 'The Castle',
                                         'Franz Kafka', '1', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9781840226881', 'Wealth of Nations',
                                         'Adam Smith', '0', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9780349140438', 'Steve Jobs',
-<<<<<<< HEAD
-                                        'Walter Isaacson', '3', STATUS_AVAILABLE))
-    c.execute(commands.command_add_item('9780140441185', 'Thus Spoke Zarathustra',
-                                        'Friedrich Nietzsche', '2', STATUS_UNAVAILABLE))
-=======
                                         'Walter Isaacson', '5', STATUS_AVAILABLE))
     c.execute(commands.command_add_item('9780140441185', 'Thus Spoke Zarathustra',
                                         'Friedrich Nietzsche', '7', STATUS_UNAVAILABLE))
->>>>>>> d2638a5eaabeb22cc8d4710205383a54ecf0640c
 
     conn.commit()
     conn.close()
