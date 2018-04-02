@@ -64,7 +64,6 @@ class Robot:
     # TODO: compute these again
     ROBOT_LENGTH = 170
     RAILS_LENGTH = 705
-    ROBOT_RIGHT_COORDINATE = RAILS_LENGTH - ROBOT_LENGTH
 
     # This is the offset for the space where the robot should return the book so it makes it easier for the user
     # take it.
@@ -74,6 +73,8 @@ class Robot:
     # (former) CELL_WIDTH = 210
     CELL_WIDTH = 105
     CELLS_PER_ROW = 4
+
+    ROBOT_RIGHT_COORDINATE = RETRIEVAL_SPACE_OFFSET + CELLS_PER_ROW * CELL_WIDTH
 
     TOLERABLE_OFFSET = 5  # mm
 
