@@ -213,6 +213,14 @@ class Robot:
 
     # TODO: Interface motor ready and stop message with brick
     def scan_ISBN(self, target_ISBN=None, full_scanning=False, cell=None):
+        """
+
+        :param target_ISBN: the ISBN we are looking for (or None if we just want to update the database)
+        :param full_scanning: True if we are proceeding a full scanning and False if this we only scan the current cell
+        :param cell: the cell we are scanning
+        :return: True if the scan succeeded and the "target_ISBN" is found in the current cell. False if we found
+                 a different ISBN or if we're not looking for a specific ISBN
+        """
         if target_ISBN is None:
             print('Scanning for any ISBN that might be at cell = ' + str(cell))
         else:
@@ -264,7 +272,6 @@ class Robot:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
                 except:
                     print("Unknown book found!")
-            return
 
         if found_ISBN == target_ISBN:
             return True
