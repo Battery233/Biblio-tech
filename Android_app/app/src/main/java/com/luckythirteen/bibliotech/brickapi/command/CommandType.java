@@ -13,4 +13,7 @@ public enum CommandType {
     queryDB,
     fullScan,
     moveDist,
+    ScanAll,
+    scanUpper,
+    scanLower
 }
