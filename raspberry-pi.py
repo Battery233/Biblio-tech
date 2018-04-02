@@ -265,6 +265,9 @@ class Robot:
         # Give the robot some breathing time after it finished scanning
         time.sleep(3)
 
+        if found_ISBN is not None:
+            self.aligned_to_book = found_ISBN
+
         if full_scanning:
             if found_ISBN is not None:
                 # noinspection PyBroadException
@@ -317,7 +320,6 @@ class Robot:
         print("Ignore QR code? : " + str(IGNORE_QR_CODE))
         # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
         if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
-            self.aligned_to_book = ISBN
             print("[FindBook] sending message: book found")
             self.send_message(socket, self.MESSAGE_FOUND_BOOK)
         else:
