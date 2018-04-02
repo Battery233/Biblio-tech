@@ -39,9 +39,6 @@
             android:label="Dev mode"
             android:screenOrientation="portrait" />
         <activity android:name=".SettingsActivity" />
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/AppTheme" />
         <activity android:name=".demo.BookMap"
             android:label="Book map"
             android:screenOrientation = "landscape"/>
