@@ -67,7 +67,7 @@ class BookMap : AppCompatActivity() {
                                 findViewById<View>(imageId[i]).visibility = VISIBLE
                                 findViewById<View>(imageId[i]).setOnClickListener {
                                     val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Book info</font>"))
                                     alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
                                     alertDialog.setPositiveButton("ok", null)
                                     alertDialog.setNegativeButton("Go back", { _, _ ->
@@ -77,7 +77,7 @@ class BookMap : AppCompatActivity() {
                                 }
                                 findViewById<TextView>(textID[i]).setOnClickListener {
                                     val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Book info</font>"))
                                     alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
                                     alertDialog.setPositiveButton("ok", null)
                                     alertDialog.setNegativeButton("Go back", { _, _ ->
@@ -106,7 +106,7 @@ class BookMap : AppCompatActivity() {
                                 findViewById<View>(imageId[i]).visibility = VISIBLE
                                 findViewById<View>(imageId[i]).setOnClickListener {
                                     val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Book info</font>"))
                                     alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
                                     alertDialog.setPositiveButton("ok", null)
                                     alertDialog.setNegativeButton("Go back", { _, _ ->
@@ -116,7 +116,7 @@ class BookMap : AppCompatActivity() {
                                 }
                                 findViewById<TextView>(textID[i]).setOnClickListener {
                                     val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose which part of the shelf to show</font>"))
+                                    alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Book info</font>"))
                                     alertDialog.setMessage("Title:${books[j].title}\n\nAuthor:${books[j].author}\n\nISBN:${books[j].isbn}")
                                     alertDialog.setPositiveButton("ok", null)
                                     alertDialog.setNegativeButton("Go back", { _, _ ->
