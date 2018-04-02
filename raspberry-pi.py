@@ -66,6 +66,10 @@ class Robot:
     RAILS_LENGTH = 705
     ROBOT_RIGHT_COORDINATE = RAILS_LENGTH - ROBOT_LENGTH
 
+    # This is the offset for the space where the robot should return the book so it makes it easier for the user
+    # take it.
+    RETRIEVAL_SPACE_OFFSET = 200
+
     BOOK_WIDTH = 60
     # (former) CELL_WIDTH = 210
     CELL_WIDTH = 105
@@ -119,12 +123,10 @@ class Robot:
                                        BRICK_VERTICAL_MOVEMENT)
             self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
 
-
-
-        # Move the robot at the beginning of first cell
+        # Move the robot at the beginning of the shelf, i.e. at the retrieval position.
         self.reset_position()
 
-        # start periodic scannings
+        # start periodic scanning
         self.scan_interval = 60  # minutes
         while True:
             time.sleep(self.scan_interval * 60)  # multiply by 60 to make'em actually minutes
@@ -144,15 +146,17 @@ class Robot:
 
     def get_cell_x_coordinate(self, cell):
         """
-        |  4  |  5  |  6  |  7  |
-        |-----------------------|
-        |  0  |  1  |  2  |  3  |
+                |  4  |  5  |  6  |  7  |
+                |-----------------------|
+        <------>|  0  |  1  |  2  |  3  |
+            ^
+            |---- this space is the retrieval place for the user, so the that offset must be added to the x coordinate
 
-        Get the index of that cell on its row and multiply by the width of a cell
+        Then add the index of that cell on its row, multiplied by the width of a cell.
 
         """
-        cell %= self.CELLS_PER_ROW
-        return cell * self.CELL_WIDTH
+        row_index = cell % self.CELLS_PER_ROW
+        return self.RETRIEVAL_SPACE_OFFSET + row_index * self.CELL_WIDTH
 
     def reset_position(self):
         self.server.send_to_device(self.server.make_message(status.MESSAGE_RESET_POSITION), BRICK_HORIZONTAL_MOVEMENT)
@@ -325,9 +329,8 @@ class Robot:
             if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
                 return
 
-
-        # Return to cell 0
-        self.reach_cell(0)
+        # Return to the retrieval position
+        self.reset_position()
 
     # RETURNS TRUE IF IT HAS TO STOP SCANNING (FOUNDBOOK)
     def full_scan_cell(self, cell, socket=None, target_ISBN = None):
@@ -398,7 +401,7 @@ class Robot:
                 time.sleep(15)
                 # Set book to unavailable in database
                 db.update_book_status(DB_FILE, ISBN, '0')
-                self.reach_cell(0)
+                self.reset_position()
             else:
                 socket.send(self.MESSAGE_BOOK_NOT_ALIGNED)
 
