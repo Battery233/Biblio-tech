@@ -23,7 +23,7 @@ class Brick:
     def __init__(self, brick_id):
         self.stop_action = 'brake'
         self.client = client.BluetoothClient(brick_id, self.parse_message)
-        client_thread = Thread()
+        client_thread = Thread(target=self.client.connect())
         client_thread.start()
 
     def send_message(self, socket, title, body=None):
