@@ -99,7 +99,6 @@ class Brick33(Brick):
                 print('Refusing to move: unsafe without vertical touch sensors')
                 return
 
-        self.send_message(socket, status.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
 
         # "movement" has to be negative if moving up, positive if moving down
         if up:
@@ -144,11 +143,9 @@ class Brick33(Brick):
 
         print("Movement successfully completed")
 
-        self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
 
     def take_book(self, socket):
 
-        self.send_message(socket, status.MESSAGE_BUSY, {'brick_id': Device.BRICK_33.value})
 
         print("Enter in take_book")
         # extend arm
@@ -172,7 +169,6 @@ class Brick33(Brick):
         print("move last motor")
         self.rotate_motor([FINGER_SOCKET], FINGER_RETRACTION_SPEED, FINGER_TIME)
 
-        self.send_message(socket, status.MESSAGE_AVAILABLE, {'brick_id': Device.BRICK_33.value})
 
 
 if __name__ == '__main__':
