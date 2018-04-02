@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Bibliotech</string>
 
-    <string name="selectModeLabel">Welcome</string>
+    <string name="selectModeLabel">Welcome!</string>
+    <string name="guest">guest</string>
     <string name="DemoModeButtonLabel">My library</string>
     <string name="DevModeButtonLabel">Dev Mode</string>
     <string name="SettingsButtonLabel">Settings</string>

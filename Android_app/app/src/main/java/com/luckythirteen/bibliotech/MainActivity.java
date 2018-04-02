@@ -2,19 +2,29 @@ package com.luckythirteen.bibliotech;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luckythirteen.bibliotech.demo.FetchActivity;
 import com.luckythirteen.bibliotech.dev.DevActivity;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
+
+import java.lang.reflect.Array;
+import java.util.Objects;
 
 /**
  * Activity essentially for selecting demo mode (retrieve book)
@@ -36,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Button demoButton;
     private Button devButton;
     private UserPrefsManager userPrefsManager;
+    private boolean admin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         userPrefsManager = new UserPrefsManager(this.getApplicationContext());
 
+        if (!admin) {
+            TextView text = findViewById(R.id.textView2);
+            String guest = "guest";
+            text.setText(guest);
+        } else {
+            TextView text = findViewById(R.id.textView2);
+            String admin = "admin";
+            text.setText(admin);
+        }
         // Attach listener to demo button to load the "fetch book" activity
         demoButton = findViewById(R.id.btnDemoMode);
         demoButton.setOnClickListener(new View.OnClickListener() {
@@ -66,18 +86,22 @@ public class MainActivity extends AppCompatActivity {
         devButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!userPrefsManager.getMacAddress().equals("B8:27:EB:04:8B:94")) {
-                    // Only start dev activity if bluetooth is on
-                    if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
-                        Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
-                        startActivity(intent);
-                        try {
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        } catch (Exception ignored) {
+                if (admin) {
+                    if (!userPrefsManager.getMacAddress().equals("B8:27:EB:04:8B:94")) {
+                        // Only start dev activity if bluetooth is on
+                        if (bluetoothOn(DEV_REQUEST_ENABLE_BT)) {
+                            Intent intent = new Intent(MainActivity.super.getApplicationContext(), DevActivity.class);
+                            startActivity(intent);
+                            try {
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            } catch (Exception ignored) {
+                            }
                         }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Cannot run dev_mode on RPI\nGo settings and change MAC address", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Cannot run dev_mode on RPI\nGo settings and change MAC address", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Dev mode is for admin only!\nplease login as admin first", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -144,15 +168,63 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_account) {
+            if (admin) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+                alertDialog.setTitle("Log out, admin?");
+                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        admin = false;
+                        TextView text = findViewById(R.id.textView2);
+                        String guest = "guest";
+                        text.setText(guest);
+                    }
+                });
+                alertDialog.setNegativeButton("cancel", null);
+                alertDialog.show();
+            }else{
+                final EditText input = new EditText(this);
+                input.setGravity(Gravity.CENTER);
+                input.setHint("Input password:");
+                input.setHintTextColor(getResources().getColor(R.color.colorPrimary));
+                input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(10)});
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+                alertDialog.setTitle("Log in as admin?");
+                alertDialog.setView(input);
+                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String inputPassword = input.getText().toString();
+                        if(Objects.equals(inputPassword, "")){
+                            Toast.makeText(MainActivity.super.getApplicationContext(), "You really need to input something!", Toast.LENGTH_SHORT).show();
+                        }else if(Objects.equals(inputPassword,"brownie")||Objects.equals(inputPassword,"Brownie")){
+                            admin = true;
+                            TextView text = findViewById(R.id.textView2);
+                            String admin = "admin";
+                            text.setText(admin);
+                            Toast.makeText(MainActivity.super.getApplicationContext(), "Login success!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(MainActivity.super.getApplicationContext(), "Wrong password!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                alertDialog.setNegativeButton("cancel", null);
+                alertDialog.show();
+            }
 
             return true;
         }
         if (item.getItemId() == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
-            try {
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            } catch (Exception ignored) {
+            if (admin) {
+                Intent intent = new Intent(MainActivity.super.getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                try {
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                } catch (Exception ignored) {
+                }
+            } else {
+                Toast.makeText(this, "Advanced settings is for admin only!", Toast.LENGTH_SHORT).show();
             }
             return true;
         }
