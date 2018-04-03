@@ -147,7 +147,7 @@ class Robot:
 
     def get_cell_x_coordinate(self, cell):
         """
-                |  3  |  4  |  ear  |
+                |  3  |  4  |  5  |
                 |------------------
         <------>|  0  |  1  |  2  |
             ^
