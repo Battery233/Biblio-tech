@@ -65,16 +65,12 @@ class Robot:
     ROBOT_LENGTH = 170
     RAILS_LENGTH = 705
 
-    # This is the offset for the space where the robot should return the book so it makes it easier for the user
-    # take it.
-    RETRIEVAL_SPACE_OFFSET = 220
-
     BOOK_WIDTH = 60
     # (former) CELL_WIDTH = 210
     CELL_WIDTH = 115
     CELLS_PER_ROW = 3
 
-    ROBOT_RIGHT_COORDINATE = RETRIEVAL_SPACE_OFFSET + CELLS_PER_ROW * CELL_WIDTH
+    ROBOT_RIGHT_COORDINATE = 46.5
 
     TOLERABLE_OFFSET = 5  # mm
 
@@ -150,14 +146,15 @@ class Robot:
                 |  3  |  4  |  5  |
                 |------------------
         <------>|  0  |  1  |  2  |
-            ^
-            |---- this space is the retrieval place for the user, so the that offset must be added to the x coordinate
 
-        Then add the index of that cell on its row, multiplied by the width of a cell.
+        The beginning of the cell is hardcoded now (this includes the offset given by the retrieval space).
 
         """
+
+        coordinates = [16.5, 30.5, 14]
         row_index = cell % self.CELLS_PER_ROW
-        return self.RETRIEVAL_SPACE_OFFSET + row_index * self.CELL_WIDTH
+
+        return coordinates[row_index]
 
     def reset_position(self):
         self.server.send_to_device(self.server.make_message(status.MESSAGE_RESET_POSITION), BRICK_HORIZONTAL_MOVEMENT)
