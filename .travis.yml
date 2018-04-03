@@ -1,7 +1,7 @@
 sudo: required
 language: python
 python:
-  - "2.7"
+  - "3"
 # install dependencies
 install:
   - sudo apt-get install libzbar-dev
