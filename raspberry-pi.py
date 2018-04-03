@@ -71,8 +71,8 @@ class Robot:
 
     BOOK_WIDTH = 60
     # (former) CELL_WIDTH = 210
-    CELL_WIDTH = 105
-    CELLS_PER_ROW = 4
+    CELL_WIDTH = 115
+    CELLS_PER_ROW = 3
 
     ROBOT_RIGHT_COORDINATE = RETRIEVAL_SPACE_OFFSET + CELLS_PER_ROW * CELL_WIDTH
 
@@ -147,9 +147,9 @@ class Robot:
 
     def get_cell_x_coordinate(self, cell):
         """
-                |  4  |  5  |  6  |  7  |
-                |-----------------------|
-        <------>|  0  |  1  |  2  |  3  |
+                |  3  |  4  |  ear  |
+                |------------------
+        <------>|  0  |  1  |  2  |
             ^
             |---- this space is the retrieval place for the user, so the that offset must be added to the x coordinate
 
@@ -250,7 +250,12 @@ class Robot:
         time.sleep(3)
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
-        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=self.CELL_WIDTH),
+
+        # Normally, we would have to move back an amount equal to "CELL_WIDTH", because that's how much we moved to
+        # the right initially. However, if we we're stopped (e.g. we hit the end of the rail), we should move less.
+        amount = self.current_x_coordinate - self.get_cell_x_coordinate(cell)
+
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=amount),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         print('  Begin scanning for ISBN (right -> left)...')
