@@ -187,7 +187,7 @@ def get_ISBN_by_title(db, title):
 
     return None
 
-def get_book_status_by_ISBN(db, ISBN)
+def get_book_status_by_ISBN(db, ISBN):
     conn = sqlite3.connect(db)
     c = conn.cursor()
 
