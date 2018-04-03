@@ -67,7 +67,7 @@ class Robot:
 
     # This is the offset for the space where the robot should return the book so it makes it easier for the user
     # take it.
-    RETRIEVAL_SPACE_OFFSET = 200
+    RETRIEVAL_SPACE_OFFSET = 220
 
     BOOK_WIDTH = 60
     # (former) CELL_WIDTH = 210
@@ -229,7 +229,8 @@ class Robot:
         # Give breathing time to the brick
         time.sleep(0.5)
 
-        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH),
+        # TODO: FIX AMOUNT
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH / 2),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         found_ISBN = None
@@ -251,11 +252,8 @@ class Robot:
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
 
-        # Normally, we would have to move back an amount equal to "CELL_WIDTH", because that's how much we moved to
-        # the right initially. However, if we we're stopped (e.g. we hit the end of the rail), we should move less.
-        amount = self.current_x_coordinate - self.get_cell_x_coordinate(cell)
-
-        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=amount),
+        # TODO: FIX AMOUNT
+        self.server.send_to_device(self.server.make_message('horizontal_scan', amount=self.CELL_WIDTH / 2),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
         print('  Begin scanning for ISBN (right -> left)...')
@@ -327,7 +325,7 @@ class Robot:
         IGNORE_QR_CODE = False
         print("Ignore QR code? : " + str(IGNORE_QR_CODE))
         # if IGNORE_QR_CODE is true, then don't scan the QR code and just assume the book is the right one
-        if IGNORE_QR_CODE or self.scan_ISBN(ISBN):
+        if IGNORE_QR_CODE or self.scan_ISBN(ISBN, cell=cell):
             print("[FindBook] sending message: book found")
             self.send_message(socket, self.MESSAGE_FOUND_BOOK)
         else:
