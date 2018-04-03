@@ -560,7 +560,11 @@ public class FetchActivity extends AppCompatActivity {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 sendMessageWithFeedback(new TakeBook(chosenBook.getISBN()));
-                                removeBookFromArrayList(chosenBook);
+
+                                // Commented out since the Pi should remove the book
+                                // from its database
+
+                                // removeBookFromArrayList(chosenBook);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
