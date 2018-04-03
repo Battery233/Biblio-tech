@@ -330,12 +330,6 @@ class Robot:
     @primary_action
     @disruptive_action
     def full_scan(self, socket=None, target_ISBN=None, *args, **kwargs):
-        # Assume none of the books is in the library
-        all_ISBNs = db.get_all_ISBNs(DB_FILE)
-        for iter in all_ISBNs:
-            ISBN = iter[0]
-            db.update_book_status(DB_FILE, ISBN, '0')
-
         for current_cell in range(0, self.CELLS_PER_ROW):
             self.reach_cell(current_cell)
 
