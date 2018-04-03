@@ -412,7 +412,8 @@ class Robot:
                 self.server.send_to_device(message, BRICK_BOOK_FETCHING)
                 # Wait for book retrieval (time might need adjusted)
                 time.sleep(20)
-                # Set book to unavailable in database
+                # Set book to unavailable in database (TODO: discuss about this and make sure it is consistent with
+                # update_book_position)
                 db.update_book_status(DB_FILE, ISBN, '0')
                 self.reset_position()
             else:

@@ -176,7 +176,7 @@ def get_ISBN_by_title(db, title):
     c = conn.cursor()
 
     values = (title,)
-    c.execute('', values)
+    c.execute(commands.command_get_ISBN_by_title(title), values)
 
     row = c.fetchone()
 

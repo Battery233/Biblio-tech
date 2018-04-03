@@ -42,8 +42,8 @@ def command_get_position_by_ISBN(isbn):
 
 
 def command_get_position_by_title(title):
-    return "SELECT position FROM %s WHERE title=%s" % (TABLE_NAME, title)
+    return "SELECT position FROM %s WHERE title='%s'" % (TABLE_NAME, title)
 
 
 def command_get_ISBN_by_title(title):
-    return "SELECT ISBN FROM %s WHERE title=%s" % (TABLE_NAME, title)
+    return "SELECT ISBN FROM %s WHERE title='%s'" % (TABLE_NAME, title)
