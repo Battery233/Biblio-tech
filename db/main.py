@@ -186,3 +186,18 @@ def get_ISBN_by_title(db, title):
         return row[0]
 
     return None
+
+def get_book_status_by_ISBN(db, ISBN)
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    c.execute(commands.command_get_book_status_by_ISBN(int(ISBN)))
+
+    row = c.fetchone()
+
+    conn.close()
+
+    if row is not None:
+        return row[0]
+
+    return None

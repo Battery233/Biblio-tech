@@ -273,6 +273,7 @@ class Robot:
                 # noinspection PyBroadException
                 try:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
+                    db.update_book_status(DB_FILE, ISBN, '1')
                 except:
                     print("Unknown book found!")
 
@@ -299,13 +300,14 @@ class Robot:
 
         print("The received ISBN is " + str(ISBN))
         cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
-        print("The book, according to the information I have in the DB, should be at cell " + str(cell))
+        available = int(db.get_book_status_by_ISBN(DB_FILE, ISBN))
 
-        if cell == -1:
-            # TODO: discuss if this is good for the user
-            # Position -1 means the book is not in the shelf (at least according to the robot's belief)
+        if not available:
+            print("The book is not available, according to what I know")
             socket.send(self.MESSAGE_MISSING_BOOK)
             return
+
+        print("The book, according to the information I have in the DB, should be at cell " + str(cell))
 
         # Now we actually move to that cell
         self.reach_cell(cell)
@@ -328,6 +330,12 @@ class Robot:
     @primary_action
     @disruptive_action
     def full_scan(self, socket=None, target_ISBN=None, *args, **kwargs):
+        # Assume none of the books is in the library
+        all_ISBNs = db.get_all_ISBNs(DB_FILE)
+        for iter in all_ISBNs:
+            ISBN = iter[0]
+            db.update_book_status(DB_FILE, ISBN, '0')
+
         for current_cell in range(0, self.CELLS_PER_ROW):
             self.reach_cell(current_cell)
 

@@ -69,6 +69,20 @@ class TestDB(unittest.TestCase):
         self.assertEqual(main.get_ISBN_by_title(db, 'The Castle'), 9780241197806)
         self.assertIsNone(main.get_ISBN_by_title(db, 'The Wrong Castle'))
 
+    def testGetBookAvailability(self):
+        THE_CASTLE_ISBN = '9780241197806'
+        main.add_book(db, THE_CASTLE_ISBN, 'The Castle', 'Franz Kafka', '1', main.STATUS_AVAILABLE)
+        self.assertEqual(main.get_book_status_by_ISBN(THE_CASTLE_ISBN, main.STATUS_AVAILABLE))
+
+        WEALTH_OF_NATIONS_ISBN = '9781840226881'
+        main.add_book(db, WEALTH_OF_NATIONS_ISBN, 'Wealth of Nations', 'Adam Smith', '0', main.STATUS_AVAILABLE)
+        self.assertEqual(main.get_book_status_by_ISBN(WEALTH_OF_NATIONS_ISBN), main.STATUS_AVAILABLE)
+
+        THUS_SPOKE_ZARAHUSTRA_ISBN = '9780140441185'
+        main.add_book(db, THUS_SPOKE_ZARAHUSTRA_ISBN, 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', '7',
+                      main.STATUS_UNAVAILABLE)
+        self.assertEqual(main.get_book_status_by_ISBN(WEALTH_OF_NATIONS_ISBN), main.STATUS_UNAVAILABLE)
+
 
 if __name__ == '__main__':
     unittest.main()
