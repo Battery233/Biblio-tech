@@ -306,6 +306,7 @@ class Robot:
         print("The received ISBN is " + str(ISBN))
         cell = int(db.get_position_by_ISBN(DB_FILE, ISBN))
         available = int(db.get_book_status_by_ISBN(DB_FILE, ISBN))
+        print("available = " + str(available))
 
         if not available:
             print("The book is not available, according to what I know")
