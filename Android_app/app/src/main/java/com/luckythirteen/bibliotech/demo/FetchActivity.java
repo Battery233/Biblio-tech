@@ -231,7 +231,7 @@ public class FetchActivity extends AppCompatActivity {
                 intent.putExtra("showShelf", 0);
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("books", books);
-                intent.putExtra("bookNumber",chosenBook.getPos());
+                intent.putExtra("bookNumber", chosenBook.getPos());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 try {
@@ -293,13 +293,11 @@ public class FetchActivity extends AppCompatActivity {
         authorTextView.setText(chosenBook.getAuthor());
         titleTextView.setText(chosenBook.getTitle());
         posTextView.setText(formatPosString(chosenBook.getPos()));
-        posTextView.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG );
+        posTextView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 
-    private String formatPosString(String pos)
-    {
-        switch (pos)
-        {
+    private String formatPosString(String pos) {
+        switch (pos) {
             case "0":
                 return "Bottom shelf - First cell";
             case "1":
@@ -383,7 +381,7 @@ public class FetchActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
                                 intent.putExtra("showShelf", 0);
-                                intent.putExtra("bookNumber","-1");
+                                intent.putExtra("bookNumber", "-1");
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelableArrayList("books", books);
                                 intent.putExtras(bundle);
@@ -399,7 +397,7 @@ public class FetchActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
                                 intent.putExtra("showShelf", 2);
-                                intent.putExtra("bookNumber","-1");
+                                intent.putExtra("bookNumber", "-1");
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelableArrayList("books", books);
                                 intent.putExtras(bundle);
@@ -415,7 +413,7 @@ public class FetchActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
                                 intent.putExtra("showShelf", 1);
-                                intent.putExtra("bookNumber","-1");
+                                intent.putExtra("bookNumber", "-1");
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelableArrayList("books", books);
                                 intent.putExtras(bundle);

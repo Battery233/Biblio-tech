@@ -43,6 +43,7 @@ public class Book implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
     @Override
     public void writeToParcel(Parcel arg0, int arg1) {
         // TODO Auto-generated method stub
@@ -53,11 +54,11 @@ public class Book implements Parcelable {
         arg0.writeByte((byte) (available ? 1 : 0));
     }
 
-    public static final Creator CREATOR = new Creator(){
+    public static final Creator CREATOR = new Creator() {
 
         @Override
         public Book createFromParcel(Parcel source) {
-            return new Book(source.readString(),source.readString(),source.readString(),source.readString(),source.readByte() != 0);
+            return new Book(source.readString(), source.readString(), source.readString(), source.readString(), source.readByte() != 0);
         }
 
         @Override

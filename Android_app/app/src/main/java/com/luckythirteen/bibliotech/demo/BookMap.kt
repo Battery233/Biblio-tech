@@ -37,12 +37,12 @@ class BookMap : AppCompatActivity() {
         books = bundle.getParcelableArrayList<Book>("books")
         listSize = books.size
 
-        if(using_3_2_shelf)
+        if (using_3_2_shelf)
             setContentView(R.layout.activity_book_map_all_book_3_2)
-        else if(using_4_2_shelf)
+        else if (using_4_2_shelf)
             setContentView(R.layout.activity_book_map_all_book_4_2)
-        else{
-            Toast.makeText(this,"Bookshelf current not available now", Toast.LENGTH_SHORT).show()
+        else {
+            Toast.makeText(this, "Bookshelf current not available now", Toast.LENGTH_SHORT).show()
             this.finish()
         }
 
@@ -50,22 +50,22 @@ class BookMap : AppCompatActivity() {
 
         when (chosenBook) {
             "0" -> {
-
+                imgArrow0.visibility = View.VISIBLE
             }
             "1" -> {
-
+                imgArrow1.visibility = View.VISIBLE
             }
             "2" -> {
-
+                imgArrow2.visibility = View.VISIBLE
             }
             "3" -> {
-
+                imgArrow3.visibility = View.VISIBLE
             }
             "4" -> {
-
+                imgArrow4.visibility = View.VISIBLE
             }
             "5" -> {
-
+                imgArrow5.visibility = View.VISIBLE
             }
             else -> {
                 // Don't select any book

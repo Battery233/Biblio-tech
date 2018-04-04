@@ -86,8 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
             JsonElement jsonElement = new JsonParser().parse(new String(data));
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-            if(jsonObject.has("scan_interval"))
-            {
+            if (jsonObject.has("scan_interval")) {
                 jsonObject = jsonObject.getAsJsonObject("scan_interval");
                 JsonPrimitive jsonPrimitive = jsonObject.getAsJsonPrimitive("interval");
                 final String interval = jsonPrimitive.getAsString();
@@ -100,18 +99,13 @@ public class SettingsActivity extends AppCompatActivity {
                         intervalText.setText(interval);
                     }
                 });
-            }
-            else if(jsonObject.has("logs"))
-            {
+            } else if (jsonObject.has("logs")) {
                 Log.d(TAG, new String(data));
                 ArrayList<LogEntry> logEntries = getLogEntries(new String(data));
 
-                if(logEntries != null)
-                {
+                if (logEntries != null) {
                     showLogs(logEntries);
-                }
-                else
-                {
+                } else {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -120,13 +114,9 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }
-            else
-            {
+            } else {
                 Log.w(TAG, "Unrecognised JSON received from RPi");
             }
-
-
 
 
         }
@@ -147,10 +137,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBluetoothServiceStateChanged(int state)
-        {
-            if(state == State.STATE_CONNECTED)
-            {
+        public void onBluetoothServiceStateChanged(int state) {
+            if (state == State.STATE_CONNECTED) {
                 messageSender.sendMessage("{\"get_scan_interval\":{}}");
             }
             Log.d(TAG, "BT STATE: " + state);
@@ -163,48 +151,38 @@ public class SettingsActivity extends AppCompatActivity {
         }
     };
 
-    private void showLogs(ArrayList<LogEntry> logEntries)
-    {
+    private void showLogs(ArrayList<LogEntry> logEntries) {
         //TODO: Implement
     }
 
-    private ArrayList<LogEntry> getLogEntries(String s)
-    {
+    private ArrayList<LogEntry> getLogEntries(String s) {
         JsonParser jsonParser = new JsonParser();
         JsonElement jsonElement = jsonParser.parse(s);
 
         ArrayList<LogEntry> temp = new ArrayList<>();
 
-        if(jsonElement.isJsonObject())
-        {
-            try
-            {
+        if (jsonElement.isJsonObject()) {
+            try {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 JsonArray logs = jsonObject.getAsJsonArray("logs");
 
-                for(JsonElement e : logs)
-                {
+                for (JsonElement e : logs) {
                     JsonObject log = e.getAsJsonObject();
                     LogEntry logEntry = new LogEntry(log.get("ISBN").getAsString(), log.get("title").getAsString(), log.get("pos").getAsString());
                     temp.add(logEntry);
                 }
 
                 System.out.println("----------LOG ENTRIES------------------");
-                for(LogEntry e : temp)
-                {
+                for (LogEntry e : temp) {
                     System.out.println(String.format("%s\n%s\n%s\n\n", e.getISBN(), e.getTitle(), e.getTitle()));
                 }
 
                 return temp;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
-        }
-        else
-        {
+        } else {
             Log.w(TAG, "Error in getLogEntries()");
             return null;
         }
