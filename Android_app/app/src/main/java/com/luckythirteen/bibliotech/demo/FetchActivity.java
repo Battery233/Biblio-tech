@@ -730,6 +730,8 @@ public class FetchActivity extends AppCompatActivity {
                 btnGetBook.setVisibility(View.INVISIBLE);
                 helperText.setVisibility(View.VISIBLE);
                 helperArrow.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+                progressText.setVisibility(View.INVISIBLE);
                 helperArrow.startAnimation(arrowAnim);
                 chosenBook = null;
             }
