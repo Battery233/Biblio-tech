@@ -70,7 +70,7 @@ class Robot:
     CELL_WIDTH = 115
     CELLS_PER_ROW = 3
 
-    ROBOT_RIGHT_COORDINATE = 465
+    ROBOT_RIGHT_COORDINATE = 480
 
     TOLERABLE_OFFSET = 5  # mm
 
@@ -153,7 +153,7 @@ class Robot:
 
         """
 
-        coordinates = [165, 305, 445]
+        coordinates = [180, 320, 460]
         row_index = cell % self.CELLS_PER_ROW
 
         return coordinates[row_index]
