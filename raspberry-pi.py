@@ -240,6 +240,11 @@ class Robot:
         self.server.send_to_device(self.server.make_message('horizontal_scan', amount=-self.CELL_WIDTH / 2),
                                    BRICK_HORIZONTAL_MOVEMENT)
 
+        # Do a number of mock attempts to forget about the cached QR code
+        for mock_attempt in range(0, 10):
+            decoded_ISBN, offset = vision.read_QR(self.camera)
+        decoded_ISBN = None
+
         found_ISBN = None
         print('  Begin scanning for ISBN (left -> right)...')
         for attempt in range(20):
