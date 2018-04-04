@@ -68,6 +68,8 @@
     <string name="settingsScanIntervalLabel">Scan interval:</string>
     <string name="settingsScanPlaceholder">Retrieving...</string>
     <string name="btnSettingsUpdateScanInterval">Set interval</string>
+    <string name="btnSettingsClearLogs">Clear logs</string>
+    <string name="btnSettingsViewLogs">View logs</string>
 
     <string name="slogan">The future library</string>
 

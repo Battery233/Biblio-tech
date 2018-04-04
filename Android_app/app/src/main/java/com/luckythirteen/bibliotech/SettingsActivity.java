@@ -17,15 +17,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
+import com.luckythirteen.bibliotech.brickapi.obj.Book;
+import com.luckythirteen.bibliotech.brickapi.obj.LogEntry;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import co.lujun.lmbluetoothsdk.BluetoothController;
@@ -39,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText textMacAddress;
     private TextView bluetoothStatus, intervalText;
     private ImageButton reconnectButton;
-    private Button setInterval;
+    private Button setInterval, viewLogs;
 
 
     //public static final String EV33_MAC = "AC:FD:CE:2B:82:F1"; // COLIN'S
@@ -81,18 +85,47 @@ public class SettingsActivity extends AppCompatActivity {
             Log.d(TAG, "Received: " + new String(data));
             JsonElement jsonElement = new JsonParser().parse(new String(data));
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            jsonObject = jsonObject.getAsJsonObject("scan_interval");
-            JsonPrimitive jsonPrimitive = jsonObject.getAsJsonPrimitive("interval");
-            final String interval = jsonPrimitive.getAsString();
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    intervalText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    intervalText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-                    intervalText.setText(interval);
+            if(jsonObject.has("scan_interval"))
+            {
+                jsonObject = jsonObject.getAsJsonObject("scan_interval");
+                JsonPrimitive jsonPrimitive = jsonObject.getAsJsonPrimitive("interval");
+                final String interval = jsonPrimitive.getAsString();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        intervalText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        intervalText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+                        intervalText.setText(interval);
+                    }
+                });
+            }
+            else if(jsonObject.has("logs"))
+            {
+                Log.d(TAG, new String(data));
+                ArrayList<LogEntry> logEntries = getLogEntries(new String(data));
+
+                if(logEntries != null)
+                {
+                    showLogs(logEntries);
                 }
-            });
+                else
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Context context = SettingsActivity.super.getApplicationContext();
+                            Toast.makeText(context, "Logs are empty!", Toast.LENGTH_SHORT);
+                        }
+                    });
+                }
+            }
+            else
+            {
+                Log.w(TAG, "Unrecognised JSON received from RPi");
+            }
+
 
 
 
@@ -130,6 +163,53 @@ public class SettingsActivity extends AppCompatActivity {
         }
     };
 
+    private void showLogs(ArrayList<LogEntry> logEntries)
+    {
+        //TODO: Implement
+    }
+
+    private ArrayList<LogEntry> getLogEntries(String s)
+    {
+        JsonParser jsonParser = new JsonParser();
+        JsonElement jsonElement = jsonParser.parse(s);
+
+        ArrayList<LogEntry> temp = new ArrayList<>();
+
+        if(jsonElement.isJsonObject())
+        {
+            try
+            {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                JsonArray logs = jsonObject.getAsJsonArray("logs");
+
+                for(JsonElement e : logs)
+                {
+                    JsonObject log = e.getAsJsonObject();
+                    LogEntry logEntry = new LogEntry(log.get("ISBN").getAsString(), log.get("title").getAsString(), log.get("pos").getAsString());
+                    temp.add(logEntry);
+                }
+
+                System.out.println("----------LOG ENTRIES------------------");
+                for(LogEntry e : temp)
+                {
+                    System.out.println(String.format("%s\n%s\n%s\n\n", e.getISBN(), e.getTitle(), e.getTitle()));
+                }
+
+                return temp;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else
+        {
+            Log.w(TAG, "Error in getLogEntries()");
+            return null;
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -144,6 +224,8 @@ public class SettingsActivity extends AppCompatActivity {
         Button buttonEV33 = findViewById(R.id.btnEV33);
         Button buttonRPI = findViewById(R.id.btnRPI);
         Button buttonSave = findViewById(R.id.btnSaveChanges);
+
+        viewLogs = findViewById(R.id.btnViewLogs);
         intervalText = findViewById(R.id.txtInterval);
         setInterval = findViewById(R.id.btnSetInterval);
 
@@ -205,6 +287,13 @@ public class SettingsActivity extends AppCompatActivity {
                 // Only retry if we're not already connected
                 if (bluetoothController.getConnectionState() != 3)
                     bluetoothController.connect(SettingsActivity.RPI_MAC);
+            }
+        });
+
+        viewLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messageSender.sendMessage("{\"get_logs\":{}}");
             }
         });
     }
