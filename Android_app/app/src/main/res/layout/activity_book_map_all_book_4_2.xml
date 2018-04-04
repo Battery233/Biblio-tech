@@ -323,4 +323,88 @@
         app:layout_constraintStart_toStartOf="@+id/book7"
         app:layout_constraintTop_toTopOf="@+id/book7" />
 
+    <ImageView
+        android:id="@+id/imgArrow0"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/contentDescription"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/longWood"
+        app:layout_constraintEnd_toEndOf="@+id/book0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageView
+        android:id="@+id/imgArrow1"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/contentDescription"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/longWood"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_v2"
+        app:layout_constraintStart_toStartOf="@+id/book1"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageView
+        android:id="@+id/imgArrow2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/contentDescription"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/longWood"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/book2"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageView
+        android:id="@+id/imgArrow3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/contentDescription"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/longWood2"
+        app:layout_constraintEnd_toEndOf="@+id/book3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageView
+        android:id="@+id/imgArrow4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/contentDescription"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/longWood2"
+        app:layout_constraintEnd_toEndOf="@+id/book4"
+        app:layout_constraintStart_toStartOf="@+id/book4"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageView
+        android:id="@+id/imgArrow5"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/contentDescription"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/longWood2"
+        app:layout_constraintEnd_toEndOf="@+id/book5"
+        app:layout_constraintStart_toStartOf="@+id/book5"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
 </android.support.constraint.ConstraintLayout>
