@@ -1,9 +1,12 @@
 package com.luckythirteen.bibliotech;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText textMacAddress;
     private TextView bluetoothStatus, intervalText;
     private ImageButton reconnectButton;
+    private Button setInterval;
 
 
     //public static final String EV33_MAC = "AC:FD:CE:2B:82:F1"; // COLIN'S
@@ -84,6 +88,8 @@ public class SettingsActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    intervalText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    intervalText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
                     intervalText.setText(interval);
                 }
             });
@@ -139,6 +145,7 @@ public class SettingsActivity extends AppCompatActivity {
         Button buttonRPI = findViewById(R.id.btnRPI);
         Button buttonSave = findViewById(R.id.btnSaveChanges);
         intervalText = findViewById(R.id.txtInterval);
+        setInterval = findViewById(R.id.btnSetInterval);
 
         textMacAddress = findViewById(R.id.editMac);
         textMacAddress.setText(userPrefsManager.getMacAddress());
@@ -146,6 +153,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
         reconnectButton = findViewById(R.id.btnReconnect);
+
+        intervalText.setInputType(InputType.TYPE_NULL);
 
         buttonEV13.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +184,18 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveNewMac(textMacAddress.getText().toString());
+            }
+        });
+
+        final Context context = this.getApplicationContext();
+        setInterval.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newInterval = intervalText.getText().toString();
+                String message = String.format("{\"set_scan_interval\":{\"interval\":%s}}", newInterval);
+                messageSender.sendMessage(message);
+                Toast.makeText(context, "Updated interval!", Toast.LENGTH_SHORT).show();
+
             }
         });
 

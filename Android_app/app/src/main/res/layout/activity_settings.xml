@@ -102,11 +102,11 @@
         app:layout_constraintTop_toBottomOf="@+id/editMac" />
 
     <Button
-        android:id="@+id/btnEV2"
+        android:id="@+id/btnSetInterval"
         android:layout_width="130dp"
         android:layout_height="52dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="11dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:fontFamily="@font/adam"
