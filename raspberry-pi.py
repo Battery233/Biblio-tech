@@ -278,6 +278,7 @@ class Robot:
         print(' Finished scanning for ISBN...; found ISBN ' + str(found_ISBN))
 
         # Give the robot some breathing time after it finished scanning
+        print('Update book with ISBN ' + str(found_ISBN) + ' to now be at cell ' + str(cell))
         time.sleep(5)
 
         if found_ISBN is not None:
@@ -361,8 +362,8 @@ class Robot:
                 self.send_message(socket, self.MESSAGE_FOUND_BOOK)
                 return
 
-        for current_cell in range(2 * self.CELLS_PER_ROW, self.CELLS_PER_ROW, -1):
-            self.reach_cell(current_cell - 1)
+        for current_cell in range(2 * self.CELLS_PER_ROW - 1, self.CELLS_PER_ROW - 1, -1):
+            self.reach_cell(current_cell)
 
             if self.full_scan_cell(current_cell, socket=socket, target_ISBN=target_ISBN):
                 self.send_message(socket, self.MESSAGE_FOUND_BOOK)
