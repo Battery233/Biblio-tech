@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -222,6 +223,23 @@ public class FetchActivity extends AppCompatActivity {
                     bluetoothController.connect(targetMac);
             }
         });
+
+        posTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
+                intent.putExtra("showShelf", 0);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("books", books);
+                intent.putExtra("bookNumber",chosenBook.getPos());
+                intent.putExtras(bundle);
+                startActivity(intent);
+                try {
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                } catch (Exception ignored) {
+                }
+            }
+        });
     }
 
     /**
@@ -275,6 +293,7 @@ public class FetchActivity extends AppCompatActivity {
         authorTextView.setText(chosenBook.getAuthor());
         titleTextView.setText(chosenBook.getTitle());
         posTextView.setText(formatPosString(chosenBook.getPos()));
+        posTextView.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG );
     }
 
     private String formatPosString(String pos)
@@ -364,6 +383,7 @@ public class FetchActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
                                 intent.putExtra("showShelf", 0);
+                                intent.putExtra("bookNumber","-1");
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelableArrayList("books", books);
                                 intent.putExtras(bundle);
@@ -379,6 +399,7 @@ public class FetchActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
                                 intent.putExtra("showShelf", 2);
+                                intent.putExtra("bookNumber","-1");
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelableArrayList("books", books);
                                 intent.putExtras(bundle);
@@ -394,6 +415,7 @@ public class FetchActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(FetchActivity.super.getApplicationContext(), BookMap.class);
                                 intent.putExtra("showShelf", 1);
+                                intent.putExtra("bookNumber","-1");
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelableArrayList("books", books);
                                 intent.putExtras(bundle);

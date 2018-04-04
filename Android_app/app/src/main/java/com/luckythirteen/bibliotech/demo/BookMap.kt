@@ -26,11 +26,13 @@ class BookMap : AppCompatActivity() {
     private var listSize = 0
     private val using_4_2_shelf = false
     private val using_3_2_shelf = true
+    private var chosenBook = "-1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intent = intent
         showShelf = intent.getIntExtra("showShelf", 0)
+        chosenBook = intent.getStringExtra("bookNumber")
         val bundle = getIntent().extras
         books = bundle.getParcelableArrayList<Book>("books")
         listSize = books.size
@@ -45,6 +47,31 @@ class BookMap : AppCompatActivity() {
         }
 
         supportActionBar?.hide()
+
+        when (chosenBook) {
+            "0" -> {
+
+            }
+            "1" -> {
+
+            }
+            "2" -> {
+
+            }
+            "3" -> {
+
+            }
+            "4" -> {
+
+            }
+            "5" -> {
+
+            }
+            else -> {
+                // Don't select any book
+            }
+        }
+
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         if (showShelf == 0) {
             Toast.makeText(this, "Show all books in shelf", Toast.LENGTH_SHORT).show()
