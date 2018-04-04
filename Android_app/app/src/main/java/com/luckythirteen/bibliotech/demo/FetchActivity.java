@@ -248,17 +248,19 @@ public class FetchActivity extends AppCompatActivity {
     private void onSelectBookButton() {
         Log.d(TAG, "Select book button pressed");
 
-        if (!usingInnerDB) {
-            if (!queriedDatabase) {
-                try {
+        if (!usingInnerDB)
+        {
+            try
+            {
                     sendMessageWithFeedback(new QueryDB(null));
-                    if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
+                    if (bluetoothController.getConnectionState() == State.STATE_CONNECTED)
+                    {
                         progressBar.setVisibility(View.VISIBLE);
                     }
-                } catch (Exception ignored) {
-                }
-            } else if (books != null) {
-                showBookList(this.books);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
             }
         } else {
             showBookList(getBooks());
