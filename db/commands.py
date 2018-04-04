@@ -18,6 +18,7 @@ def command_create_logs_table():
     return '''CREATE TABLE %s
                  (%s)''' % (LOGS_TABLE_NAME, LOGS_TABLE_SCHEMA)
 
+
 def command_clear_logs():
     return "DELETE FROM %s" % LOGS_TABLE_NAME
 
@@ -53,6 +54,9 @@ def command_get_all_ISBNs():
 
 def command_get_position_by_ISBN(isbn):
     return "SELECT position FROM %s WHERE ISBN=%s" % (BOOKS_TABLE_NAME, isbn)
+
+def command_get_title_by_ISBN(isbn):
+    return "SELECT title FROM %s WHERE ISBN=%s" % (BOOKS_TABLE_NAME, isbn)
 
 
 def command_get_position_by_title(title):
