@@ -82,7 +82,7 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 try {
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                }catch (e: Exception){
+                } catch (e: Exception) {
                 }
 
                 //finish the activity and jump to main activity
