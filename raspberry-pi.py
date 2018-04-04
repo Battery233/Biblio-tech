@@ -247,7 +247,7 @@ class Robot:
 
         # Give the robot some breathing time to make sure it reaches the end of the cell
         # before returning it to the beginning of the cell
-        time.sleep(3)
+        time.sleep(5)
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
 
@@ -265,7 +265,7 @@ class Robot:
         print(' Finished scanning for ISBN...; found ISBN ' + str(found_ISBN))
 
         # Give the robot some breathing time after it finished scanning
-        time.sleep(3)
+        time.sleep(5)
 
         if found_ISBN is not None:
             self.aligned_to_book = found_ISBN
