@@ -159,6 +159,14 @@ class Robot:
         return coordinates[row_index]
 
     def reset_position(self):
+        if self.current_shelf_level == 1:
+            # We are on the top row and want to reach the 0 cell, on the bottom row,
+            # so first we do the vertical movement before the horizontal one
+            self.server.send_to_device(self.server.make_message('down'), BRICK_VERTICAL_MOVEMENT)
+            print("[reach_cell]: waiting for motor to free")
+            time.sleep(8)
+            self.current_shelf_level = 0
+
         self.server.send_to_device(self.server.make_message(status.MESSAGE_RESET_POSITION), BRICK_HORIZONTAL_MOVEMENT)
         self.current_x_coordinate = 0
 
@@ -314,7 +322,7 @@ class Robot:
 
         if not available:
             print("The book is not available, according to what I know")
-            socket.send(self.MESSAGE_MISSING_BOOK)
+            self.send_message(socket, self.MESSAGE_MISSING_BOOK)
             return
 
         print("The book, according to the information I have in the DB, should be at cell " + str(cell))
@@ -427,7 +435,6 @@ class Robot:
                 # Set book to unavailable in database (TODO: discuss about this and make sure it is consistent with
                 # update_book_position)
                 db.update_book_status(DB_FILE, ISBN, '0')
-                self.reach_cell(0)
                 self.reset_position()
             else:
                 socket.send(self.MESSAGE_BOOK_NOT_ALIGNED)
