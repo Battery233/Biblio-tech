@@ -60,8 +60,8 @@ public class FetchActivity extends AppCompatActivity {
 
     private ArrayList<Book> books;
     private Button btnGetBook;
-    private TextView authorLabel, titleLabel, bluetoothStatus;
-    private TextView titleTextView, authorTextView;
+    private TextView authorLabel, titleLabel, posLabel, bluetoothStatus;
+    private TextView titleTextView, authorTextView, posTextView;
     private ImageButton reconnectButton;
     private TextView helperText;
     private ImageView helperArrow;
@@ -189,8 +189,10 @@ public class FetchActivity extends AppCompatActivity {
 
         authorLabel = findViewById(R.id.txtAuthorLabel);
         titleLabel = findViewById(R.id.txtTitleLabel);
+        posLabel = findViewById(R.id.txtPosLabel);
         titleTextView = findViewById(R.id.txtTitle);
         authorTextView = findViewById(R.id.txtAuthor);
+        posTextView = findViewById(R.id.txtPos);
 
         arrowAnim = AnimationUtils.loadAnimation(this.getApplicationContext(), R.anim.hover);
         helperArrow.startAnimation(arrowAnim);
@@ -266,10 +268,34 @@ public class FetchActivity extends AppCompatActivity {
         authorTextView.setVisibility(View.VISIBLE);
         titleTextView.setVisibility(View.VISIBLE);
         btnGetBook.setVisibility(View.VISIBLE);
+        posLabel.setVisibility(View.VISIBLE);
+        posTextView.setVisibility(View.VISIBLE);
 
         // Set title and author text elements
         authorTextView.setText(chosenBook.getAuthor());
         titleTextView.setText(chosenBook.getTitle());
+        posTextView.setText(formatPosString(chosenBook.getPos()));
+    }
+
+    private String formatPosString(String pos)
+    {
+        switch (pos)
+        {
+            case "0":
+                return "Bottom shelf - First cell";
+            case "1":
+                return "Bottom shelf - Middle cell";
+            case "2":
+                return "Bottom shelf - Last cell";
+            case "3":
+                return "Top shelf - First cell";
+            case "4":
+                return "Top shelf - Middle cell";
+            case "5":
+                return "Top shelf - Last cell";
+            default:
+                return "Unknown";
+        }
     }
 
     private void onGetButton() {
@@ -675,6 +701,8 @@ public class FetchActivity extends AppCompatActivity {
             public void run() {
                 titleTextView.setVisibility(View.INVISIBLE);
                 titleLabel.setVisibility(View.INVISIBLE);
+                posLabel.setVisibility(View.INVISIBLE);
+                posTextView.setVisibility(View.INVISIBLE);
                 authorLabel.setVisibility(View.INVISIBLE);
                 authorTextView.setVisibility(View.INVISIBLE);
                 btnGetBook.setVisibility(View.INVISIBLE);

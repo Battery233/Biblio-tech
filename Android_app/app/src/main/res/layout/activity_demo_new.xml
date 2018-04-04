@@ -162,6 +162,39 @@
         tools:targetApi="o" />
 
     <TextView
+        android:id="@+id/txtPos"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="8dp"
+        android:autoSizeMaxTextSize="24dp"
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/adam"
+        android:text="@string/fetchAuthorPlaceholder"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/txtAuthor"
+        app:layout_constraintTop_toTopOf="@+id/txtPosLabel"
+        tools:targetApi="o" />
+
+    <TextView
+        android:id="@+id/txtPosLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:fontFamily="@font/adam"
+        android:text="@string/fetchPosLabel"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/txtAuthorLabel"
+        app:layout_constraintTop_toBottomOf="@+id/txtAuthorLabel" />
+
+    <TextView
         android:id="@+id/txtSelectHelp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
