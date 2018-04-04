@@ -159,8 +159,6 @@ class Robot:
         return coordinates[row_index]
 
     def reset_position(self):
-        self.reach_cell(0)
-
         self.server.send_to_device(self.server.make_message(status.MESSAGE_RESET_POSITION), BRICK_HORIZONTAL_MOVEMENT)
         self.current_x_coordinate = 0
 
@@ -429,6 +427,7 @@ class Robot:
                 # Set book to unavailable in database (TODO: discuss about this and make sure it is consistent with
                 # update_book_position)
                 db.update_book_status(DB_FILE, ISBN, '0')
+                self.reach_cell(0)
                 self.reset_position()
             else:
                 socket.send(self.MESSAGE_BOOK_NOT_ALIGNED)
