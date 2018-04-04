@@ -97,16 +97,19 @@
         android:id="@+id/txtTitleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/adam"
         android:text="@string/fetchTitleLabel"
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnViewBooks"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fetch" />
+        app:layout_constraintTop_toBottomOf="@+id/fetch"
+        app:layout_constraintVertical_bias="0.17000002" />
 
     <TextView
         android:id="@+id/txtTitle"
@@ -132,15 +135,18 @@
         android:id="@+id/txtAuthorLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/adam"
         android:text="@string/fetchAuthorLabel"
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnViewBooks"
         app:layout_constraintStart_toStartOf="@+id/txtTitleLabel"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitleLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/fetch"
+        app:layout_constraintVertical_bias="0.45" />
 
     <TextView
         android:id="@+id/txtAuthor"
@@ -184,15 +190,17 @@
         android:id="@+id/txtPosLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/adam"
         android:text="@string/fetchPosLabel"
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnViewBooks"
         app:layout_constraintStart_toStartOf="@+id/txtAuthorLabel"
-        app:layout_constraintTop_toBottomOf="@+id/txtAuthorLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/fetch"
+        app:layout_constraintVertical_bias="0.7" />
 
     <TextView
         android:id="@+id/txtSelectHelp"
