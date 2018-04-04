@@ -3,7 +3,6 @@ package com.luckythirteen.bibliotech;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
@@ -16,18 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.luckythirteen.bibliotech.brickapi.MessageSender;
-import com.luckythirteen.bibliotech.brickapi.obj.Book;
 import com.luckythirteen.bibliotech.brickapi.obj.LogEntry;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -110,7 +105,7 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Context context = SettingsActivity.super.getApplicationContext();
-                            Toast.makeText(context, "Logs are empty!", Toast.LENGTH_SHORT);
+                            Toast.makeText(context, "Logs are empty!", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
