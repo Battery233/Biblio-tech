@@ -9,6 +9,7 @@ public enum MessageType {
     bookList,
     missingBook,
     foundBook,
+    scan_interval,
     message,
     busy,
     malFormedJson,

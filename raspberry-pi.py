@@ -70,7 +70,7 @@ class Robot:
     CELL_WIDTH = 115
     CELLS_PER_ROW = 3
 
-    ROBOT_RIGHT_COORDINATE = 465
+    ROBOT_RIGHT_COORDINATE = 480
 
     TOLERABLE_OFFSET = 5  # mm
 
@@ -102,6 +102,7 @@ class Robot:
 
         print('Waiting for bricks to be connected...')
 
+        self.scan_interval = 60  # minutes
         while not self.server.bricks_connected():
             time.sleep(1)
 
@@ -126,7 +127,6 @@ class Robot:
         self.reset_position()
 
         # start periodic scanning
-        self.scan_interval = 60  # minutes
         while True:
             time.sleep(self.scan_interval * 60)  # multiply by 60 to make'em actually minutes
             self.full_scan()
@@ -153,7 +153,7 @@ class Robot:
 
         """
 
-        coordinates = [165, 305, 445]
+        coordinates = [180, 320, 460]
         row_index = cell % self.CELLS_PER_ROW
 
         return coordinates[row_index]
@@ -247,7 +247,7 @@ class Robot:
 
         # Give the robot some breathing time to make sure it reaches the end of the cell
         # before returning it to the beginning of the cell
-        time.sleep(3)
+        time.sleep(5)
 
         print('  Continue scanning for ISBN...current state of HORIZONTAL BRICK ')
 
@@ -265,7 +265,7 @@ class Robot:
         print(' Finished scanning for ISBN...; found ISBN ' + str(found_ISBN))
 
         # Give the robot some breathing time after it finished scanning
-        time.sleep(3)
+        time.sleep(5)
 
         if found_ISBN is not None:
             self.aligned_to_book = found_ISBN
@@ -275,7 +275,7 @@ class Robot:
                 # noinspection PyBroadException
                 try:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
-                    db.update_book_status(DB_FILE, ISBN, '1')
+                    db.update_book_status(DB_FILE, found_ISBN, '1')
                 except:
                     print("Unknown book found!")
 
@@ -520,7 +520,7 @@ class Robot:
             message = self.server.make_message(status.MESSAGE_SCAN_INTERVAL, interval=self.scan_interval)
             socket.send(message)
         elif command_type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
-            self.scan_interval = command_args['interval']
+            self.scan_interval = int(command_args['interval'])
         else:
             print("unknown message received")
 

@@ -182,29 +182,29 @@ public class MainActivity extends AppCompatActivity {
                 });
                 alertDialog.setNegativeButton("cancel", null);
                 alertDialog.show();
-            }else{
+            } else {
                 final EditText input = new EditText(this);
                 input.setGravity(Gravity.CENTER);
                 input.setHint("Input password");
                 input.setHintTextColor(getResources().getColor(R.color.colorHint));
-                input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(10)});
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
                 alertDialog.setTitle("Log in as admin?");
                 alertDialog.setView(input);
-                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String inputPassword = input.getText().toString();
-                        if(Objects.equals(inputPassword, "")){
+                        if (Objects.equals(inputPassword, "")) {
                             Toast.makeText(MainActivity.super.getApplicationContext(), "You really need to input something!", Toast.LENGTH_SHORT).show();
-                        }else if(Objects.equals(inputPassword,"brownie")||Objects.equals(inputPassword,"Brownie")){
+                        } else if (Objects.equals(inputPassword, "brownie") || Objects.equals(inputPassword, "Brownie")) {
                             admin = true;
                             TextView text = findViewById(R.id.textView2);
                             String admin = "admin";
                             text.setText(admin);
                             Toast.makeText(MainActivity.super.getApplicationContext(), "Login success!", Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             Toast.makeText(MainActivity.super.getApplicationContext(), "Wrong password!", Toast.LENGTH_SHORT).show();
                         }
                     }
