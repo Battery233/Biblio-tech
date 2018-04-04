@@ -11,6 +11,7 @@
     <string name="selectBookButton">Browse books</string>
     <string name="fetchTitleLabel">Title:</string>
     <string name="fetchAuthorLabel">Author:</string>
+    <string name="fetchPosLabel">Position:</string>
     <string name="fetchAuthorPlaceholder">Brian Clegg</string>
     <string name="fetchTitlePlaceholder">Big Data How the Information Revolution Is Transforming Our Lives</string>
     <string name="fetchBookListTitle">Select a book</string>
