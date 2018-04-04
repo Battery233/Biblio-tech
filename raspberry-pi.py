@@ -159,6 +159,8 @@ class Robot:
         return coordinates[row_index]
 
     def reset_position(self):
+        self.reach_cell(0)
+
         self.server.send_to_device(self.server.make_message(status.MESSAGE_RESET_POSITION), BRICK_HORIZONTAL_MOVEMENT)
         self.current_x_coordinate = 0
 
