@@ -275,7 +275,7 @@ class Robot:
                 # noinspection PyBroadException
                 try:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
-                    db.update_book_status(DB_FILE, ISBN, '1')
+                    db.update_book_status(DB_FILE, found_ISBN, '1')
                 except:
                     print("Unknown book found!")
 
@@ -520,7 +520,7 @@ class Robot:
             message = self.server.make_message(status.MESSAGE_SCAN_INTERVAL, interval=self.scan_interval)
             socket.send(message)
         elif command_type == status.MESSAGE_SET_SCAN_INTERVAL and len(command_args) == 1:
-            self.scan_interval = command_args['interval']
+            self.scan_interval = int(command_args['interval'])
         else:
             print("unknown message received")
 
