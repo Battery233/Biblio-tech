@@ -288,6 +288,7 @@ class Robot:
                 # noinspection PyBroadException
                 try:
                     db.update_book_position(DB_FILE, str(found_ISBN), str(cell))
+                    print('Update book with ISBN ' + str(found_ISBN) + ' to now be at cell ' + str(cell))
                     db.update_book_status(DB_FILE, found_ISBN, '1')
                 except:
                     print("Unknown book found!")
