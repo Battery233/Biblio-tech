@@ -1,3 +1,7 @@
+MESSAGE_GET_LOGS = 'get_logs'
+MESSAGE_CLEAR_LOGS = 'clear_logs'
+MESSAGE_LOGS = 'logs'
+
 MESSAGE_FOUND_BOOK = 'foundBook'
 MESSAGE_SCAN_COMPLETE = 'scan_over'
 

@@ -21,6 +21,16 @@ def create_book_table(db):
     conn.commit()
     conn.close()
 
+def create_logs_table(db):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    # Create table
+    c.execute(commands.command_create_logs_table())
+
+    conn.commit()
+    conn.close()
+
 
 def flush_db(db):
     # Physically remove db file
@@ -78,6 +88,38 @@ def add_book(db, ISBN_all_type, title_all_type, author_all_type, position_all_ty
     conn.commit()
     conn.close()
 
+
+def get_logs(db):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    # Get all books
+    c.execute(commands.command_select_all(commands.LOGS_TABLE_NAME))
+    logs = c.fetchall()
+    print("[DBS] running get_logs in db.main")
+
+    conn.close()
+
+    return logs
+
+def clear_logs(db):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    # Delete all table entries
+    c.execute(commands.command_clear_logs())
+
+    conn.commit()
+    conn.close()
+
+def add_log(db, position, ISBN, title='unknown'):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    c.execute(commands.command_add_log(position, ISBN, title))
+
+    conn.commit()
+    conn.close()
 
 def get_books(db):
     conn = sqlite3.connect(db)
@@ -138,6 +180,20 @@ def get_all_ISBNs(db):
 
     return ISBNs
 
+def get_title_by_ISBN(db, ISBN):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    c.execute(commands.command_get_title_by_ISBN(int(ISBN)))
+
+    row = c.fetchone()
+
+    conn.close()
+
+    if row is not None:
+        return row[0]
+
+    return None
 
 def get_position_by_ISBN(db, ISBN):
     conn = sqlite3.connect(db)

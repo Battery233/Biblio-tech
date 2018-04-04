@@ -88,6 +88,8 @@ class Robot:
         # Create sample production.db in root folder
         db.flush_db(DB_FILE)
         db.create_book_table(DB_FILE)
+        db.create_logs_table(DB_FILE)
+
         db.add_sample_books(DB_FILE)
 
         # Create bluetooth server and start it listening on a new thread
@@ -277,6 +279,13 @@ class Robot:
                 except:
                     print("Unknown book found!")
 
+                title = db.get_title_by_ISBN(DB_FILE, found_ISBN)
+                if title:
+                    db.add_log(DB_FILE, str(cell), found_ISBN, title=title)
+                else:
+                    db.add_log(DB_FILE, str(cell), found_ISBN)
+
+
         if found_ISBN == target_ISBN:
             return True
         return False
@@ -455,6 +464,26 @@ class Robot:
                 socket.send(json.dumps(message))
             else:
                 raise ValueError('Invalid arguments for queryDB')
+
+        elif command_type == status.MESSAGE_GET_LOGS:
+            query_result = db.get_logs(DB_FILE)
+            built_query = []
+
+            for i, book in enumerate(query_result):
+                book_dict = {
+                    'ISBN': query_result[i][0],
+                    'title': query_result[i][1],
+                    'pos': int(query_result[i][3]),
+                }
+                built_query.append(book_dict)
+
+            print(built_query)
+            message = {status.MESSAGE_LOGS: built_query}
+            socket.send(json.dumps(message))
+
+        elif command_type == status.MESSAGE_CLEAR_LOGS:
+            db.clear_logs(DB_FILE)
+            print('logs cleared in database')
 
         elif command_type == 'close':
             self.server.close_server()
