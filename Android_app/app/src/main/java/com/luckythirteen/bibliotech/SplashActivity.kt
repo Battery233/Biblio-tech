@@ -87,7 +87,7 @@ class SplashActivity : AppCompatActivity() {
 
                 //finish the activity and jump to main activity
                 this.finish()
-            }, 3000)
+            }, 1)
         }
     }
 

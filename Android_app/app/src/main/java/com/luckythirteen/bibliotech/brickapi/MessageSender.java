@@ -36,7 +36,7 @@ public class MessageSender {
      * @param s String to send
      * @return True if succeeded, false otherwise
      */
-    private boolean sendMessage(String s) {
+    public boolean sendMessage(String s) {
         try {
             if (bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
                 bluetoothController.write(s.getBytes());

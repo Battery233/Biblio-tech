@@ -102,6 +102,7 @@ class Robot:
 
         print('Waiting for bricks to be connected...')
 
+        self.scan_interval = 60  # minutes
         while not self.server.bricks_connected():
             time.sleep(1)
 
@@ -126,7 +127,6 @@ class Robot:
         self.reset_position()
 
         # start periodic scanning
-        self.scan_interval = 60  # minutes
         while True:
             time.sleep(self.scan_interval * 60)  # multiply by 60 to make'em actually minutes
             self.full_scan()

@@ -56,14 +56,18 @@
 
     <string name="contentDescription">Not given</string>
 
-    <string name="txtSettingsMacTitle">MAC Address</string>
+    <string name="txtSettingsMacTitle">MAC Address:</string>
     <string name="btnSettingsLoadEV33">Load EV33</string>
     <string name="btnSettingsLoadEV13">Load EV13</string>
     <string name="btnSettingsLoadRPI">Load RPI</string>
     <string name="btnSettingsSave">Save</string>
 
-    <string name="msgSaveSuccessful">Saved successfully!</string>
-    <string name="msgSaveUnsuccessful">Failed to save</string>
+    <string name="msgSaveSuccessful">Loaded and stored successfully!</string>
+    <string name="msgSaveUnsuccessful">Failed to load</string>
+
+    <string name="settingsScanIntervalLabel">Scan interval:</string>
+    <string name="settingsScanPlaceholder">Retrieving...</string>
+    <string name="btnSettingsUpdateScanInterval">Set interval</string>
 
     <string name="slogan">The future library</string>
 

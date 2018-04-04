@@ -1,26 +1,57 @@
 package com.luckythirteen.bibliotech;
 
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.luckythirteen.bibliotech.brickapi.MessageSender;
 import com.luckythirteen.bibliotech.storage.UserPrefsManager;
+
+import org.json.JSONObject;
+
+import java.util.UUID;
+
+import co.lujun.lmbluetoothsdk.BluetoothController;
+import co.lujun.lmbluetoothsdk.base.BluetoothListener;
+import co.lujun.lmbluetoothsdk.base.State;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private UserPrefsManager userPrefsManager;
 
     private EditText textMacAddress;
+    private TextView bluetoothStatus, intervalText;
+    private ImageButton reconnectButton;
+
 
     //public static final String EV33_MAC = "AC:FD:CE:2B:82:F1"; // COLIN'S
     private static final String EV33_MAC = "B0:B4:48:76:E7:86";
     private static final String EV13_MAC = "B0:B4:48:76:A2:C9";
     private static final String RPI_MAC = "B8:27:EB:04:8B:94";
+
+    private static final String TAG = "SettingsActivity";
+
+    // BluetoothController object for creating a connection to the EV3
+    private static BluetoothController bluetoothController;
+
+    // UUID of bluetooth connection (must be set the same on the EV3 bluetooth server)
+    public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    private MessageSender messageSender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +59,78 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         userPrefsManager = new UserPrefsManager(this.getApplicationContext());
         setupUI();
+
+        // For classic bluetooth
+        bluetoothController = BluetoothController.getInstance().build(this);
+        bluetoothController.setAppUuid(MY_UUID);
+
+        bluetoothController.setBluetoothListener(bluetoothListener);
+        bluetoothController.connect(SettingsActivity.RPI_MAC);
+
+        messageSender = new MessageSender(bluetoothController);
+
+    }
+
+    private final BluetoothListener bluetoothListener = new BluetoothListener() {
+        @Override
+        public void onReadData(BluetoothDevice device, byte[] data) {
+            Log.d(TAG, "Received: " + new String(data));
+            JsonElement jsonElement = new JsonParser().parse(new String(data));
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            jsonObject = jsonObject.getAsJsonObject("scan_interval");
+            JsonPrimitive jsonPrimitive = jsonObject.getAsJsonPrimitive("interval");
+            final String interval = jsonPrimitive.getAsString();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    intervalText.setText(interval);
+                }
+            });
+
+
+
+        }
+
+        @Override
+        public void onActionStateChanged(int preState, int state) {
+
+        }
+
+        @Override
+        public void onActionDiscoveryStateChanged(String discoveryState) {
+
+        }
+
+        @Override
+        public void onActionScanModeChanged(int preScanMode, int scanMode) {
+
+        }
+
+        @Override
+        public void onBluetoothServiceStateChanged(int state)
+        {
+            if(state == State.STATE_CONNECTED)
+            {
+                messageSender.sendMessage("{\"get_scan_interval\":{}}");
+            }
+            Log.d(TAG, "BT STATE: " + state);
+            updateBluetoothStatusUI(state);
+        }
+
+        @Override
+        public void onActionDeviceFound(BluetoothDevice device, short rssi) {
+
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+        updateBluetoothStatusUI(bluetoothController.getConnectionState());
+        bluetoothController = BluetoothController.getInstance();
+        bluetoothController.setBluetoothListener(bluetoothListener);
     }
 
     private void setupUI() {
@@ -35,14 +138,20 @@ public class SettingsActivity extends AppCompatActivity {
         Button buttonEV33 = findViewById(R.id.btnEV33);
         Button buttonRPI = findViewById(R.id.btnRPI);
         Button buttonSave = findViewById(R.id.btnSaveChanges);
+        intervalText = findViewById(R.id.txtInterval);
 
         textMacAddress = findViewById(R.id.editMac);
         textMacAddress.setText(userPrefsManager.getMacAddress());
+        textMacAddress.setInputType(InputType.TYPE_NULL);
+
+        bluetoothStatus = findViewById(R.id.txtBluetoothStatus);
+        reconnectButton = findViewById(R.id.btnReconnect);
 
         buttonEV13.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadNewMac(EV13_MAC);
+                saveNewMac(textMacAddress.getText().toString());
             }
         });
 
@@ -50,6 +159,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loadNewMac(EV33_MAC);
+                saveNewMac(textMacAddress.getText().toString());
             }
         });
 
@@ -57,6 +167,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loadNewMac(RPI_MAC);
+                saveNewMac(textMacAddress.getText().toString());
             }
         });
 
@@ -66,6 +177,62 @@ public class SettingsActivity extends AppCompatActivity {
                 saveNewMac(textMacAddress.getText().toString());
             }
         });
+
+        reconnectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Only retry if we're not already connected
+                if (bluetoothController.getConnectionState() != 3)
+                    bluetoothController.connect(SettingsActivity.RPI_MAC);
+            }
+        });
+    }
+
+    /**
+     * Updates connection status text and hides/shows reconnect button
+     *
+     * @param state State of bluetooth connection
+     */
+    private void updateBluetoothStatusUI(int state) {
+        final int stringResId;
+        final int colorResId;
+        final int reconnectButtonVisibility;
+
+        switch (state) {
+            case State.STATE_CONNECTED:
+                stringResId = R.string.txtBluetoothConnected;
+                Log.d(TAG, "Connected");
+                colorResId = R.color.colorBluetoothConnected;
+                reconnectButtonVisibility = View.INVISIBLE;
+                break;
+            case State.STATE_DISCONNECTED:
+                stringResId = R.string.txtBluetoothDisconnected;
+                Log.d(TAG, "Disconnected");
+                colorResId = R.color.colorBluetoothDisconnected;
+                reconnectButtonVisibility = View.VISIBLE;
+                break;
+            case State.STATE_CONNECTING:
+                stringResId = R.string.txtBluetoothConnecting;
+                Log.d(TAG, "Connecting");
+                colorResId = R.color.colorBluetoothConnecting;
+                reconnectButtonVisibility = View.INVISIBLE;
+                break;
+            default:
+                stringResId = R.string.txtBluetoothDisconnected;
+                Log.d(TAG, "Disconnected");
+                colorResId = R.color.colorBluetoothDisconnected;
+                reconnectButtonVisibility = View.VISIBLE;
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bluetoothStatus.setText(stringResId);
+                bluetoothStatus.setTextColor(getResources().getColor(colorResId));
+                reconnectButton.setVisibility(reconnectButtonVisibility);
+            }
+        });
+
     }
 
     private void loadNewMac(String mac) {
@@ -90,7 +257,6 @@ public class SettingsActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             Log.d("settings", "vibrate error");
         }
-        onBackPressed();
     }
 
     @Override
