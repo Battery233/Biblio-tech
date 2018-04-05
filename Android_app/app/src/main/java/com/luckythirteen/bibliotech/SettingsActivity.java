@@ -322,10 +322,19 @@ public class SettingsActivity extends AppCompatActivity {
         setInterval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newInterval = intervalText.getText().toString();
-                String message = String.format("{\"set_scan_interval\":{\"interval\":%s}}", newInterval);
-                messageSender.sendMessage(message);
-                Toast.makeText(context, "Updated interval!", Toast.LENGTH_SHORT).show();
+
+                if(bluetoothController.getConnectionState() == State.STATE_CONNECTED)
+                {
+                    String newInterval = intervalText.getText().toString();
+                    String message = String.format("{\"set_scan_interval\":{\"interval\":%s}}", newInterval);
+                    boolean success = messageSender.sendMessage(message);
+                    String msg = success ? "Updated scan interval" : "Failed to update scan interval";
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(context, "Not connected to robot", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

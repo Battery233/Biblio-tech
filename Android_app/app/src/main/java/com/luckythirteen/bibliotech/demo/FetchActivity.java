@@ -442,32 +442,32 @@ public class FetchActivity extends AppCompatActivity {
                         alertDialog.show();
                     }
                 });
-                promptBuilder.setNegativeButton("scan shelf", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                        alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose a way to scan the shelf</font>"));
-                        alertDialog.setPositiveButton("scan all", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sendMessageWithFeedback(new ScanAll());
-                            }
-                        });
-                        alertDialog.setNeutralButton("scan upper level only", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sendMessageWithFeedback(new ScanUpper());
-                            }
-                        });
-                        alertDialog.setNegativeButton("scan lower level only", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sendMessageWithFeedback(new ScanLower());
-                            }
-                        });
-                        alertDialog.show();
-                    }
-                });
+//                promptBuilder.setNegativeButton("scan shelf", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+//                        alertDialog.setTitle(Html.fromHtml("<font color='#d2691e'>Choose a way to scan the shelf</font>"));
+//                        alertDialog.setPositiveButton("scan all", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                sendMessageWithFeedback(new ScanAll());
+//                            }
+//                        });
+//                        alertDialog.setNeutralButton("scan upper level only", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                sendMessageWithFeedback(new ScanUpper());
+//                            }
+//                        });
+//                        alertDialog.setNegativeButton("scan lower level only", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                sendMessageWithFeedback(new ScanLower());
+//                            }
+//                        });
+//                        alertDialog.show();
+//                    }
+//                });
 
                 final AlertDialog ad = promptBuilder.show();
                 Log.w(TAG, "populateListView() - updating found words view");
