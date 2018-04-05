@@ -362,6 +362,19 @@ public class FetchActivity extends AppCompatActivity {
      */
     private void showBookList(final ArrayList<Book> books) {
         this.books = books;
+
+        final ArrayList<Book> availBooks = new ArrayList<>();
+
+        for(Book b : this.books)
+        {
+            if(b.isAvailable())
+            {
+                availBooks.add(b);
+            }
+        }
+
+        this.books = availBooks;
+
         final Context context = this;
         final FetchActivity fetchActivity = this;
         runOnUiThread(new Runnable() {
@@ -458,7 +471,7 @@ public class FetchActivity extends AppCompatActivity {
 
                 final AlertDialog ad = promptBuilder.show();
                 Log.w(TAG, "populateListView() - updating found words view");
-                BookListArrayAdapter listAdapter = new BookListArrayAdapter(context, books, ad, fetchActivity);
+                BookListArrayAdapter listAdapter = new BookListArrayAdapter(context, availBooks, ad, fetchActivity);
                 ListView listView = wordsPrompt.findViewById(R.id.lstBooks);
 
                 // Set ListView to use updated listAdapter
