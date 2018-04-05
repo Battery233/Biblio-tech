@@ -1,5 +1,8 @@
 package com.luckythirteen.bibliotech;
 
+import android.annotation.SuppressLint;
+import android.support.v7.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,10 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -147,8 +153,78 @@ public class SettingsActivity extends AppCompatActivity {
     };
 
     private void showLogs(ArrayList<LogEntry> logEntries) {
-        //TODO: Implement
+
+        final ArrayList<LogEntry> logEntries2 = logEntries;
+        final Context context = this;
+        final SettingsActivity fetchActivity = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Inflate dialog
+                LayoutInflater layoutInflater = LayoutInflater.from(SettingsActivity.this);
+                @SuppressLint("InflateParams") View wordsPrompt = layoutInflater.inflate(R.layout.dialog_loglist, null);
+                Button clearLogs = wordsPrompt.findViewById(R.id.btnClearLogs);
+
+                clearLogs.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean success = messageSender.sendMessage("{\"clear_logs\":{}}");
+                        String msg = "";
+
+                        if(success)
+                        {
+                            msg = "Cleared logs";
+                        }
+                        else
+                        {
+                            msg = "Failed to clear logs";
+                        }
+
+                        Toast.makeText(SettingsActivity.super.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog.Builder promptBuilder = new AlertDialog.Builder(SettingsActivity.this, R.style.AlertDialogTheme);
+                promptBuilder.setView(wordsPrompt);
+
+                final AlertDialog ad = promptBuilder.show();
+                Log.w(TAG, "populateListView() - updating found words view");
+                LogsArrayAdapter listAdapter = new LogsArrayAdapter(context, logEntries2, ad, fetchActivity);
+                ListView listView = wordsPrompt.findViewById(R.id.lstBooks);
+
+                // Set ListView to use updated listAdapter
+                listView.setAdapter(listAdapter);
+            }
+        });
+
     }
+
+    private ArrayList<LogEntry> genFakeLogs() {
+        String[] ISBNs = {"1784987216283", "1324567897321", "1234567890647", "9856433921323", "0954326784212", "4372896409852"};
+        String[] titles = {"Big data on toast sfdsfdfggf", "The Castle", "Wealth of Nations", "Steve Jobs", "Dirk Gently", "Harry Potter and the Chamber of Secrets"};
+        String[] pos = {"0", "5", "3", "2", "1", "4"};
+
+        ArrayList<LogEntry> fakeEntries = new ArrayList<>();
+
+        for(int i = 0; i < ISBNs.length; i++)
+        {
+            fakeEntries.add(new LogEntry(ISBNs[i], titles[i], pos[i]));
+        }
+
+        return fakeEntries;
+    }
+
+    private String genString(ArrayList<LogEntry> logs)
+    {
+        StringBuilder s = new StringBuilder();
+        for(LogEntry e : logs)
+        {
+            s.append(e.getISBN() + "\t" + e.getTitle() + e.getPos() + "\n");
+        }
+
+        return s.toString();
+    }
+
 
     private ArrayList<LogEntry> getLogEntries(String s) {
         JsonParser jsonParser = new JsonParser();
@@ -265,8 +341,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         viewLogs.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                messageSender.sendMessage("{\"get_logs\":{}}");
+            public void onClick(View v)
+            {
+                if(bluetoothController.getConnectionState() == State.STATE_CONNECTED) {
+                    messageSender.sendMessage("{\"get_logs\":{}}");
+                }
+                else
+                {
+                    Toast.makeText(SettingsActivity.super.getApplicationContext(), "Not connected to robot", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
